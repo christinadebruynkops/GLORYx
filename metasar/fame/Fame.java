@@ -51,12 +51,12 @@ import org.openscience.cdk.qsar.descriptors.atomic.SigmaElectronegativityDescrip
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import org.openscience.jmol.app.jmolpanel.AppConsole;
+import org.openscience.jmol.app.jmolpanel.console.AppConsole;
 
-import fame.weka.classifiers.Classifier;
-import fame.weka.core.Instance;
-import fame.weka.core.Instances;
-import fame.weka.core.converters.ConverterUtils.DataSource;
+import weka.classifiers.Classifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
 
 public class Fame {
@@ -367,7 +367,7 @@ public class Fame {
     	Instances data = source.getDataSet();
     	data.setClassIndex(data.numAttributes() - 1);
     	
-    	Classifier classifier = (Classifier) fame.weka.core.SerializationHelper.read(model);
+    	Classifier classifier = (Classifier) weka.core.SerializationHelper.read(model);
         
         DecimalFormat df = new DecimalFormat("0.000");
         

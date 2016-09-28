@@ -1,9 +1,9 @@
 package fame.weka;
 
-import fame.weka.core.Instances;
-import fame.weka.core.converters.ArffSaver;
-import fame.weka.core.converters.ConverterUtils.DataSource;
-import fame.weka.filters.unsupervised.instance.Resample;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.ConverterUtils.DataSource;
+import weka.filters.unsupervised.instance.Resample;
  
 import java.io.File;
 

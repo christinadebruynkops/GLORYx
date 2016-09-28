@@ -10,5 +10,6 @@
     <orderEntry type="library" name="cdk-1.4.19" level="project" />
     <orderEntry type="library" name="commons-math-2.2" level="project" />
     <orderEntry type="library" name="Jmol" level="project" />
+    <orderEntry type="library" name="weka" level="project" />
   </component>
 </module>

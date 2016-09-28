@@ -1,8 +1,8 @@
 package fame.weka;
 
-import fame.weka.core.Instances;
-import fame.weka.core.converters.ArffSaver;
-import fame.weka.core.converters.CSVLoader;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.CSVLoader;
  
 import java.io.File;
 import java.io.FileOutputStream;
