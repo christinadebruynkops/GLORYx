@@ -73,8 +73,8 @@ public class Fame {
         System.out.println();
         System.out.println("Make sure to use 3D minimized molecular structures with explicit hydrogens as input");
         
-        args = new String[] {"-i", "/Users/jkirchmair/Desktop/test.sdf", 
-        		"-m", "/Users/jkirchmair/UNI/CAM/metabolismPrediction/workflow/005weka/human/019.model", "-vm"};
+//        args = new String[] {"-i", "/Users/jkirchmair/Desktop/test.sdf",
+//        		"-m", "/Users/jkirchmair/UNI/CAM/metabolismPrediction/workflow/005weka/human/019.model", "-vm"};
 
 //        args = new String[] {"-i", "/Users/jkirchmair/UNI/CAM/metabolismPrediction/manuscript/figures/diazepam.sdf", 
 //        		"-m", "/Users/jkirchmair/UNI/CAM/metabolismPrediction/workflow/006results/release/models/019.model", 
