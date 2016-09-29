@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -30,9 +31,13 @@ import org.openscience.cdk.qsar.descriptors.atomic.ProtonAffinityHOSEDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.SigmaElectronegativityDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.StabilizationPlusChargeDescriptor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.CDKValencyChecker;
 
 public class WorkerThread implements Runnable {
     private Molecule molecule;
+	private static final String id_prop = "MolID";
 
     public WorkerThread(Molecule molecule) throws IOException, ClassNotFoundException{
         this.molecule=molecule;
@@ -43,7 +48,7 @@ public class WorkerThread implements Runnable {
 		try {
 			//check if salt
 			if (!ConnectivityChecker.isConnected(molecule)) {
-				throw new Exception("Error: salt: " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+				throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
 			}
 
         	//this code is not used. it was initially written to add charges
@@ -57,15 +62,15 @@ public class WorkerThread implements Runnable {
 
         	SMSDNormalizer.aromatizeMolecule(molecule); //aromatize molecule; required for Sybyl atom type determination
          	IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());  //determine Sybyl atom type
-        	
-         	//this is not used because I am starting from molecules with explicit hydrogens (as annotated by MOE)
-        	//add implicit hydrogens and convert to explicit hydrogen
+
+        	// add implicit hydrogens and convert to explicit hydrogen
+			// this is not used because I am starting from molecules with explicit hydrogens // TODO: check if this is actually true for each parsed molecule
 //	         	AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);         	
 //	         	CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
 //	        	adder.addImplicitHydrogens(molecule);
 //	        	AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
          	
-	        System.out.println("************** Molecule " + (molecule.getProperty("RXN:VARIATION(1):MDLNUMBER") + " **************"));
+	        System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
 
 			int[][] adjacencyMatrix = AdjacencyMatrix.getMatrix(molecule);
 			// calculate the maximum topology distance
@@ -99,10 +104,10 @@ public class WorkerThread implements Runnable {
 			
 			//check if molecule too large
         	if (heavyAtomCount > 100) {
-				throw new Exception("Error: too large: " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+				throw new Exception("Error: too large: " + molecule.getProperty(id_prop));
     	    } 
 
-	        PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(molecule.getProperty("RXN:VARIATION(1):MDLNUMBER").toString() + ".csv")));
+	        PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(molecule.getProperty(id_prop).toString() + ".csv")));
 			
 			outfile.print("Molecule,Atom,AtomType,atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
 					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
@@ -130,7 +135,7 @@ public class WorkerThread implements Runnable {
 				if (!iAtom.getSymbol().equals("H")) {
 //					System.out.println("AtomNr " + atomNr);
 
-					result = result + ((molecule.getProperty("RXN:VARIATION(1):MDLNUMBER")) + "," + iAtom.getSymbol() + "."+ (atomNr+1) + ",");
+					result = result + ((molecule.getProperty(id_prop)) + "," + iAtom.getSymbol() + "."+ (atomNr+1) + ",");
 					result = result + (iAtom.getProperty("SybylAtomType") + ",");
 					result = result + (atomDegreeDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString() + ",");
 					result = result + (atomHybridizationDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString() + ",");
@@ -176,17 +181,17 @@ public class WorkerThread implements Runnable {
 		
 		catch (ArrayIndexOutOfBoundsException e) {
 			//catches some massive molecules
-			System.out.println("Error: ArrayIndexOutOfBoundsException: " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+			System.out.println("Error: ArrayIndexOutOfBoundsException: " + molecule.getProperty(id_prop));
 		}
 		catch (CDKException e) {
-			System.out.println("Error: CDKException: " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+			System.out.println("Error: CDKException: " + molecule.getProperty(id_prop));
 			e.printStackTrace();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		catch (Exception e) {
-			System.out.println("Error: Exception: " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+			System.out.println("Error: Exception: " + molecule.getProperty(id_prop));
 			e.printStackTrace();
 		}
 	}
