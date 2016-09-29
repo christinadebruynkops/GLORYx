@@ -29,11 +29,13 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		@SuppressWarnings("rawtypes")
 		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(args[0]), DefaultChemObjectBuilder.getInstance());
         ArrayList<Molecule> molecules = new ArrayList<Molecule>();
-                
-        while (reader.hasNext()) {
+
+		int counter = 0;
+        while (reader.hasNext() && counter < 100 ) { // FIXME: read first 100 mols for testing purposes only
         	Molecule molecule = (Molecule)reader.next();
-        	System.out.println("Reading " + molecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
-        	molecules.add(molecule);     		
+        	System.out.println("Reading " + molecule.getProperty("MolID"));
+        	molecules.add(molecule);
+			counter++;
         }
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < molecules.size(); i++) {
@@ -41,10 +43,10 @@ public class AtomicDescriptorsCalculatorMultiThread {
         	executor.execute(worker);
         }
         executor.shutdown();
-        while (!executor.isTerminated()) {
+//        while (!executor.isTerminated()) {
 //        	System.out.println("in process");
-        }
+//        }
        
-        System.out.println("Finished all threads");
+        System.out.println("Descriptor calculator finished. All threads completed.");
 	}
 }
