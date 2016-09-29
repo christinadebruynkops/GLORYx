@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
