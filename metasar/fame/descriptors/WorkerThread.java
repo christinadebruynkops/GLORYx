@@ -105,6 +105,11 @@ public class WorkerThread implements Runnable {
 					Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + ".png");
 				}
 
+				// check if molecule is neutral
+				if (AtomContainerManipulator.getTotalFormalCharge(molecule) != 0) {
+					throw new Exception("Error: molecule is not neutral: " + molecule.getProperty(id_prop));
+				}
+
 				// determine Sybyl atom type
 				SMSDNormalizer.aromatizeMolecule(molecule); //aromatize molecule; required for Sybyl atom type determination
 				IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
