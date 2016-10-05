@@ -2,3 +2,4 @@
 *.db
 MetaSAR*
 out/
+run_dir/

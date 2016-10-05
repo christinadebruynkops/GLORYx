@@ -31,7 +31,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
         ArrayList<Molecule> molecules = new ArrayList<Molecule>();
 
 		int counter = 0;
-        while (reader.hasNext() && counter < 100 ) { // FIXME: read first 100 mols for testing purposes only
+        while (reader.hasNext() && counter < 2 ) { // FIXME: atm only read the first two mols -> remove this in the final version
         	Molecule molecule = (Molecule)reader.next();
         	System.out.println("Reading " + molecule.getProperty("MolID"));
         	molecules.add(molecule);
@@ -39,14 +39,15 @@ public class AtomicDescriptorsCalculatorMultiThread {
         }
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < molecules.size(); i++) {
-        	Runnable worker = new WorkerThread(molecules.get(i));
+        	Runnable worker = new WorkerThread(molecules.get(i), false); // insert true to generate SOMs depictions
         	executor.execute(worker);
         }
         executor.shutdown();
 //        while (!executor.isTerminated()) {
 //        	System.out.println("in process");
 //        }
-       
+
+		System.out.flush();
         System.out.println("Descriptor calculator finished. All threads completed.");
 	}
 }
