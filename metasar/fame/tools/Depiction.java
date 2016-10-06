@@ -74,11 +74,11 @@ public class Depiction {
                     return Color.GREEN;
                 }
 
-                if (iAtom.getAtomTypeName().equals("H")) {
+                if (iAtom.getSymbol().equals("H")) {
                     return Color.GRAY;
-                } else if (iAtom.getAtomTypeName().contains("N")) {
+                } else if (iAtom.getSymbol().equals("N")) {
                     return Color.BLUE;
-                } else if (iAtom.getAtomTypeName().contains("O")) {
+                } else if (iAtom.getSymbol().equals("O")) {
                     return Color.RED;
                 } else {
                     return Color.BLACK;
