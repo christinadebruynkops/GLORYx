@@ -2,9 +2,8 @@
 
 package fame.descriptors;
 
-import java.io.*;
-
 import fame.tools.Depiction;
+import fame.tools.Globals;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -15,23 +14,12 @@ import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.normalize.SMSDNormalizer;
-import org.openscience.cdk.qsar.descriptors.atomic.AtomDegreeDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.AtomHybridizationDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.AtomHybridizationVSEPRDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.AtomValenceDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.IPAtomicHOSEDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.PartialTChargeMMFF94Descriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.PiElectronegativityDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.ProtonAffinityHOSEDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.SigmaElectronegativityDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.StabilizationPlusChargeDescriptor;
+import org.openscience.cdk.qsar.descriptors.atomic.*;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
-import fame.tools.Globals;
+import java.io.*;
 
 public class WorkerThread implements Runnable {
 	private Molecule molecule;
@@ -74,13 +62,13 @@ public class WorkerThread implements Runnable {
 				for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 					IAtom atom = molecule.getAtom(atomNr);
 
-					System.out.println("----- " + atom.getAtomTypeName() + " (#" + molecule.getAtomNumber(atom) + ")");
+					System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
 					System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 					if (atom.getImplicitHydrogenCount() != null) {
 						implicit_hydrogens += atom.getImplicitHydrogenCount();
 					}
-					if (atom.getAtomTypeName().equals("H")) {
+					if (atom.getSymbol().equals("H")) {
 						hydrogens_total++;
 					}
 				}
@@ -118,6 +106,8 @@ public class WorkerThread implements Runnable {
 				// calculate the maximum topology distance
 				// takes an adjacency matrix and outputs and MaxTopDist matrix of the same size
 				int[][] minTopDistMatrix = PathTools.computeFloydAPSP(adjacencyMatrix);
+//				Utils.printMatrix(adjacencyMatrix, 0);
+//				Utils.printMatrix(minTopDistMatrix, 2);
 
 				// find the longest Path of all, "longestMaxTopDistInMolecule"
 				double longestMaxTopDistInMolecule = 0;
@@ -146,7 +136,7 @@ public class WorkerThread implements Runnable {
 
 				//check if molecule too large
 				if (heavyAtomCount > 100) {
-					throw new Exception("Error: too large: " + molecule.getProperty(id_prop));
+					throw new Exception("Error: molecule is too large: " + molecule.getProperty(id_prop));
 				}
 
 				File data_dir = new File("data");
@@ -160,6 +150,7 @@ public class WorkerThread implements Runnable {
 						"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule");
 				outfile.println();
 
+				// original CDK descriptors used in FAME
 				AtomDegreeDescriptor atomDegreeDescriptor = new AtomDegreeDescriptor();
 				AtomHybridizationDescriptor atomHybridizationDescriptor = new AtomHybridizationDescriptor();
 				AtomHybridizationVSEPRDescriptor atomHybridizationVSEPRDescriptor = new AtomHybridizationVSEPRDescriptor();
@@ -173,12 +164,16 @@ public class WorkerThread implements Runnable {
 				SigmaElectronegativityDescriptor sigmaElectronegativityDescriptor = new SigmaElectronegativityDescriptor();
 				StabilizationPlusChargeDescriptor stabilizationPlusChargeDescriptor = new StabilizationPlusChargeDescriptor();
 
+				// computationally intensive descriptors
+//				IPAtomicLearningDescriptor iPAtomicLearningDescriptor = new IPAtomicLearningDescriptor();
+//				PartialPiChargeDescriptor partialPiChargeDescriptor = new PartialPiChargeDescriptor();
+//				PartialTChargePEOEDescriptor partialTChargePEOEDescriptor = new PartialTChargePEOEDescriptor();
 
 				for(int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ){
 					String result = "";
 					IAtom iAtom = molecule.getAtom(atomNr);
 					//determine Sybyl atom types
-					if (!iAtom.getSymbol().equals("H")) {
+//					if (!iAtom.getSymbol().equals("H")) { // this time we also take hydrogens into account
 //					System.out.println("AtomNr " + atomNr);
 
 						result = result + ((molecule.getProperty(id_prop)) + "," + iAtom.getSymbol() + "."+ (atomNr+1) + ",");
@@ -197,7 +192,7 @@ public class WorkerThread implements Runnable {
 						result = result + (sigmaElectronegativityDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString() + ",");
 						result = result + (stabilizationPlusChargeDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString() +",");
 
-						//take too long to calculate
+						// computationally intensive descriptors
 //						result = iPAtomicLearningDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString();
 //						result = partialPiChargeDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString();
 //						result = partialTChargePEOEDescriptor.calculate(molecule.getAtom(atomNr), molecule).getValue().toString();
@@ -220,7 +215,7 @@ public class WorkerThread implements Runnable {
 						result = result + (highestMaxTopDistInMatrixRow) + ",";
 						result = result + (longestMaxTopDistInMolecule);
 						outfile.println(result);
-					}
+//					}
 				}
 				outfile.close();
 			}
