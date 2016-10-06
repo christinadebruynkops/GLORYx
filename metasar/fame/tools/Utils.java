@@ -35,4 +35,16 @@ public class Utils {
             System.out.println();
         }
     }
+
+    public static void syncOut(String out) {
+        synchronized (System.out) {
+            System.out.println(out);
+        }
+    }
+
+    public static void  syncErr(String out) {
+        synchronized (System.out) {
+            System.err.println(out);
+        }
+    }
 }
