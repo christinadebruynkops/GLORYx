@@ -34,7 +34,7 @@ public class WorkerThread implements Runnable {
 	@Override
 	public void run() {
 		try {
-			synchronized (System.out) {
+//			synchronized (System.out) {
 				//check if salt
 				if (!ConnectivityChecker.isConnected(molecule)) {
 					throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
@@ -75,7 +75,7 @@ public class WorkerThread implements Runnable {
 
 				// if implicit hydrogens were added, show a warning and make them explicit
 				if (implicit_hydrogens > 0) {
-					System.err.println("WARNING: implicit hydrogens detected: " + molecule.getProperty(id_prop));
+					System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
 
 					// add convert implicit hydrogens to explicit ones
 					System.out.println("Making all hydrogens explicit...");
@@ -218,7 +218,7 @@ public class WorkerThread implements Runnable {
 //					}
 				}
 				outfile.close();
-			}
+//			}
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {
