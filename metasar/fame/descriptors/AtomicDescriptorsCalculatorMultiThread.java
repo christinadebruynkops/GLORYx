@@ -1,14 +1,16 @@
 package fame.descriptors;
 
+import fame.tools.Globals;
+import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.Molecule;
+import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
+import org.openscience.cdk.io.iterator.IteratingMDLReader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.Molecule;
-import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
-import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
 
 public class AtomicDescriptorsCalculatorMultiThread {	
@@ -31,7 +33,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
         ArrayList<Molecule> molecules = new ArrayList<Molecule>();
 
 		int counter = 0;
-        while (reader.hasNext() && counter < 2 ) { // FIXME: atm only read the first two mols -> remove this in the final version
+        while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
         	Molecule molecule = (Molecule)reader.next();
         	System.out.println("Reading " + molecule.getProperty("MolID"));
         	molecules.add(molecule);
