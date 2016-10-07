@@ -1,5 +1,8 @@
 package fame.tools;
 
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+
 import java.lang.reflect.Array;
 
 /**
@@ -34,6 +37,11 @@ public class Utils {
             }
             System.out.println();
         }
+    }
+
+    public static boolean metchesSMARTS(IAtomContainer mol, String smarts) throws Exception {
+        SMARTSQueryTool querytool = new SMARTSQueryTool(smarts);
+        return querytool.matches(mol);
     }
 
     public static void syncOut(String out) {

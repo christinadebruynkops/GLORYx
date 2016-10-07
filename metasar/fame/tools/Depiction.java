@@ -41,7 +41,9 @@ public class Depiction {
         List<Integer> soms = new ArrayList<Integer>();
         for (String som : som_info.split(",")) {
             som = som.replaceAll("[^0-9]", "");
-            soms.add(Integer.parseInt(som));
+            if (!som.isEmpty()) {
+                soms.add(Integer.parseInt(som));
+            }
         }
 
         // layout the molecule

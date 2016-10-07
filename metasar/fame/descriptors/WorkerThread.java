@@ -4,6 +4,7 @@ package fame.descriptors;
 
 import fame.tools.Depiction;
 import fame.tools.Globals;
+import fame.tools.Utils;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -40,6 +41,11 @@ public class WorkerThread implements Runnable {
 					throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
 				}
 
+                // check if molecule is neutral
+                if (AtomContainerManipulator.getTotalFormalCharge(molecule) != 0) {
+                    throw new Exception("Error: molecule is not neutral: " + molecule.getProperty(id_prop));
+                }
+
 				System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
 
 				//this code is not used. it was initially written to add charges
@@ -50,6 +56,15 @@ public class WorkerThread implements Runnable {
 //				for(int x = 0; x < molecule.getAtomCount(); x++){
 //					System.out.println(molecule.getAtom(x).getCharge());
 //				}
+
+                // generate picture of the molecule with atom numbers (starting from 1!) and SOMs highlighted
+                if (depict) {
+                    File depictions_dir = new File("depictions");
+                    if (!depictions_dir.exists()) {
+                        depictions_dir.mkdir();
+                    }
+                    Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + ".png");
+                }
 
 				// add implicit hydrogens
 				AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
@@ -78,25 +93,22 @@ public class WorkerThread implements Runnable {
 					System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
 
 					// add convert implicit hydrogens to explicit ones
-					System.out.println("Making all hydrogens explicit...");
-					System.out.println("Explicit Hydrogens: " + Integer.toString(hydrogens_total - implicit_hydrogens));
-					System.out.println("Added Implicit Hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
+					System.err.println("Making all hydrogens explicit...");
+					System.err.println("Explicit Hydrogens: " + Integer.toString(hydrogens_total));
+					System.err.println("Added Implicit Hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 					AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
+
+                    if (depict) {
+                        Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
+                    }
 				}
 
-				// generate picture of the molecule with atom numbers (starting from 1!) and SOMs highlighted
-				if (depict) {
-					File depictions_dir = new File("depictions");
-					if (!depictions_dir.exists()) {
-						depictions_dir.mkdir();
-					}
-					Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + ".png");
-				}
-
-				// check if molecule is neutral
-				if (AtomContainerManipulator.getTotalFormalCharge(molecule) != 0) {
-					throw new Exception("Error: molecule is not neutral: " + molecule.getProperty(id_prop));
-				}
+				if (Utils.metchesSMARTS(molecule, "[CX3](=O)[O-]")) {
+                    System.out.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a deprotonated carboxyl group");
+                }
+                if (Utils.metchesSMARTS(molecule, "[CX3](=O)[OH]")) {
+                    System.out.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a neutral carboxyl group");
+                }
 
 				// determine Sybyl atom type
 				SMSDNormalizer.aromatizeMolecule(molecule); //aromatize molecule; required for Sybyl atom type determination
