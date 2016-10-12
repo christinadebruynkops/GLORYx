@@ -1,9 +1,13 @@
 package fame.tools;
 
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * Simple utility class with some helper functions.
@@ -42,6 +46,32 @@ public class Utils {
     public static boolean metchesSMARTS(IAtomContainer mol, String smarts) throws Exception {
         SMARTSQueryTool querytool = new SMARTSQueryTool(smarts);
         return querytool.matches(mol);
+    }
+
+    /**
+     * Looks for protonated carboxyls in a molecule and deprotonates all of them.
+     *
+     * @param mol
+     * @throws CDKException
+     */
+    public  static void deprotonateCarboxyls(IMolecule mol) throws CDKException {
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2H]");
+        boolean status = querytool.matches(mol);
+        if (status) {
+            List<List<Integer>> matches = querytool.getMatchingAtoms();
+            for (int match_idx = 0; match_idx < matches.size(); match_idx++) {
+                for (Integer atom_idx : matches.get(match_idx)) {
+                    IAtom iAtom = mol.getAtom(atom_idx);
+
+                    if (iAtom.getSymbol().equals("O")) {
+                        if (iAtom.getHybridization().toString().equals("SP3")) {
+                            iAtom.setImplicitHydrogenCount(0);
+                            iAtom.setFormalCharge(-1);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static void syncOut(String out) {

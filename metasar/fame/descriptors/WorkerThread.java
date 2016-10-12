@@ -41,10 +41,11 @@ public class WorkerThread implements Runnable {
 					throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
 				}
 
-                // check if molecule is neutral
-                if (AtomContainerManipulator.getTotalFormalCharge(molecule) != 0) {
-                    throw new Exception("Error: molecule is not neutral: " + molecule.getProperty(id_prop));
-                }
+				// check if the molecule has SOMs annotated
+				String som_info = (String) molecule.getProperty(Globals.SOM_PROP);
+				if (som_info.equals("None")) {
+					throw new Exception("Error: no SoMs annotated: " + molecule.getProperty(id_prop));
+				}
 
 				System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
 
@@ -71,6 +72,9 @@ public class WorkerThread implements Runnable {
 				CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
 				adder.addImplicitHydrogens(molecule);
 
+				// deprotonate any neutral carboxyls
+				Utils.deprotonateCarboxyls(molecule);
+
 				// count all implicit hydrogens
 				int hydrogens_total = 0;
 				int implicit_hydrogens = 0;
@@ -92,6 +96,22 @@ public class WorkerThread implements Runnable {
 				if (implicit_hydrogens > 0) {
 					System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
 
+					if (Utils.metchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitro group");
+					} else if (Utils.metchesSMARTS(molecule, "[N+]O")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a nitrogen with +1 charge and oxygen with a missing negative charge");
+					} else if (Utils.metchesSMARTS(molecule, "[N,N+]-[OH]")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitroxide");
+					} else if (Utils.metchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
+					} else if (Utils.metchesSMARTS(molecule, "[NH2]-[N]~N")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
+					} else if (Utils.metchesSMARTS(molecule, "N=[N+][N-]")) {
+						System.err.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
+					} else {
+						System.err.println("No problematic fragment identified in: " + molecule.getProperty(id_prop));
+					}
+
 					// add convert implicit hydrogens to explicit ones
 					System.err.println("Making all hydrogens explicit...");
 					System.err.println("Explicit Hydrogens: " + Integer.toString(hydrogens_total));
@@ -99,16 +119,15 @@ public class WorkerThread implements Runnable {
 					AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
                     if (depict) {
-                        Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
+						System.err.println("Generating depiction for: " + molecule.getProperty(id_prop));
+						try {
+							Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
+						} catch (Exception exp) {
+							System.err.println("Failed to generate depiction for: " + molecule.getProperty(id_prop));
+						}
+
                     }
 				}
-
-				if (Utils.metchesSMARTS(molecule, "[CX3](=O)[O-]")) {
-                    System.out.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a deprotonated carboxyl group");
-                }
-                if (Utils.metchesSMARTS(molecule, "[CX3](=O)[OH]")) {
-                    System.out.println("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a neutral carboxyl group");
-                }
 
 				// determine Sybyl atom type
 				SMSDNormalizer.aromatizeMolecule(molecule); //aromatize molecule; required for Sybyl atom type determination
@@ -185,7 +204,7 @@ public class WorkerThread implements Runnable {
 					String result = "";
 					IAtom iAtom = molecule.getAtom(atomNr);
 					//determine Sybyl atom types
-//					if (!iAtom.getSymbol().equals("H")) { // this time we also take hydrogens into account
+					if (!iAtom.getSymbol().equals("H")) {
 //					System.out.println("AtomNr " + atomNr);
 
 						result = result + ((molecule.getProperty(id_prop)) + "," + iAtom.getSymbol() + "."+ (atomNr+1) + ",");
@@ -227,7 +246,7 @@ public class WorkerThread implements Runnable {
 						result = result + (highestMaxTopDistInMatrixRow) + ",";
 						result = result + (longestMaxTopDistInMolecule);
 						outfile.println(result);
-//					}
+					}
 				}
 				outfile.close();
 //			}
