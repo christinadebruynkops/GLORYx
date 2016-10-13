@@ -72,7 +72,7 @@ public class Depiction {
 
             @Override
             public Color getAtomColor(IAtom iAtom) {
-                if (soms.contains(molecule.getAtomNumber(iAtom))) {
+                if (soms.contains(molecule.getAtomNumber(iAtom) + 1)) {
                     return Color.GREEN;
                 }
 
