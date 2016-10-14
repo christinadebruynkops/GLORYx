@@ -1,8 +1,8 @@
 package fame.tools;
 
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -35,7 +35,7 @@ public class Depiction {
      * @param path path to the output file
      * @throws Exception thrown if sth breaks
      */
-    public static void generateDepiction(Molecule molecule, String path) throws Exception {
+    public static void generateDepiction(IMolecule molecule, String path) throws Exception {
         // parse SOMs information
         String som_info = (String) molecule.getProperty(som_prop);
         List<Integer> soms = new ArrayList<Integer>();
