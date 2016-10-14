@@ -3,10 +3,11 @@ package fame.tools;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,15 +55,38 @@ public class Utils {
      * @param mol
      * @throws CDKException
      */
-    public  static void deprotonateCarboxyls(IMolecule mol) throws CDKException {
-        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2H]");
+    public  static void deprotonateCarboxyls(IAtomContainer mol) throws CDKException {
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
         boolean status = querytool.matches(mol);
+        List<IAtom> to_remove = new ArrayList<>();
         if (status) {
             List<List<Integer>> matches = querytool.getMatchingAtoms();
             for (int match_idx = 0; match_idx < matches.size(); match_idx++) {
                 for (Integer atom_idx : matches.get(match_idx)) {
                     IAtom iAtom = mol.getAtom(atom_idx);
 
+//                    System.out.println(iAtom.getSymbol());
+                    if (iAtom.getSymbol().equals("H")) {
+                        to_remove.add(iAtom);
+                    }
+                }
+            }
+        }
+
+        for (IAtom deleted : to_remove) {
+            mol.removeAtomAndConnectedElectronContainers(deleted);
+        }
+
+        querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX1]");
+        status = querytool.matches(mol);
+
+        if (status) {
+            List<List<Integer>> matches = querytool.getMatchingAtoms();
+            for (int match_idx = 0; match_idx < matches.size(); match_idx++) {
+                for (Integer atom_idx : matches.get(match_idx)) {
+                    IAtom iAtom = mol.getAtom(atom_idx);
+
+//                    System.out.println(iAtom.getSymbol());
                     if (iAtom.getSymbol().equals("O")) {
                         if (iAtom.getHybridization().toString().equals("SP3")) {
                             iAtom.setImplicitHydrogenCount(0);
@@ -72,6 +96,36 @@ public class Utils {
                 }
             }
         }
+    }
+
+    /**
+     * Looks for deprotonated carboxyls in a molecule and protonates all of them.
+     *
+     * @param mol
+     * @throws CDKException
+     */
+    public  static void protonateCarboxyls(IAtomContainer mol) throws CDKException {
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[O-]");
+        boolean status = querytool.matches(mol);
+        List<IAtom> to_remove = new ArrayList<>();
+
+        if (status) {
+            List<List<Integer>> matches = querytool.getMatchingAtoms();
+            for (int match_idx = 0; match_idx < matches.size(); match_idx++) {
+                for (Integer atom_idx : matches.get(match_idx)) {
+                    IAtom iAtom = mol.getAtom(atom_idx);
+
+//                    System.out.println(iAtom.getSymbol());
+                    if (iAtom.getSymbol().equals("O")) {
+                        if (iAtom.getHybridization().toString().equals("SP3")) {
+                            iAtom.setFormalCharge(0);
+                            iAtom.setImplicitHydrogenCount(1);
+                        }
+                    }
+                }
+            }
+        }
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
     }
 
     public static void syncOut(String out) {
