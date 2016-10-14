@@ -1,5 +1,6 @@
 package fame.generateDataSets;
 
+import fame.tools.Globals;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -9,7 +10,9 @@ import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.smiles.SmilesGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,23 +37,22 @@ public class RandomMoleculeSelector {
 //	static String smartCypInput =   wDir + "002descriptors/allSubstrates_smartCyp.csv";
 	static String cdkInput = wDir + "data/all_data.csv";
 //	static String patrikInput =     wDir + "002descriptors/allSubstrates.sdf_newatomdescriptors.csv";
-	
+
 	//output
 //	static String output =  wDir + "003trainingAndTestSets/" + species + "/001beforeSeparation/randomSelection.csv";
 	static String output =  wDir + "training_and_test_sets/before_separation/random_selection.csv";
 
 	/**
-	 * Reads in all unique and valid molecules. Valid molecules are molecules that do not contain salts. 
-	 * Unique molecules are identified based on the merged MetaPrint2D model.
-	 * @param validMolecules 
+	 * Reads in all unique and valid molecules. Valid molecules are molecules that do not contain salts.
+	 *
+	 * @param validMolecules
 	 * @return
 	 * @throws FileNotFoundException
-	 * @throws CDKException 
+	 * @throws CDKException
 	 */
 	private static Map<String, IMolecule> readInMolecules() throws FileNotFoundException, CDKException {
-		// commented this out because there should be no duplicates in my dataset TODO: check this with Johannes
 //		Scanner scanner = new Scanner(new File(mpInput));
-//		SmilesGenerator sg = new SmilesGenerator();
+		SmilesGenerator sg = new SmilesGenerator();
 //
 //		//a specific molecule can occur more than once in the metabolite database. Since we have merged all SOMs onto a single representation for
 //		//each molecule, we here identify the RMTB numbers of these unique representations. We only want to read in these unique representations.
@@ -62,37 +64,37 @@ public class RandomMoleculeSelector {
 //				uniqueRmtbs.add(line.split("\\+")[0]);
 //			}
 //		}
-		
-		IteratingMDLReader mdlReader = new IteratingMDLReader(new FileInputStream(sdOriginalInput), DefaultChemObjectBuilder.getInstance());
+
+        DefaultIteratingChemObjectReader mdlReader = new IteratingMDLReader(new FileInputStream(sdOriginalInput), DefaultChemObjectBuilder.getInstance());
 		Map<String, IMolecule> iMolecules = new HashMap<String, IMolecule>();
 
 		int saltCounter = 0;
 		while (mdlReader.hasNext()) {
 			IMolecule iMolecule = (IMolecule) mdlReader.next();
-			try {	
-				//check if this molecule is a salt. If it is a salt, it cannot be considered for the calculations because it will cause the 
+			try {
+				//check if this molecule is a salt. If it is a salt, it cannot be considered for the calculations because it will cause the
 				//EquivalentClassPartitioner, which is involved in the atom symmetry test, to crash (will run out of heap space).
-				if (!ConnectivityChecker.isConnected(iMolecule) ) {
-					System.out.println(iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER") + " is a salt: " + sg.createSMILES(iMolecule));
-					saltCounter++;
-				}
-				if (ConnectivityChecker.isConnected(iMolecule) && uniqueRmtbs.contains(iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER"))) {
+                if (!ConnectivityChecker.isConnected(iMolecule) ) {
+					System.out.println(iMolecule.getProperty(Globals.ID_PROP) + " is a salt: " + sg.createSMILES(iMolecule));
+                    saltCounter++;
+				} else {
 					//assign molecule title
-					iMolecule.setProperty("RIREG_ID", iMolecule.getProperty(CDKConstants.TITLE));
-					iMolecule.setProperty(CDKConstants.TITLE, iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
-					//generate smiles and add it is a property
-					iMolecule.setProperty("smiles", sg.createSMILES(iMolecule));				
+//					iMolecule.setProperty("RIREG_ID", iMolecule.getProperty(CDKConstants.TITLE));
+					iMolecule.setProperty(CDKConstants.TITLE, iMolecule.getProperty(Globals.ID_PROP));
+                    //generate smiles and add it is a property
+					iMolecule.setProperty("smiles", sg.createSMILES(iMolecule));
+                    // TODO: get rid of the questionmarks in SoM annotations and save the parsed list to Globals.SOM_PROP property
 					iMolecules.put((String) iMolecule.getProperty(CDKConstants.TITLE), iMolecule);
 				}
 			} catch (NullPointerException e) {
 				System.out.println(e);
-			} 
+			}
 		}
 		System.out.println("\t" + saltCounter + "\tSalts have been identified and disregarded");
 		return iMolecules;
 	}
-	
-	
+
+
 //	/**
 //	 * Reads in a complete, merged MetaPrint2D model in txt file format and stores it with the individual IAtoms and IMolecules.
 //	 * @throws FileNotFoundException
@@ -138,7 +140,7 @@ public class RandomMoleculeSelector {
 //		}
 //		return iMolecules;
 //	}
-	
+
 //	/**
 //	 * Reads in a complete MetaPrint2D-react model in txt file format and stores it with the individual IAtoms and IMolecules.
 //	 * @param iMolecules
@@ -253,14 +255,15 @@ public class RandomMoleculeSelector {
 //		}
 //		return iMolecules;
 //	}
-	
+
 	/**
 	 * Reads in descriptor data.
 	 * @param iMolecules
 	 * @return
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	private static Map<String, IMolecule> readDescriptorData(Map<String, IMolecule> iMolecules, String inFile, String data) throws FileNotFoundException {
+//	private static Map<String, IMolecule> readDescriptorData(Map<String, IMolecule> iMolecules, String inFile, String data) throws FileNotFoundException {
+    private static Map<String, IMolecule> readDescriptorData(Map<String, IMolecule> iMolecules, String inFile) throws FileNotFoundException {
 //		System.out.println("The map has no. molecules: " + iMolecules.size());
 		Scanner scanner = new Scanner(new File(inFile));
 		String[] descriptorNames = scanner.nextLine().split(",");
@@ -271,7 +274,7 @@ public class RandomMoleculeSelector {
 			thisMolecule = new String(splitLine[0]);
 			int atomNumber = (Integer.parseInt(splitLine[1].split("\\.")[1])-1);
 			if (iMolecules.containsKey(thisMolecule)) {
-				iMolecules.get(thisMolecule).setProperty(data, "true");
+//				iMolecules.get(thisMolecule).setProperty(data, "true");
 				for (int i = 1; i < descriptorNames.length; i++) {
 					iMolecules.get(thisMolecule).getAtom(atomNumber).setProperty(descriptorNames[i], splitLine[i]);
 				}
@@ -279,7 +282,7 @@ public class RandomMoleculeSelector {
 		}
 		return iMolecules;
 	}
-	
+
 	private static Map<String, IMolecule> treatAtomSymmetry(Map<String, IMolecule> iMolecules) throws NoSuchAtomException {
         Set<String> set = iMolecules.keySet();
         for (String key : set) {
@@ -287,21 +290,31 @@ public class RandomMoleculeSelector {
 			//charges need to be set for the EquivalentClassPartitioner to run properly.
 			for (int i = 0; i < iMolecule.getAtomCount(); i++) {
 				IAtom iAtom = iMolecule.getAtom(i);
-				iAtom.setProperty("MoleculeName", iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
+				iAtom.setProperty("MoleculeName", iMolecule.getProperty(Globals.ID_PROP));
 				iAtom.setCharge((double) iAtom.getFormalCharge());
-			}
+            }
 
 			/*
 			 * add symmetry numbers to the molecule. Also generate a map containing all SOM information for each unique atom of a molecule
 			 */
-			int[] symmetryNumbersArray = null;
+			int[] symmetryNumbersArray;
 //	        System.out.println("#the current molecule is " + iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
 			EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner((AtomContainer) iMolecule);
 			symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu((AtomContainer) iMolecule);
 
 			Map<Integer,ArrayList<String>> somMap = new HashMap<Integer,ArrayList<String>>();
-			Map<Integer,ArrayList<String>> reactivityTypesMap = new HashMap<Integer,ArrayList<String>>();
-			for (int i=0; i < iMolecule.getAtomCount(); i++) {
+//			Map<Integer,ArrayList<String>> reactivityTypesMap = new HashMap<Integer,ArrayList<String>>();
+
+            // parse SOMs information
+            String som_info = (String) iMolecule.getProperty(Globals.SOM_PROP);
+            List<String> soms = new ArrayList<String>();
+            for (String som : som_info.split(",")) {
+                if (!som.isEmpty()) {
+                    soms.add(som);
+                }
+            }
+
+            for (int i=0; i < iMolecule.getAtomCount(); i++) {
 				IAtom iAtom = iMolecule.getAtom(i);
 				iAtom.setProperty("SymmetryAtomNumber", symmetryNumbersArray[i+1]);
 				iMolecule.setAtom(i, iAtom);
@@ -321,26 +334,26 @@ public class RandomMoleculeSelector {
 							combinedList.add(som);
 							somMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
 						}
-					}					
+					}
 				}
-				if (iAtom.getProperty("ReactionTypes") != null) {
-					List<String> somList = Arrays.asList(iAtom.getProperty("ReactionTypes").toString().split(","));
-					Iterator<String> somItr = somList.iterator();
-					while (somItr.hasNext()) {
-						String som = somItr.next();
-						if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-							ArrayList<String> combinedList = reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber"));
-							if (!combinedList.contains(som)) {
-								combinedList.add(som);
-							}
-							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-						} else {
-							ArrayList<String> combinedList = new ArrayList<String>();
-							combinedList.add(som);
-							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-						}
-					}					
-				}
+//				if (iAtom.getProperty("ReactionTypes") != null) {
+//					List<String> somList = Arrays.asList(iAtom.getProperty("ReactionTypes").toString().split(","));
+//					Iterator<String> somItr = somList.iterator();
+//					while (somItr.hasNext()) {
+//						String som = somItr.next();
+//						if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
+//							ArrayList<String> combinedList = reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber"));
+//							if (!combinedList.contains(som)) {
+//								combinedList.add(som);
+//							}
+//							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
+//						} else {
+//							ArrayList<String> combinedList = new ArrayList<String>();
+//							combinedList.add(som);
+//							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
+//						}
+//					}
+//				}
 			}
 			//add combined SOM information to each unique atom of a molecule
 			for (int i=0; i < iMolecule.getAtomCount(); i++) {
@@ -349,7 +362,7 @@ public class RandomMoleculeSelector {
 				if (somMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
 					iAtom.setProperty("SOMcombined", somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")));
 					iAtom.setProperty("isSom", "true");
-					
+
 					//add information about the metabolic phase
 					if (somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")).contains("A2")) {
 						iAtom.setProperty("phaseII", "true");
@@ -362,9 +375,9 @@ public class RandomMoleculeSelector {
 				} else {
 					iAtom.setProperty("isSom", "false");
 				}
-				if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-					iAtom.setProperty("ReactionTypesCombined", reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")));
-				}
+//				if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
+//					iAtom.setProperty("ReactionTypesCombined", reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")));
+//				}
 				if (iAtom.getProperty("SOMcombined") == null) {
 					iAtom.setProperty("SOMcombined", "");
 				}
@@ -376,16 +389,16 @@ public class RandomMoleculeSelector {
 				}
 //				System.out.println(somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")) + "\t" + iAtom.getProperty("phaseI") + "\t" + iAtom.getProperty("phaseII"));
 			}
-			
+
 		}
 		return iMolecules;
 	}
-	
+
 	/**
 	 * Selects a defined number of molecules randomly (this is to generate the test set)
 	 * @param iMolecules
 	 * @return
-	 * @throws CDKException 
+	 * @throws CDKException
 	 */
 	private static Map<String, IMolecule> generateTestTraingSet(Map<String, IMolecule> iMolecules) throws CDKException {
 		//generate an ArrayList containing all RMTB IDs
@@ -395,12 +408,12 @@ public class RandomMoleculeSelector {
         for (String key : set) {
         	unusedRmtbs.add(key);
         }
-		
+
 		Random random = new Random();
 		int numberOfRandomlySelectedMolecules=0;
 		int pick=0;
         IMolecule iMolecule = null;
-        
+
         while ((double) numberOfRandomlySelectedMolecules/(double) iMolecules.size() < testSetRatio) {
         	pick = random.nextInt(unusedRmtbs.size());
 			iMolecule = iMolecules.get(unusedRmtbs.get(pick));
@@ -408,7 +421,7 @@ public class RandomMoleculeSelector {
 			unusedRmtbs.remove(pick);
 			numberOfRandomlySelectedMolecules++;
 		}
-        
+
         System.out.println(numberOfRandomlySelectedMolecules + "\t" + iMolecules.size());
 
         while (unusedRmtbs.size() > 0) {
@@ -421,19 +434,19 @@ public class RandomMoleculeSelector {
         			break;
         		}
         	}
-        }               
+        }
 		return iMolecules;
 	}
-	
+
 	/**
 	 * Write sdf and MetaPrint output for training and test set
-	 * @param iMolecules 
+	 * @param iMolecules
 	 * @param testSet
 	 * @param iMolecules
-	 * @param atomTypeNames 
-	 * @return 
-	 * @return 
-	 * @throws IOException 
+	 * @param atomTypeNames
+	 * @return
+	 * @return
+	 * @throws IOException
 	 */
 	private static void writeOutput(Map<String, IMolecule> iMolecules) throws IOException {
         //generate header of the CSV files. Cave: Not all atoms have all properties annotated. Hence, I am iterating over the atoms of the
@@ -445,7 +458,7 @@ public class RandomMoleculeSelector {
     	IMolecule iMolecule = iMolecules.get(set.iterator().next());
 		Map<Object, Object> properties = iMolecule.getProperties();
         Set<Object> set1 = properties.keySet();
-                    
+
         //collect all atom properties
         for (int i=0; i < iMolecule.getAtomCount(); i++) {
     		IAtom iAtom = iMolecule.getAtom(i);
@@ -457,21 +470,21 @@ public class RandomMoleculeSelector {
             	}
             }
         }
-        
+
         //set and smiles are molecular and not atomic properties.
         header.add("set");
         header.add("smiles");
-        
+
         CSVWriter csvWriter = new CSVWriter(output, header);
         for (String key : set) {
         	iMolecule = iMolecules.get(key);
         	//must have smartcyp, patrik and cdk calculated
         	if (iMolecule.getProperty("smartCyp") != null && iMolecule.getProperty("cdk") != null && iMolecule.getProperty("patrik") != null) {
-            	csvWriter.write(iMolecule, output, header);        		
+            	csvWriter.write(iMolecule, output, header);
         	}
         }
 	}
-	
+
 	public static void main(String... aArgs) throws IOException, CDKException {
 		System.out.println("##loading valid, unique molecules");
 		Map<String, IMolecule> iMolecules = readInMolecules();
@@ -486,7 +499,8 @@ public class RandomMoleculeSelector {
 //		iMolecules = readSmartCypData(iMolecules);
 //		System.out.println("\t" + iMolecules.size() + "\tMolecules");
 		System.out.println("##reading in CDK descriptors");
-		iMolecules = readDescriptorData(iMolecules, cdkInput, "cdk");
+//		iMolecules = readDescriptorData(iMolecules, cdkInput, "cdk");
+        iMolecules = readDescriptorData(iMolecules, cdkInput);
 		System.out.println("\t" + iMolecules.size() + "\tMolecules");
 //		System.out.println("##reading in Patrik's descriptors");
 //		iMolecules = readDescriptorData(iMolecules, patrikInput, "patrik");
