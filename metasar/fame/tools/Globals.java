@@ -9,5 +9,9 @@ package fame.tools;
 public class Globals {
     public static final String ID_PROP = "MolID"; // SDF file property variable holding the ID of the molecule
     public static final String SOM_PROP = "SoMs"; // SDF file property variable in which the sites of metabolism are saved
-    public static final int LOAD_MAX_MOL = 500; // load this many molecule at max (-1 for unlimited)
+    public static final String REASUBCLS_PROP = "reasubclasses";
+    public static final String REACLS_PROP = "reaclasses";
+    public static final String REAMAIN_PROP = "reamain";
+    public static final String REAGEN_PROP = "reagens";
+    public static final int LOAD_MAX_MOL = -1; // load this many molecules at max (-1 for unlimited)
 }

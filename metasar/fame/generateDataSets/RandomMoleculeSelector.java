@@ -1,13 +1,11 @@
 package fame.generateDataSets;
 
 import fame.tools.Globals;
-import org.openscience.cdk.AtomContainer;
+import fame.tools.SoMInfo;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.NoSuchAtomException;
 import org.openscience.cdk.graph.ConnectivityChecker;
-import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
@@ -283,113 +281,12 @@ public class RandomMoleculeSelector {
 		return iMolecules;
 	}
 
-	private static Map<String, IMolecule> treatAtomSymmetry(Map<String, IMolecule> iMolecules) throws NoSuchAtomException {
+	private static Map<String, IMolecule> treatAtomSymmetry(Map<String, IMolecule> iMolecules) throws Exception {
         Set<String> set = iMolecules.keySet();
         for (String key : set) {
 			IMolecule iMolecule = iMolecules.get(key);
-			//charges need to be set for the EquivalentClassPartitioner to run properly.
-			for (int i = 0; i < iMolecule.getAtomCount(); i++) {
-				IAtom iAtom = iMolecule.getAtom(i);
-				iAtom.setProperty("MoleculeName", iMolecule.getProperty(Globals.ID_PROP));
-				iAtom.setCharge((double) iAtom.getFormalCharge());
-            }
 
-			/*
-			 * add symmetry numbers to the molecule. Also generate a map containing all SOM information for each unique atom of a molecule
-			 */
-			int[] symmetryNumbersArray;
-//	        System.out.println("#the current molecule is " + iMolecule.getProperty("RXN:VARIATION(1):MDLNUMBER"));
-			EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner((AtomContainer) iMolecule);
-			symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu((AtomContainer) iMolecule);
-
-			Map<Integer,ArrayList<String>> somMap = new HashMap<Integer,ArrayList<String>>();
-//			Map<Integer,ArrayList<String>> reactivityTypesMap = new HashMap<Integer,ArrayList<String>>();
-
-            // parse SOMs information
-            String som_info = (String) iMolecule.getProperty(Globals.SOM_PROP);
-            List<String> soms = new ArrayList<String>();
-            for (String som : som_info.split(",")) {
-                if (!som.isEmpty()) {
-                    soms.add(som);
-                }
-            }
-
-            for (int i=0; i < iMolecule.getAtomCount(); i++) {
-				IAtom iAtom = iMolecule.getAtom(i);
-				iAtom.setProperty("SymmetryAtomNumber", symmetryNumbersArray[i+1]);
-				iMolecule.setAtom(i, iAtom);
-				if (iAtom.getProperty("SOM") != null) {					
-					List<String> somList = Arrays.asList(iAtom.getProperty("SOM").toString().split(","));
-					Iterator<String> somItr = somList.iterator();
-					while (somItr.hasNext()) {
-						String som = somItr.next();
-						if (somMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-							ArrayList<String> combinedList = somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber"));
-							if (!combinedList.contains(som)) {
-								combinedList.add(som);
-							}
-							somMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-						} else {
-							ArrayList<String> combinedList = new ArrayList<String>();
-							combinedList.add(som);
-							somMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-						}
-					}
-				}
-//				if (iAtom.getProperty("ReactionTypes") != null) {
-//					List<String> somList = Arrays.asList(iAtom.getProperty("ReactionTypes").toString().split(","));
-//					Iterator<String> somItr = somList.iterator();
-//					while (somItr.hasNext()) {
-//						String som = somItr.next();
-//						if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-//							ArrayList<String> combinedList = reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber"));
-//							if (!combinedList.contains(som)) {
-//								combinedList.add(som);
-//							}
-//							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-//						} else {
-//							ArrayList<String> combinedList = new ArrayList<String>();
-//							combinedList.add(som);
-//							reactivityTypesMap.put((Integer) iAtom.getProperty("SymmetryAtomNumber"), combinedList);
-//						}
-//					}
-//				}
-			}
-			//add combined SOM information to each unique atom of a molecule
-			for (int i=0; i < iMolecule.getAtomCount(); i++) {
-				IAtom iAtom = iMolecule.getAtom(i);
-//				System.out.println("AtomSymmetryNumber      " + iAtom.getProperty("SymmetryAtomNumber"));
-				if (somMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-					iAtom.setProperty("SOMcombined", somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")));
-					iAtom.setProperty("isSom", "true");
-
-					//add information about the metabolic phase
-					if (somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")).contains("A2")) {
-						iAtom.setProperty("phaseII", "true");
-						if (somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")).size()>1) {
-							iAtom.setProperty("phaseI", "true");
-						}
-					} else {
-						iAtom.setProperty("phaseI", "true");
-					}
-				} else {
-					iAtom.setProperty("isSom", "false");
-				}
-//				if (reactivityTypesMap.containsKey((Integer) iAtom.getProperty("SymmetryAtomNumber"))) {
-//					iAtom.setProperty("ReactionTypesCombined", reactivityTypesMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")));
-//				}
-				if (iAtom.getProperty("SOMcombined") == null) {
-					iAtom.setProperty("SOMcombined", "");
-				}
-				if (iAtom.getProperty("phaseI") == null) {
-					iAtom.setProperty("phaseI", "false");
-				}
-				if (iAtom.getProperty("phaseII") == null) {
-					iAtom.setProperty("phaseII", "false");
-				}
-//				System.out.println(somMap.get((Integer) iAtom.getProperty("SymmetryAtomNumber")) + "\t" + iAtom.getProperty("phaseI") + "\t" + iAtom.getProperty("phaseII"));
-			}
-
+            SoMInfo.parseInfoAndUpdateMol(iMolecule);
 		}
 		return iMolecules;
 	}
@@ -485,7 +382,7 @@ public class RandomMoleculeSelector {
         }
 	}
 
-	public static void main(String... aArgs) throws IOException, CDKException {
+	public static void main(String... aArgs) throws Exception {
 		System.out.println("##loading valid, unique molecules");
 		Map<String, IMolecule> iMolecules = readInMolecules();
 		System.out.println("\t" + iMolecules.size() + "\tMolecules have been defined valid and unique");

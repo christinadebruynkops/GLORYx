@@ -26,7 +26,6 @@ import java.util.List;
  * Created by sicho on 10/5/16.
  */
 public class Depiction {
-    private static final String som_prop = Globals.SOM_PROP;
 
     /**
      * generate a PNG file depicting a molecule with SOMs highlighted
@@ -37,13 +36,11 @@ public class Depiction {
      */
     public static void generateDepiction(IMolecule molecule, String path) throws Exception {
         // parse SOMs information
-        String som_info = (String) molecule.getProperty(som_prop);
+        List<SoMInfo> infos = SoMInfo.parseInfoAndUpdateMol(molecule);
+
         List<Integer> soms = new ArrayList<Integer>();
-        for (String som : som_info.split(",")) {
-            som = som.replaceAll("[^0-9]", "");
-            if (!som.isEmpty()) {
-                soms.add(Integer.parseInt(som));
-            }
+        for (SoMInfo som : infos) {
+            soms.add(som.getAtomID());
         }
 
         // layout the molecule
