@@ -124,6 +124,7 @@ public class SoMInfo {
             // skip entries without annotated SoMs
             if (som_entry.matches("None") || som_entry.isEmpty()) {
                 System.err.println("WARNING: Skipping empty SoM entry ('" + som_entry + "') for molecule " + iMolecule.getProperty(Globals.ID_PROP));
+                list_idx++;
                 continue;
             }
 
