@@ -9,6 +9,8 @@ package fame.tools;
 public class Globals {
     public static final String ID_PROP = "MolID"; // SDF file property variable holding the ID of the molecule
     public static final String SOM_PROP = "SoMs"; // SDF file property variable in which the sites of metabolism are saved
+    public static final String IS_SOM_PROP = "isSom";
+    public static final String IS_SOM_CONFIRMED_PROP = "isSomConfirmed";
     public static final String REASUBCLS_PROP = "reasubclasses";
     public static final String REACLS_PROP = "reaclasses";
     public static final String REAMAIN_PROP = "reamain";

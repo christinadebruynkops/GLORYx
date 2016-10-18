@@ -128,22 +128,6 @@ public class Utils {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
     }
 
-    public static List<String> parseValueList(String line) throws Exception {
-        line = line.replaceAll("^'", "").replaceAll("'$", "");
-        List<String> values = new ArrayList<>();
-        for (String som : line.split("', '")) {
-            if (!som.isEmpty()) {
-                values.add(som);
-            }
-        }
-        for (String val : values) {
-            if (!val.matches("\\d+") || !val.matches("\\d+\\?")) {
-                throw new Exception("Invalid SoM annotation");
-            }
-        }
-        return values;
-    }
-
     public static void syncOut(String out) {
         synchronized (System.out) {
             System.out.println(out);

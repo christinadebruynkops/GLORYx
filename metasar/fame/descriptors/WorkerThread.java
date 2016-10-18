@@ -4,6 +4,7 @@ package fame.descriptors;
 
 import fame.tools.Depiction;
 import fame.tools.Globals;
+import fame.tools.SoMInfo;
 import fame.tools.Utils;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
@@ -58,7 +59,10 @@ public class WorkerThread implements Runnable {
 //					System.out.println(molecule.getAtom(x).getCharge());
 //				}
 
-			// generate picture of the molecule with atom numbers (starting from 1!) and SOMs highlighted
+			// parse the SoM information and save the essential data to the molecule (throws exception for molecules without SoMs annotated)
+			SoMInfo.parseInfoAndUpdateMol(molecule);
+
+			// if requested, generate picture of the molecule with atom numbers and SOMs highlighted
 			if (depict) {
 				File depictions_dir = new File("depictions");
 				if (!depictions_dir.exists()) {

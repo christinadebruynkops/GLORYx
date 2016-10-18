@@ -35,14 +35,6 @@ public class Depiction {
      * @throws Exception thrown if sth breaks
      */
     public static void generateDepiction(IMolecule molecule, String path) throws Exception {
-        // parse SOMs information
-        List<SoMInfo> infos = SoMInfo.parseInfoAndUpdateMol(molecule);
-
-        List<Integer> soms = new ArrayList<Integer>();
-        for (SoMInfo som : infos) {
-            soms.add(som.getAtomID());
-        }
-
         // layout the molecule
         StructureDiagramGenerator sdg = new StructureDiagramGenerator();
         sdg.setMolecule(molecule, false);
@@ -69,8 +61,13 @@ public class Depiction {
 
             @Override
             public Color getAtomColor(IAtom iAtom) {
-                if (soms.contains(molecule.getAtomNumber(iAtom) + 1)) {
-                    return Color.GREEN;
+                if (Boolean.parseBoolean(iAtom.getProperty(Globals.IS_SOM_PROP).toString())) {
+                    boolean is_confirmed = (Boolean) iAtom.getProperty(Globals.IS_SOM_CONFIRMED_PROP);
+                    if (is_confirmed) {
+                        return Color.GREEN;
+                    } else {
+                        return Color.MAGENTA;
+                    }
                 }
 
                 if (iAtom.getSymbol().equals("H")) {
@@ -79,8 +76,12 @@ public class Depiction {
                     return Color.BLUE;
                 } else if (iAtom.getSymbol().equals("O")) {
                     return Color.RED;
-                } else {
+                } else if (iAtom.getSymbol().equals("S")) {
+                    return Color.YELLOW;
+                } else if (iAtom.getSymbol().equals("C")) {
                     return Color.BLACK;
+                } else {
+                    return Color.CYAN;
                 }
             }
 
