@@ -61,7 +61,7 @@ public class Depiction {
 
             @Override
             public Color getAtomColor(IAtom iAtom) {
-                if (Boolean.parseBoolean(iAtom.getProperty(Globals.IS_SOM_PROP).toString())) {
+                if (iAtom.getProperty(Globals.IS_SOM_PROP) != null && Boolean.parseBoolean(iAtom.getProperty(Globals.IS_SOM_PROP).toString())) {
                     boolean is_confirmed = (Boolean) iAtom.getProperty(Globals.IS_SOM_CONFIRMED_PROP);
                     if (is_confirmed) {
                         return Color.GREEN;
