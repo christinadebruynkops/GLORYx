@@ -147,7 +147,12 @@ public class Sanitize {
 //                break;
 //            }
 			System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
-            writeSanitizedData(molecule, sd_writer);
+            try {
+                writeSanitizedData(molecule, sd_writer);
+            } catch (Exception exp) {
+                System.err.println("Error: sanitization failed for molecule: " + molecule.getProperty(Globals.ID_PROP));
+                exp.printStackTrace();
+            }
         }
         sd_writer.close();
 

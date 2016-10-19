@@ -116,7 +116,7 @@ public class SoMInfo {
      */
     public static Map<Integer, List<SoMInfo>> parseInfoAndUpdateMol (
             IAtomContainer iMolecule
-    ) throws InvalidSoMAnnotationException, NoSoMAnnotationException, NoSuchAtomException {
+    ) throws Exception {
         //charges need to be set for the EquivalentClassPartitioner to run properly.
         for (int i = 0; i < iMolecule.getAtomCount(); i++) {
             IAtom iAtom = iMolecule.getAtom(i);
@@ -193,8 +193,13 @@ public class SoMInfo {
 
         // add symmetry numbers to the molecule
         int[] symmetryNumbersArray;
-        EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
-        symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu(iMolecule);
+        try {
+            EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
+            symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu(iMolecule);
+        } catch (OutOfMemoryError err) {
+            err.printStackTrace();
+            throw new Exception("memory error");
+        }
 
         // generate a mapping of symmetry numbers to atom numbers
         Map<Integer,Set<Integer>> som_map = new HashMap<>();
