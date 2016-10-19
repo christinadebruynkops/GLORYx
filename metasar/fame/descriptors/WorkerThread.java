@@ -82,9 +82,9 @@ public class WorkerThread implements Runnable {
 			for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom atom = molecule.getAtom(atomNr);
 
-				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
+//				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
-				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
+//				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 				if (atom.getImplicitHydrogenCount() != null) {
 					implicit_hydrogens += atom.getImplicitHydrogenCount();
 				}
@@ -123,6 +123,7 @@ public class WorkerThread implements Runnable {
 						Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
 					} catch (Exception exp) {
 						System.err.println("Failed to generate depiction for: " + molecule.getProperty(id_prop));
+						exp.printStackTrace();
 					}
 
 				}
@@ -153,7 +154,7 @@ public class WorkerThread implements Runnable {
 			// aromatize; required for Sybyl atom type determination
 			SMSDNormalizer.aromatizeMolecule(molecule);
 			IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
-			Utils.deprotonateCarboxyls(molecule);
+//			Utils.deprotonateCarboxyls(molecule);
 //			Depiction.generateDepiction(molecule, "deprot.png");
 			int heavyAtomCount = 0;
 			for(int atomNr = 0; atomNr < molecule.getAtomCount(); atomNr++){
@@ -168,7 +169,8 @@ public class WorkerThread implements Runnable {
 					}
 				}
 			}
-			Utils.protonateCarboxyls(molecule); // protonate the molecule back
+			Utils.fixSybylCarboxyl(molecule);
+//			Utils.protonateCarboxyls(molecule); // protonate the molecule back
 //			Depiction.generateDepiction(molecule, "prot.png");
 
 			//check if molecule too large

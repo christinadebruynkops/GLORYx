@@ -56,6 +56,7 @@ public class Utils {
      * @throws CDKException
      */
     public  static void deprotonateCarboxyls(IAtomContainer mol) throws CDKException {
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
         SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
         boolean status = querytool.matches(mol);
         List<IAtom> to_remove = new ArrayList<>();
@@ -126,6 +127,34 @@ public class Utils {
             }
         }
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
+    }
+
+    public  static void fixSybylCarboxyl(IAtomContainer mol) throws CDKException {
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
+        boolean status = querytool.matches(mol);
+
+        if (status) {
+            List<List<Integer>> matches = querytool.getMatchingAtoms();
+            for (int match_idx = 0; match_idx < matches.size(); match_idx++) {
+                for (Integer atom_idx : matches.get(match_idx)) {
+                    IAtom iAtom = mol.getAtom(atom_idx);
+
+                    if (iAtom.getSymbol().equals("O") && iAtom.getHybridization().toString().equals("SP3")) {
+                        iAtom.setProperty("SybylAtomType", "O.co3");
+                    }
+                    if (iAtom.getSymbol().equals("O") && iAtom.getHybridization().toString().equals("SP2")) {
+                        iAtom.setProperty("SybylAtomType", "O.co2");
+                    }
+                }
+            }
+        }
+    }
+
+    public static void printAtomProps(IAtomContainer mol) {
+        for (IAtom atm : mol.atoms()) {
+            System.out.println(atm.getProperties().toString());
+        }
     }
 
     public static void syncOut(String out) {
