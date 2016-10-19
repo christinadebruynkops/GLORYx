@@ -1,16 +1,13 @@
 package fame.generateDataSets;
 
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IMolecule;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
 
 public class CSVWriter {
 
@@ -38,31 +35,38 @@ public class CSVWriter {
 	}
 	
 
-	public void write(IMolecule iMolecule,String filename, ArrayList<String> header) throws FileNotFoundException {
+	public void write(IMolecule iMolecule,String filename, ArrayList<String> header) throws Exception {
 		FileOutputStream out = new FileOutputStream(filename, true);
 		PrintStream p = new PrintStream(out);
 		for (int atomNumber = 0; atomNumber < iMolecule.getAtomCount(); atomNumber++) {
 			IAtom iAtom = iMolecule.getAtom(atomNumber);
+
+			if (iAtom.getSymbol().equals("H")) {
+				continue;
+			}
+
 			Iterator<String> itrHeader = header.iterator();
 			String line = "";
 			while (itrHeader.hasNext()) {
 				String propertyName = itrHeader.next();
-				if (iMolecule.getProperty(propertyName) != null) {
+				if (iAtom.getProperty(propertyName) != null) {
 //						System.out.println(iMolecule.getProperty(propertyName));
-					line = line + iMolecule.getProperty(propertyName) + "\t";
-				} else if (iAtom.getProperty(propertyName) != null) {
-//						System.out.println(iAtom.getProperty(propertyName));
 					line = line + iAtom.getProperty(propertyName) + "\t";
+				} else if (iMolecule.getProperty(propertyName) != null) {
+//						System.out.println(iAtom.getProperty(propertyName));
+					line = line + iMolecule.getProperty(propertyName) + "\t";
 				} else {
-					line = line + "\t";
+					line = line + "NA\t";
+//					throw new Exception("Property not found: " + propertyName);
 				}
 			}
-			if (!iMolecule.getAtom(atomNumber).getSymbol().equals("H")) {
-				//Weka doesn't like to interpret csv files which use tab as a separator and also include "," (these come from the conversion of Arrays into Strings)
-				line = line.replaceAll(",", ";");
-				line = line.substring(0, line.length()-1);
-				p.println(line);
-			}
+//			if (!iMolecule.getAtom(atomNumber).getSymbol().equals("H")) {
+//				//Weka doesn't like to interpret csv files which use tab as a separator and also include "," (these come from the conversion of Arrays into Strings)
+//				line = line.replaceAll(",", ";");
+//				line = line.substring(0, line.length()-1);
+//				p.println(line);
+//			}
+			p.println(line);
 		}
 		p.close();
 

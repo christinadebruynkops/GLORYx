@@ -31,7 +31,7 @@ public class RandomMoleculeSelector {
 //	static String mpInput =         wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2d_merged.txt";
 //	static String mpRxnInput =      wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2dReact_merged.txt";
 //	static String sdOriginalInput = wDir + "001metaboliteDatabase/003convertedToSdf/test.sdf";
-	static String sdOriginalInput = wDir + "MetaSAR_all_annotated.sdf";
+	static String sdOriginalInput = wDir + "MetaSAR_all_annotated_rxns.sdf";
 //	static String smartCypInput =   wDir + "002descriptors/allSubstrates_smartCyp.csv";
 	static String cdkInput = wDir + "data/all_data.csv";
 //	static String patrikInput =     wDir + "002descriptors/allSubstrates.sdf_newatomdescriptors.csv";
@@ -81,7 +81,6 @@ public class RandomMoleculeSelector {
 					iMolecule.setProperty(CDKConstants.TITLE, iMolecule.getProperty(Globals.ID_PROP));
                     //generate smiles and add it is a property
 					iMolecule.setProperty("smiles", sg.createSMILES(iMolecule));
-                    // TODO: get rid of the questionmarks in SoM annotations and save the parsed list to Globals.SOM_PROP property
 					iMolecules.put((String) iMolecule.getProperty(CDKConstants.TITLE), iMolecule);
 				}
 			} catch (NullPointerException e) {
@@ -267,26 +266,47 @@ public class RandomMoleculeSelector {
 		String[] descriptorNames = scanner.nextLine().split(",");
 		String thisMolecule = "";
 
+		Map<String, IMolecule> available_mols = new HashMap<>(); // new map that will only contain molecules for which we have computed the descriptors
 		while (scanner.hasNextLine()) {
 			String[] splitLine = scanner.nextLine().split(",");
 			thisMolecule = new String(splitLine[0]);
 			int atomNumber = (Integer.parseInt(splitLine[1].split("\\.")[1])-1);
 			if (iMolecules.containsKey(thisMolecule)) {
 //				iMolecules.get(thisMolecule).setProperty(data, "true");
+				IMolecule mol = iMolecules.get(thisMolecule);
+				IAtom atm = mol.getAtom(atomNumber);
 				for (int i = 1; i < descriptorNames.length; i++) {
-					iMolecules.get(thisMolecule).getAtom(atomNumber).setProperty(descriptorNames[i], splitLine[i]);
+					atm.setProperty(descriptorNames[i], splitLine[i]);
 				}
+				available_mols.put(thisMolecule, mol);
 			}
 		}
-		return iMolecules;
+
+//		// just for debugging
+//		for (IMolecule mol : available_mols.values()) {
+//			System.out.println(mol.getProperty(Globals.ID_PROP).toString());
+//			Utils.printAtomProps(mol);
+//			for (IAtom atom : mol.atoms()) {
+//				if (atom.getProperty("Atom") == null && !atom.getSymbol().equals("H")) {
+//					System.err.println("Atom without annotation detected: " + atom.getProperties().toString());
+//				}
+//			}
+//		}
+
+		return available_mols;
 	}
 
-	private static Map<String, IMolecule> treatAtomSymmetry(Map<String, IMolecule> iMolecules) throws Exception {
+	private static Map<String, IMolecule> readSoMInfo(Map<String, IMolecule> iMolecules) {
         Set<String> set = iMolecules.keySet();
         for (String key : set) {
 			IMolecule iMolecule = iMolecules.get(key);
 
-            SoMInfo.parseInfoAndUpdateMol(iMolecule);
+            try {
+				SoMInfo.parseInfoAndUpdateMol(iMolecule);
+			} catch (Exception exp) {
+				System.err.println("WARNING: Failed to parse molecule (" + key + ") due to the following error: ");
+				exp.printStackTrace();
+			}
 		}
 		return iMolecules;
 	}
@@ -299,11 +319,11 @@ public class RandomMoleculeSelector {
 	 */
 	private static Map<String, IMolecule> generateTestTraingSet(Map<String, IMolecule> iMolecules) throws CDKException {
 		//generate an ArrayList containing all RMTB IDs
-		ArrayList<String> unusedRmtbs = new ArrayList<String>(); //list containing all RMTB IDs
+		ArrayList<String> id_set = new ArrayList<String>(); //list containing all RMTB IDs
 
 		Set<String> set = iMolecules.keySet();
         for (String key : set) {
-        	unusedRmtbs.add(key);
+        	id_set.add(key);
         }
 
 		Random random = new Random();
@@ -312,22 +332,22 @@ public class RandomMoleculeSelector {
         IMolecule iMolecule = null;
 
         while ((double) numberOfRandomlySelectedMolecules/(double) iMolecules.size() < testSetRatio) {
-        	pick = random.nextInt(unusedRmtbs.size());
-			iMolecule = iMolecules.get(unusedRmtbs.get(pick));
+        	pick = random.nextInt(id_set.size());
+			iMolecule = iMolecules.get(id_set.get(pick));
 			iMolecule.setProperty("set", "testSet1");
-			unusedRmtbs.remove(pick);
+			id_set.remove(pick);
 			numberOfRandomlySelectedMolecules++;
 		}
 
-        System.out.println(numberOfRandomlySelectedMolecules + "\t" + iMolecules.size());
+        System.out.println(numberOfRandomlySelectedMolecules + "/" + iMolecules.size());
 
-        while (unusedRmtbs.size() > 0) {
+        while (id_set.size() > 0) {
         	for (int i=0; i<foldsCv; i++) {
-        		pick = random.nextInt(unusedRmtbs.size());
-        		iMolecule = iMolecules.get(unusedRmtbs.get(pick));
+        		pick = random.nextInt(id_set.size());
+        		iMolecule = iMolecules.get(id_set.get(pick));
         		iMolecule.setProperty("set", i + "CV");
-        		unusedRmtbs.remove(pick);
-        		if (!(unusedRmtbs.size() > 0)) {
+        		id_set.remove(pick);
+        		if (!(id_set.size() > 0)) {
         			break;
         		}
         	}
@@ -372,20 +392,31 @@ public class RandomMoleculeSelector {
         header.add("set");
         header.add("smiles");
 
-        CSVWriter csvWriter = new CSVWriter(output, header);
+		// create the output file
+		File tmp = new File(output);
+		tmp.getParentFile().mkdirs();
+		if (tmp.exists()) {
+			tmp.delete();
+		}
+		tmp.createNewFile();
+
+        // write the data
+		CSVWriter csvWriter = new CSVWriter(output, header);
         for (String key : set) {
         	iMolecule = iMolecules.get(key);
-        	//must have smartcyp, patrik and cdk calculated
-        	if (iMolecule.getProperty("smartCyp") != null && iMolecule.getProperty("cdk") != null && iMolecule.getProperty("patrik") != null) {
-            	csvWriter.write(iMolecule, output, header);
-        	}
+			try {
+				csvWriter.write(iMolecule, output, header);
+			} catch (Exception exp) {
+				System.err.println("Failed to save data for molecule: " + key);
+				exp.printStackTrace();
+			}
         }
 	}
 
 	public static void main(String... aArgs) throws Exception {
 		System.out.println("##loading valid, unique molecules");
 		Map<String, IMolecule> iMolecules = readInMolecules();
-		System.out.println("\t" + iMolecules.size() + "\tMolecules have been defined valid and unique");
+		System.out.println("\t" + iMolecules.size() + "\tmolecules have been defined valid and unique");
 //		System.out.println("##reading in MetaPrint model");
 //		iMolecules = mpFileReader(iMolecules);
 //		System.out.println("\t" + iMolecules.size() + "\tMolecules");
@@ -398,12 +429,12 @@ public class RandomMoleculeSelector {
 		System.out.println("##reading in CDK descriptors");
 //		iMolecules = readDescriptorData(iMolecules, cdkInput, "cdk");
         iMolecules = readDescriptorData(iMolecules, cdkInput);
-		System.out.println("\t" + iMolecules.size() + "\tMolecules");
+		System.out.println("\t" + iMolecules.size() + "\tmolecules have atom descriptors computed for them");
 //		System.out.println("##reading in Patrik's descriptors");
 //		iMolecules = readDescriptorData(iMolecules, patrikInput, "patrik");
 //		System.out.println("\t" + iMolecules.size() + "\tMolecules");
-		System.out.println("##treating symmetric atoms");
-		iMolecules = treatAtomSymmetry(iMolecules);
+		System.out.println("##reading SoM information and treating symmetric atoms");
+		iMolecules = readSoMInfo(iMolecules);
 		System.out.println("##selecting a test set");
 		iMolecules = generateTestTraingSet(iMolecules);
 		System.out.println("##writing the output files");
