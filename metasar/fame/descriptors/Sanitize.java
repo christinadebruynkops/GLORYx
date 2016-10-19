@@ -141,14 +141,13 @@ public class Sanitize {
         while (reader.hasNext()) {
             Molecule molecule = (Molecule)reader.next();
 //			if (Utils.matchesSMARTS(molecule, "[CX3](=O)O[H]")) {
-            if (molecule.getProperty("MolID").equals("676")) {
-                System.out.println("Reading " + molecule.getProperty("MolID"));
-                writeSanitizedData(molecule, sd_writer);
-                break;
-            }
-//			System.out.println("Reading " + molecule.getProperty("MolID"));
-//			molecules.add(molecule);
-//			counter++;
+//            if (molecule.getProperty("MolID").equals("676")) {
+//                System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
+//                writeSanitizedData(molecule, sd_writer);
+//                break;
+//            }
+			System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
+            writeSanitizedData(molecule, sd_writer);
         }
         sd_writer.close();
 

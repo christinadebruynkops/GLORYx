@@ -38,7 +38,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		int counter = 0;
         while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
         	Molecule molecule = (Molecule)reader.next();
-			System.out.println("Reading " + molecule.getProperty("MolID"));
+			System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
 			molecules.add(molecule);
 			counter++;
         }
