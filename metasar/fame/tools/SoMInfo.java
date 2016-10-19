@@ -14,13 +14,13 @@ import java.util.*;
  */
 public class SoMInfo {
 
-    private static class InvalidSoMAnnotationException extends Exception {
+    public static class InvalidSoMAnnotationException extends Exception {
         public InvalidSoMAnnotationException(String bad_string) {
             super("Invalid SoM annotation detected: " + bad_string);
         }
     }
 
-    private static class NoSoMAnnotationException extends Exception {
+    public static class NoSoMAnnotationException extends Exception {
         public NoSoMAnnotationException(IAtomContainer mol) {
             super("No SoM annotation detected for mol: " + mol.getProperty(Globals.ID_PROP));
         }
@@ -56,12 +56,32 @@ public class SoMInfo {
         return atom_id;
     }
 
+    public void setAtomID(int val) {
+        atom_id = val;
+    }
+
     public IAtomContainer getMol() {
         return mol;
     }
 
     public boolean isConfirmed() {
         return is_confirmed;
+    }
+
+    public int getReasubclass() {
+        return reasubclass_id;
+    }
+
+    public int getReaclass() {
+        return reaclass_id;
+    }
+
+    public int getReamain() {
+        return reamain_id;
+    }
+
+    public int getReagen() {
+        return reagen_id;
     }
 
     public static List<String> parseValueList(String line) throws InvalidSoMAnnotationException {

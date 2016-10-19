@@ -31,7 +31,7 @@ public class RandomMoleculeSelector {
 //	static String mpInput =         wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2d_merged.txt";
 //	static String mpRxnInput =      wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2dReact_merged.txt";
 //	static String sdOriginalInput = wDir + "001metaboliteDatabase/003convertedToSdf/test.sdf";
-	static String sdOriginalInput = wDir + "MetaSAR_all_annotated_rxns.sdf";
+	static String sdOriginalInput = wDir + "MetaSAR_all_annotated_rxns_babel_out.sdf";
 //	static String smartCypInput =   wDir + "002descriptors/allSubstrates_smartCyp.csv";
 	static String cdkInput = wDir + "data/all_data.csv";
 //	static String patrikInput =     wDir + "002descriptors/allSubstrates.sdf_newatomdescriptors.csv";

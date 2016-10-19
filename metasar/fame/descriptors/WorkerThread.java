@@ -82,9 +82,9 @@ public class WorkerThread implements Runnable {
 			for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom atom = molecule.getAtom(atomNr);
 
-//				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
+				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
-//				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
+				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 				if (atom.getImplicitHydrogenCount() != null) {
 					implicit_hydrogens += atom.getImplicitHydrogenCount();
 				}
@@ -97,17 +97,17 @@ public class WorkerThread implements Runnable {
 			if (implicit_hydrogens > 0) {
 				System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
 
-				if (Utils.metchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
+				if (Utils.matchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitro group");
-				} else if (Utils.metchesSMARTS(molecule, "[N+]O")) {
+				} else if (Utils.matchesSMARTS(molecule, "[N+]O")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a nitrogen with +1 charge and oxygen with a missing negative charge");
-				} else if (Utils.metchesSMARTS(molecule, "[N,N+]-[OH]")) {
+				} else if (Utils.matchesSMARTS(molecule, "[N,N+]-[OH]")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitroxide");
-				} else if (Utils.metchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
+				} else if (Utils.matchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
-				} else if (Utils.metchesSMARTS(molecule, "[NH2]-[N]~N")) {
+				} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
-				} else if (Utils.metchesSMARTS(molecule, "N=[N+][N-]")) {
+				} else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
 					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
 				}
 

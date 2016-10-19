@@ -44,7 +44,7 @@ public class Utils {
         }
     }
 
-    public static boolean metchesSMARTS(IAtomContainer mol, String smarts) throws Exception {
+    public static boolean matchesSMARTS(IAtomContainer mol, String smarts) throws Exception {
         SMARTSQueryTool querytool = new SMARTSQueryTool(smarts);
         return querytool.matches(mol);
     }

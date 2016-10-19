@@ -18,34 +18,31 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		// Check args for correctness
 		if (args.length != 1){
 			System.out.println("Wrong input" + '\n' + "Usage: java -jar AtomicDescriptorsCalculator.jar <inputFile.sdf>");
-			System.exit(0);			
+			System.exit(0);
 		}
-		
+
 		File inputFile = new File(args[0]);
-		
-	    if (!inputFile.exists()) {
-		    System.err.println("File not found: " + args[0]);
-		    System.exit(1);
+
+		if (!inputFile.exists()) {
+			System.err.println("File not found: " + args[0]);
+			System.exit(1);
 		}
+
+		// sanitize the data and get the path to the modified file
+		String sanitized_file = Sanitize.sanitize(args[0]);
 	    
 		@SuppressWarnings("rawtypes")
-		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(args[0]), DefaultChemObjectBuilder.getInstance());
+		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(sanitized_file), DefaultChemObjectBuilder.getInstance());
         ArrayList<Molecule> molecules = new ArrayList<Molecule>();
 
 		int counter = 0;
         while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
         	Molecule molecule = (Molecule)reader.next();
-//			if (Utils.metchesSMARTS(molecule, "[CX3](=O)O")) {
-//			if (molecule.getProperty("MolID").equals("676")) {
-//				System.out.println("Reading " + molecule.getProperty("MolID"));
-//				molecules.add(molecule);
-//				counter++;
-//				break;
-//			}
 			System.out.println("Reading " + molecule.getProperty("MolID"));
 			molecules.add(molecule);
 			counter++;
         }
+
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < molecules.size(); i++) {
         	Runnable worker = new WorkerThread(molecules.get(i), true); // insert true to generate SOMs depictions
