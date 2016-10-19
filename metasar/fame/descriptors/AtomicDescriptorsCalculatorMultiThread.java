@@ -35,13 +35,20 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		int counter = 0;
         while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
         	Molecule molecule = (Molecule)reader.next();
-        	System.out.println("Reading " + molecule.getProperty("MolID"));
-        	molecules.add(molecule);
+//			if (Utils.metchesSMARTS(molecule, "[CX3](=O)O")) {
+//			if (molecule.getProperty("MolID").equals("676")) {
+//				System.out.println("Reading " + molecule.getProperty("MolID"));
+//				molecules.add(molecule);
+//				counter++;
+//				break;
+//			}
+			System.out.println("Reading " + molecule.getProperty("MolID"));
+			molecules.add(molecule);
 			counter++;
         }
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < molecules.size(); i++) {
-        	Runnable worker = new WorkerThread(molecules.get(i), false); // insert true to generate SOMs depictions
+        	Runnable worker = new WorkerThread(molecules.get(i), true); // insert true to generate SOMs depictions
         	executor.execute(worker);
         }
         executor.shutdown();
