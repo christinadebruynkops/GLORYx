@@ -11,6 +11,8 @@ import java.util.Iterator;
 
 public class CSVWriter {
 
+	private static String separator = ";";
+
 	public CSVWriter(String filename, ArrayList<String> header) {
 	   	try{
     		File file = new File(filename);
@@ -24,7 +26,7 @@ public class CSVWriter {
 			String head = header.toString();
 			head = head.replaceAll("\\[", "");
 			head = head.replaceAll("\\]", "");
-			head = head.replaceAll(",", "\t");
+			head = head.replaceAll(",", separator);
 			head = head.replaceAll(" ", "");
 			p.println(head);		
 			p.close();
@@ -51,12 +53,12 @@ public class CSVWriter {
 				String propertyName = itrHeader.next();
 				if (iAtom.getProperty(propertyName) != null) {
 //						System.out.println(iMolecule.getProperty(propertyName));
-					line = line + iAtom.getProperty(propertyName) + "\t";
+					line = line + iAtom.getProperty(propertyName) + separator;
 				} else if (iMolecule.getProperty(propertyName) != null) {
 //						System.out.println(iAtom.getProperty(propertyName));
-					line = line + iMolecule.getProperty(propertyName) + "\t";
+					line = line + iMolecule.getProperty(propertyName) + separator;
 				} else {
-					line = line + "NA\t";
+					line = line + "NA" + separator;
 //					throw new Exception("Property not found: " + propertyName);
 				}
 			}
