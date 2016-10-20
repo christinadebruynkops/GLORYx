@@ -97,7 +97,7 @@ public class Sanitize {
         molecule.setProperty(Globals.REAMAIN_PROP, reamain_ids.replaceAll(end_comma, ""));
         molecule.setProperty(Globals.REAGEN_PROP, reagen_ids.replaceAll(end_comma, ""));
         molecule.removeProperty("cdk:Title");
-        molecule.setProperty(Globals.IUPAC_PROP, molecule.getProperty(Globals.NAME_PROP));
+        molecule.setProperty(Globals.NAME_OTHER_PROP, molecule.getProperty(Globals.NAME_PROP));
         molecule.setProperty(Globals.NAME_PROP, molecule.getProperty(Globals.ID_PROP));
 
         // write the changed molecule to a new SD file

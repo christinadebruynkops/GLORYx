@@ -138,6 +138,16 @@ public class SoMInfo {
         return ret;
     }
 
+    private static void setConfirmationStatus(IAtom atom, String property, boolean confirmed, boolean possible) {
+        if (confirmed) {
+            atom.setProperty(property, Globals.IS_SOM_CONFIRMED_VAL);
+        } else if (possible) {
+            atom.setProperty(property, Globals.IS_SOM_POSSIBLE_VAL);
+        } else {
+            atom.setProperty(property, Globals.UNKNOWN_VALUE);
+        }
+    }
+
     /**
      * Parse the SoM information saved in the SD file. Throws an exception if no SoM information
      * is present or it is in unknown format.
@@ -264,6 +274,12 @@ public class SoMInfo {
             Set<Integer> equiv_atoms = som_map.get(symmetry_number);
             boolean equiv_confirmed_som = false;
             boolean equiv_maybe_som = false;
+            boolean equiv_possible_phase_I = false;
+            boolean equiv_confirmed_phase_I = false;
+            boolean equiv_possible_phase_II = false;
+            boolean equiv_confirmed_phase_II = false;
+            boolean equiv_possible_metapie = false;
+            boolean equiv_confirmed_metapie = false;
             List<SoMInfo> equiv_som_infos = new ArrayList<>();
             for (int equiv_atom : equiv_atoms) { // iterate over all atoms in the equivalance class for the current atom
                 if (som_info_map.containsKey(equiv_atom)) { // if there is SoM info available for any atom in the class, do this:
@@ -271,25 +287,40 @@ public class SoMInfo {
                     for (SoMInfo info : infos) {
                         if (info.is_confirmed) {
                             equiv_confirmed_som = true;
-                            break;
-                        } else {
+                        }
+                        if (!equiv_confirmed_som) {
                             equiv_maybe_som = true;
+                        }
+                        if (info.is_confirmed && (info.reamain_id == 1 || info.reamain_id == 2)) {
+                            equiv_confirmed_phase_I = true;
+                        }
+                        if (!info.is_confirmed && (info.reamain_id == 1 || info.reamain_id == 2)) {
+                            equiv_possible_phase_I = true;
+                        }
+                        if (info.is_confirmed && info.reamain_id == 3) {
+                            equiv_confirmed_phase_II = true;
+                        }
+                        if (!info.is_confirmed && info.reamain_id == 3) {
+                            equiv_possible_phase_II = true;
+                        }
+                        if (info.is_confirmed && info.reamain_id == 4) {
+                            equiv_confirmed_metapie = true;
+                        }
+                        if (!info.is_confirmed && info.reamain_id == 4) {
+                            equiv_possible_metapie = true;
                         }
                     }
                     equiv_som_infos.addAll(infos); // get all the information associated with the SoM identified
                 }
             }
 
-            // if any of the atoms in the equivalence class is a reported SoM, mark this as a SoM too and save all the info
-            if (equiv_confirmed_som) {
-                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.IS_SOM_CONFIRMED_VAL);
-            } else if (equiv_maybe_som) {
-                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.IS_SOM_POSSIBLE_VAL);
-            } else {
-                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.UNKNOWN_VALUE);
-            }
+            // if any of the atoms in the equivalence class is a possible or confirmed SoM, mark this atom the same way and save all the info
+            setConfirmationStatus(iAtom, Globals.IS_SOM_PROP, equiv_confirmed_som, equiv_maybe_som);
+            setConfirmationStatus(iAtom, Globals.IS_PI_PROP, equiv_confirmed_phase_I, equiv_possible_phase_I);
+            setConfirmationStatus(iAtom, Globals.IS_PII_PROP, equiv_confirmed_phase_II, equiv_possible_phase_II);
+            setConfirmationStatus(iAtom, Globals.IS_METAPIE_PROP, equiv_confirmed_metapie, equiv_possible_metapie);
 
-            Map<String, String> concated_vals = concatenateSoMInfos(equiv_som_infos, "-");
+            Map<String, String> concated_vals = concatenateSoMInfos(equiv_som_infos, "/");
 
             if (equiv_confirmed_som || equiv_maybe_som) {
                 iAtom.setProperty(Globals.REASUBCLS_PROP, concated_vals.get(Globals.REASUBCLS_PROP));
