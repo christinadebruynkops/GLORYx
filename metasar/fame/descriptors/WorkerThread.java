@@ -82,7 +82,7 @@ public class WorkerThread implements Runnable {
 			for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom atom = molecule.getAtom(atomNr);
 
-				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
+//				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
 //				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 				if (atom.getImplicitHydrogenCount() != null) {
