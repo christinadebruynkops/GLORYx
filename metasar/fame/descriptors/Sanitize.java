@@ -28,6 +28,14 @@ public class Sanitize {
         return line;
     }
 
+    /**
+     * Removes explicit hydrogens from a molecule and updates the associated SoM
+     * information accordingly.
+     *
+     * @param molecule
+     * @param sd_writer
+     * @throws Exception
+     */
     private static void writeSanitizedData(IMolecule molecule, SDFWriter sd_writer) throws Exception {
         Map<Integer, List<SoMInfo>> som_map;
         try {
@@ -128,6 +136,15 @@ public class Sanitize {
 
     }
 
+    /**
+     * Reads every molecule from the supplied SD file and attempts to create
+     * a sensible representation by removing explicit hydrogens and
+     * ionizing the structures using open babel.
+     *
+     * @param original_file
+     * @return
+     * @throws Exception
+     */
     public static String sanitize(String original_file) throws Exception {
         DefaultIteratingChemObjectReader reader = new IteratingMDLReader(new FileInputStream(original_file), DefaultChemObjectBuilder.getInstance());
 
