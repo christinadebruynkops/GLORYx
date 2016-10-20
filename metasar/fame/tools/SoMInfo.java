@@ -104,6 +104,40 @@ public class SoMInfo {
         return values;
     }
 
+    private static String addEntry(String line, String entry, String delim, boolean is_confirmed) {
+        if (is_confirmed) {
+            line += entry + delim;
+        } else {
+            line += entry + "?" + delim;
+        }
+        return line;
+    }
+
+    public static Map<String, String> concatenateSoMInfos(List<SoMInfo> infos, String delimiter) {
+        String atom_ids = "";
+        String reasubclass_ids = "";
+        String reaclass_ids = "";
+        String reamain_ids = "";
+        String reagen_ids = "";
+
+        for (SoMInfo info : infos) {
+            atom_ids = addEntry(atom_ids, Integer.toString(info.atom_id), delimiter, info.is_confirmed);
+            reasubclass_ids = addEntry(reasubclass_ids, Integer.toString(info.reasubclass_id), delimiter, info.is_confirmed);
+            reaclass_ids = addEntry(reaclass_ids, Integer.toString(info.reaclass_id), delimiter, info.is_confirmed);
+            reamain_ids = addEntry(reamain_ids, Integer.toString(info.reamain_id), delimiter, info.is_confirmed);
+            reagen_ids = addEntry(reagen_ids, Integer.toString(info.reagen_id), delimiter, info.is_confirmed);
+        }
+
+        Map<String, String> ret = new HashMap<>();
+        ret.put("atoms", atom_ids);
+        ret.put(Globals.REASUBCLS_PROP, Utils.rstrip(reasubclass_ids, delimiter));
+        ret.put(Globals.REACLS_PROP, Utils.rstrip(reaclass_ids, delimiter));
+        ret.put(Globals.REAMAIN_PROP, Utils.rstrip(reamain_ids, delimiter));
+        ret.put(Globals.REAGEN_PROP, Utils.rstrip(reagen_ids, delimiter));
+
+        return ret;
+    }
+
     /**
      * Parse the SoM information saved in the SD file. Throws an exception if no SoM information
      * is present or it is in unknown format.
@@ -228,40 +262,45 @@ public class SoMInfo {
             // search for SoMs in the equivalence class of this atom
             int symmetry_number = (Integer) iAtom.getProperty("SymmetryAtomNumber");
             Set<Integer> equiv_atoms = som_map.get(symmetry_number);
-            boolean equiv_is_som = false; // indicates if a SoM was found within this equivalence class
-            SoMInfo main_info = null; // contains information about the representative SoM in the class (if it exists)
+            boolean equiv_confirmed_som = false;
+            boolean equiv_maybe_som = false;
+            List<SoMInfo> equiv_som_infos = new ArrayList<>();
             for (int equiv_atom : equiv_atoms) { // iterate over all atoms in the equivalance class for the current atom
                 if (som_info_map.containsKey(equiv_atom)) { // if there is SoM info available for any atom in the class, do this:
-                    equiv_is_som = true;
-                    List<SoMInfo> infos = som_info_map.get(equiv_atom); // get all the information associated with the SoM identified
-                    main_info = infos.get(0); // init the representative SoM info with the first available entry
-                    for (SoMInfo som_info : infos) {
-                        if (som_info.is_confirmed) {
-                            main_info = som_info; // if there is an entry with where this atom is a confirmed SoM, prefer it
+                    List<SoMInfo> infos = som_info_map.get(equiv_atom);
+                    for (SoMInfo info : infos) {
+                        if (info.is_confirmed) {
+                            equiv_confirmed_som = true;
+                            break;
+                        } else {
+                            equiv_maybe_som = true;
                         }
                     }
-                    break; // TODO: thanks to this we only consider first annotated SoM in the class, but maybe we should check if there is more entries per equivalence class and decide what to do
+                    equiv_som_infos.addAll(infos); // get all the information associated with the SoM identified
                 }
             }
 
             // if any of the atoms in the equivalence class is a reported SoM, mark this as a SoM too and save all the info
-            if (equiv_is_som) {
-                iAtom.setProperty(Globals.IS_SOM_PROP, "true");
+            if (equiv_confirmed_som) {
+                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.IS_SOM_CONFIRMED_VAL);
+            } else if (equiv_maybe_som) {
+                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.IS_SOM_POSSIBLE_VAL);
             } else {
-                iAtom.setProperty(Globals.IS_SOM_PROP, "false");
+                iAtom.setProperty(Globals.IS_SOM_PROP, Globals.UNKNOWN_VALUE);
             }
-            if (main_info != null) {
-                iAtom.setProperty(Globals.IS_SOM_CONFIRMED_PROP, main_info.is_confirmed);
-                iAtom.setProperty(Globals.REASUBCLS_PROP, main_info.reasubclass_id);
-                iAtom.setProperty(Globals.REACLS_PROP, main_info.reaclass_id);
-                iAtom.setProperty(Globals.REAMAIN_PROP, main_info.reamain_id);
-                iAtom.setProperty(Globals.REAGEN_PROP, main_info.reagen_id);
+
+            Map<String, String> concated_vals = concatenateSoMInfos(equiv_som_infos, "-");
+
+            if (equiv_confirmed_som || equiv_maybe_som) {
+                iAtom.setProperty(Globals.REASUBCLS_PROP, concated_vals.get(Globals.REASUBCLS_PROP));
+                iAtom.setProperty(Globals.REACLS_PROP, concated_vals.get(Globals.REACLS_PROP));
+                iAtom.setProperty(Globals.REAMAIN_PROP, concated_vals.get(Globals.REAMAIN_PROP));
+                iAtom.setProperty(Globals.REAGEN_PROP, concated_vals.get(Globals.REAGEN_PROP));
             } else {
-                iAtom.setProperty(Globals.IS_SOM_CONFIRMED_PROP, "NA");
-                iAtom.setProperty(Globals.REASUBCLS_PROP, "NA");
-                iAtom.setProperty(Globals.REACLS_PROP, "NA");
-                iAtom.setProperty(Globals.REAMAIN_PROP, "NA");
-                iAtom.setProperty(Globals.REAGEN_PROP, "NA");
+                iAtom.setProperty(Globals.REASUBCLS_PROP, Globals.UNKNOWN_VALUE);
+                iAtom.setProperty(Globals.REACLS_PROP, Globals.UNKNOWN_VALUE);
+                iAtom.setProperty(Globals.REAMAIN_PROP, Globals.UNKNOWN_VALUE);
+                iAtom.setProperty(Globals.REAGEN_PROP, Globals.UNKNOWN_VALUE);
             }
         }
 

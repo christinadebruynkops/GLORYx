@@ -35,12 +35,10 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(sanitized_file), DefaultChemObjectBuilder.getInstance());
         ArrayList<Molecule> molecules = new ArrayList<Molecule>();
 
-		int counter = 0;
-        while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
+        while (reader.hasNext()) {
         	Molecule molecule = (Molecule)reader.next();
 			System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
 			molecules.add(molecule);
-			counter++;
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());

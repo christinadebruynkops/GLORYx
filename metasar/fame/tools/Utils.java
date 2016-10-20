@@ -151,6 +151,22 @@ public class Utils {
         }
     }
 
+    public static String strip(String string, String pattern) {
+        string = lstrip(string, pattern);
+        string = rstrip(string, pattern);
+        return string;
+    }
+
+    public static String lstrip(String string, String pattern) {
+        string = string.replaceAll("^" + pattern, "");
+        return string;
+    }
+
+    public static String rstrip(String string, String pattern) {
+        string = string.replaceAll(pattern + "$", "");
+        return string;
+    }
+
     public static void printAtomProps(IAtomContainer mol) {
         for (IAtom atm : mol.atoms()) {
             System.out.println(atm.getProperties().toString());

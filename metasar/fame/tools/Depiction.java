@@ -61,11 +61,12 @@ public class Depiction {
 
             @Override
             public Color getAtomColor(IAtom iAtom) {
-                if (iAtom.getProperty(Globals.IS_SOM_PROP) != null && Boolean.parseBoolean(iAtom.getProperty(Globals.IS_SOM_PROP).toString())) {
-                    boolean is_confirmed = (Boolean) iAtom.getProperty(Globals.IS_SOM_CONFIRMED_PROP);
-                    if (is_confirmed) {
+                if (iAtom.getProperty(Globals.IS_SOM_PROP) != null) {
+                    String som_status = iAtom.getProperty(Globals.IS_SOM_PROP).toString();
+                    if (som_status.equals(Globals.IS_SOM_CONFIRMED_VAL)) {
                         return Color.GREEN;
-                    } else {
+                    }
+                    if (som_status.equals(Globals.IS_SOM_POSSIBLE_VAL)){
                         return Color.MAGENTA;
                     }
                 }

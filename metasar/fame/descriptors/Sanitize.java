@@ -138,10 +138,11 @@ public class Sanitize {
         SDFWriter sd_writer = new SDFWriter(writer);
 
         // read the molecules from the original file and sanitize them
-        while (reader.hasNext()) {
+        int counter = 0;
+        while (reader.hasNext() && (counter < Globals.LOAD_MAX_MOL || Globals.LOAD_MAX_MOL == -1)) {
             Molecule molecule = (Molecule)reader.next();
-//			if (Utils.matchesSMARTS(molecule, "[CX3](=O)O[H]")) {
-//            if (molecule.getProperty("MolID").equals("676")) {
+//			if (Utils.matchesSMARTS(molecule, "[NX3]([O])[O]")) {
+//            if (molecule.getProperty(Globals.ID_PROP).equals("676") || molecule.getProperty(Globals.ID_PROP).equals("1270")) {
 //                System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
 //                writeSanitizedData(molecule, sd_writer);
 //                break;
@@ -153,6 +154,7 @@ public class Sanitize {
                 System.err.println("Error: sanitization failed for molecule: " + molecule.getProperty(Globals.ID_PROP));
                 exp.printStackTrace();
             }
+            counter++;
         }
         sd_writer.close();
 
@@ -161,5 +163,9 @@ public class Sanitize {
         System.out.printf(executeCommand(command));
 
         return babel_out_file;
+    }
+
+    public static void main(String[] args) throws Exception {
+        sanitize(args[0]);
     }
 }

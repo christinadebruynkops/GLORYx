@@ -20,25 +20,11 @@ import java.util.*;
 
 public class RandomMoleculeSelector {
 	//parameters
-//	static String species = "dog";
-	static int foldsCv = 10;
-	static double testSetRatio = 0.2;
-//	static String wDir = "/netscratch/jk528/2013-07-31_metabolismPrediction/";
-//	static String wDir = "/Users/jkirchmair/UNI/CAM/metabolismPrediction/workflow/";
-	static String wDir = "./";
-
-	//input
-//	static String mpInput =         wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2d_merged.txt";
-//	static String mpRxnInput =      wDir + "001metaboliteDatabase/002metaPrint2DCalcn/" + species + "/metab2011_2_mp2dReact_merged.txt";
-//	static String sdOriginalInput = wDir + "001metaboliteDatabase/003convertedToSdf/test.sdf";
-	static String sdOriginalInput = wDir + "MetaSAR_all_annotated_rxns_babel_out.sdf";
-//	static String smartCypInput =   wDir + "002descriptors/allSubstrates_smartCyp.csv";
-	static String cdkInput = wDir + "data/all_data.csv";
-//	static String patrikInput =     wDir + "002descriptors/allSubstrates.sdf_newatomdescriptors.csv";
+	private static int foldsCv = 10;
+	private static double testSetRatio = 0.2;
 
 	//output
-//	static String output =  wDir + "003trainingAndTestSets/" + species + "/001beforeSeparation/randomSelection.csv";
-	static String output =  wDir + "training_and_test_sets/before_separation/random_selection.csv";
+	private static String output =  Globals.DATASETS_OUT + "metasar_data.csv";
 
 	/**
 	 * Reads in all unique and valid molecules. Valid molecules are molecules that do not contain salts.
@@ -48,22 +34,10 @@ public class RandomMoleculeSelector {
 	 * @throws FileNotFoundException
 	 * @throws CDKException
 	 */
-	private static Map<String, IMolecule> readInMolecules() throws FileNotFoundException, CDKException {
-//		Scanner scanner = new Scanner(new File(mpInput));
+	private static Map<String, IMolecule> readInMolecules(String original_sdf) throws FileNotFoundException, CDKException {
 		SmilesGenerator sg = new SmilesGenerator();
-//
-//		//a specific molecule can occur more than once in the metabolite database. Since we have merged all SOMs onto a single representation for
-//		//each molecule, we here identify the RMTB numbers of these unique representations. We only want to read in these unique representations.
-//		ArrayList<String> uniqueRmtbs = new ArrayList<String>();
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			if (line.startsWith("@RMTB")) {
-//				line = line.substring(1);
-//				uniqueRmtbs.add(line.split("\\+")[0]);
-//			}
-//		}
 
-        DefaultIteratingChemObjectReader mdlReader = new IteratingMDLReader(new FileInputStream(sdOriginalInput), DefaultChemObjectBuilder.getInstance());
+        DefaultIteratingChemObjectReader mdlReader = new IteratingMDLReader(new FileInputStream(original_sdf), DefaultChemObjectBuilder.getInstance());
 		Map<String, IMolecule> iMolecules = new HashMap<String, IMolecule>();
 
 		int saltCounter = 0;
@@ -91,176 +65,13 @@ public class RandomMoleculeSelector {
 		return iMolecules;
 	}
 
-
-//	/**
-//	 * Reads in a complete, merged MetaPrint2D model in txt file format and stores it with the individual IAtoms and IMolecules.
-//	 * @throws FileNotFoundException
-//	 */
-//	private static Map<String, IMolecule> mpFileReader(Map<String, IMolecule> iMolecules) throws FileNotFoundException {
-//		Scanner scanner = new Scanner(new File(mpInput));
-//		//iterate over all molecules of the MetaPrint2D file
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			line = line.substring(1);
-//
-//			//adds all RMTB numbers to the iMolecule. These numbers are used to identify molecules that are unique.
-//			List<String> rmtbs = Arrays.asList(line.split("\\+"));
-//
-//			//iMolecules does not contain all rmtbs.get(0) because some molecules are invalid and sorted out in the earlier procedure (i.e. salts)
-//			if (iMolecules.containsKey(rmtbs.get(0))) {
-//				IMolecule iMolecule = iMolecules.get(rmtbs.get(0));
-//				//iterate until beginning of the fingerprints section
-//				while (!line.startsWith("$")) {
-//					line = scanner.nextLine();
-//				}
-//				line = scanner.nextLine();
-//
-//				//iterate over all fingerprints
-//				int i=0;
-//				while (!line.isEmpty()) {
-//					IAtom iAtom = iMolecule.getAtom(i);
-//					String[] splitLine = line.split("\\t");
-//					if (splitLine.length > 1) {
-//						iAtom.setProperty("SOM", splitLine[1]);
-//						iMolecule.setAtom(i, iAtom);
-//					}
-//					i++;
-//					line = scanner.nextLine();
-//				}
-//			} else {
-//				while (!line.isEmpty()) {
-//					if (scanner.hasNextLine()) {
-//						line = scanner.nextLine();
-//					} else break;
-//				}
-//			}
-//		}
-//		return iMolecules;
-//	}
-
-//	/**
-//	 * Reads in a complete MetaPrint2D-react model in txt file format and stores it with the individual IAtoms and IMolecules.
-//	 * @param iMolecules
-//	 * @return
-//	 * @throws FileNotFoundException
-//	 */
-//	private static Map<String, IMolecule> mpRxnFileReader(Map<String, IMolecule> iMolecules) throws FileNotFoundException {
-//		Scanner scanner = new Scanner(new File(mpRxnInput));
-//
-//		//iterate reaction type declaration at the beginning of the file
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			if (line.isEmpty()) {
-//				break;
-//			}
-//		}
-//
-//		//iterate over all molecules
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			line = line.substring(1);
-//			//Make an arrayList of all RMTB IDs
-//			List<String> rmtbs = Arrays.asList(line.split("\\+"));
-//
-//			//go to beginning of the fingerprints section
-//			while (!line.startsWith("$")) {
-//				line = scanner.nextLine();
-//			}
-//
-//			//iterate over all fingerprints of a molecule and add any reaction type annotation to a map
-//			Map<Integer, String> reactionTypeMap = new HashMap<Integer, String>();
-//			int i = 0;
-//			while (!line.isEmpty()) {
-//				if (scanner.hasNextLine()) {
-//					line = scanner.nextLine();
-//				} else break;
-//				if (!line.isEmpty()) {
-//					String[] splitLine = line.split("\\t");
-//					if (splitLine.length > 1) {
-//						reactionTypeMap.put(i, splitLine[1]);
-//					}
-//				}
-//				i++;
-//			}
-//
-//			Iterator<String> rmtbItr = rmtbs.iterator();
-//			while (rmtbItr.hasNext()) {
-//				String rmtb = rmtbItr.next();
-//				i=0;
-//				if (iMolecules.containsKey(rmtb)) {
-//					IMolecule iMolecule = iMolecules.get(rmtb);
-//					for (int ii= 0; ii < iMolecule.getAtomCount(); ii++) {
-//						if (reactionTypeMap.containsKey(ii)) {
-//							IAtom iAtom = iMolecule.getAtom(ii);
-//							iAtom.setProperty("ReactionTypes", reactionTypeMap.get(ii));
-//							iMolecule.setAtom(ii, iAtom);
-//						}
-//					}
-//		            i++;
-//				}
-//			}
-//		}
-//		return iMolecules;
-//	}
-//
-//
-//	/**
-//	 * Reads in SmartCyp results file.
-//	 * @param iMolecules
-//	 * @return
-//	 * @throws FileNotFoundException
-//	 */
-//	private static Map<String, IMolecule> readSmartCypData(Map<String, IMolecule> iMolecules) throws FileNotFoundException {
-//		ArrayList<Integer> energyRelatedDescriptors = new ArrayList<Integer>();
-//		int energy = 0;
-//		Scanner scanner = new Scanner(new File(smartCypInput));
-//		//identifies columns which contain values that are related to the calculated energy for the reason that energy is assigned an arbitrary, high
-//		//level if the atoms cannot be a SOM of CYPs
-//		String[] descriptorNames = scanner.nextLine().split(",");
-//		for (int i=0; i < descriptorNames.length; i++) {
-//			if (descriptorNames[i].equals("Score") ||
-//					descriptorNames[i].equals("Energy") ||
-//					descriptorNames[i].equals("2D6score") ||
-//					descriptorNames[i].equals("2Cscore")) {
-//				energyRelatedDescriptors.add(i);
-//			}
-//			if (descriptorNames[i].equals("Energy")) {
-//				energy = i;
-//			}
-//		}
-//
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			if (!line.contains("null")) {	//lines can contain "null" if they are a salt or if they have too many rings, for example (see RMTB00089493)
-//				String[] splitLine = line.split(",");
-//				String thisMolecule = new String(splitLine[0]);
-//				int atomNumber = (Integer.parseInt(splitLine[1].split("\\.")[1])-1);
-//				if (iMolecules.containsKey(thisMolecule)) {
-//					iMolecules.get(thisMolecule).setProperty("smartCyp", "true");
-//					if (splitLine[energy].equals("999")) {
-//						Iterator<Integer> itr = energyRelatedDescriptors.iterator();
-//						while (itr.hasNext()) {
-//							splitLine[(Integer) itr.next()] = "";
-//						}
-//					}
-////					System.out.println(iMolecules.get(thisMolecule).getProperty(CDKConstants.TITLE));
-//					for (int i = 1; i < descriptorNames.length; i++) {
-//						iMolecules.get(thisMolecule).getAtom(atomNumber).setProperty(descriptorNames[i], splitLine[i]);
-//					}
-//				}
-//			}
-//		}
-//		return iMolecules;
-//	}
-
 	/**
 	 * Reads in descriptor data.
 	 * @param iMolecules
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-//	private static Map<String, IMolecule> readDescriptorData(Map<String, IMolecule> iMolecules, String inFile, String data) throws FileNotFoundException {
-    private static Map<String, IMolecule> readDescriptorData(Map<String, IMolecule> iMolecules, String inFile) throws FileNotFoundException {
+	private static Map<String, IMolecule> readCDKDescriptors(Map<String, IMolecule> iMolecules, String inFile) throws FileNotFoundException {
 //		System.out.println("The map has no. molecules: " + iMolecules.size());
 		Scanner scanner = new Scanner(new File(inFile));
 		String[] descriptorNames = scanner.nextLine().split(",");
@@ -272,7 +83,6 @@ public class RandomMoleculeSelector {
 			thisMolecule = new String(splitLine[0]);
 			int atomNumber = (Integer.parseInt(splitLine[1].split("\\.")[1])-1);
 			if (iMolecules.containsKey(thisMolecule)) {
-//				iMolecules.get(thisMolecule).setProperty(data, "true");
 				IMolecule mol = iMolecules.get(thisMolecule);
 				IAtom atm = mol.getAtom(atomNumber);
 				for (int i = 1; i < descriptorNames.length; i++) {
@@ -356,7 +166,8 @@ public class RandomMoleculeSelector {
 	}
 
 	/**
-	 * Write sdf and MetaPrint output for training and test set
+	 * Write the final CSV file.
+	 *
 	 * @param iMolecules
 	 * @param testSet
 	 * @param iMolecules
@@ -413,30 +224,26 @@ public class RandomMoleculeSelector {
         }
 	}
 
-	public static void main(String... aArgs) throws Exception {
+	public static void main(String[] args) throws Exception {
 		System.out.println("##loading valid, unique molecules");
-		Map<String, IMolecule> iMolecules = readInMolecules();
+		if (args.length != 2) {
+			System.err.println("Bad number of arguments");
+			System.exit(1);
+		}
+
+		Map<String, IMolecule> iMolecules = readInMolecules(args[0]);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have been defined valid and unique");
-//		System.out.println("##reading in MetaPrint model");
-//		iMolecules = mpFileReader(iMolecules);
-//		System.out.println("\t" + iMolecules.size() + "\tMolecules");
-//		System.out.println("##reading in MetaPrint-React model");
-//		iMolecules = mpRxnFileReader(iMolecules);
-//		System.out.println("\t" + iMolecules.size() + "\tMolecules");
-//		System.out.println("##reading in SmartCyp data");
-//		iMolecules = readSmartCypData(iMolecules);
-//		System.out.println("\t" + iMolecules.size() + "\tMolecules");
+
 		System.out.println("##reading in CDK descriptors");
-//		iMolecules = readDescriptorData(iMolecules, cdkInput, "cdk");
-        iMolecules = readDescriptorData(iMolecules, cdkInput);
+        iMolecules = readCDKDescriptors(iMolecules, args[1]);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have atom descriptors computed for them");
-//		System.out.println("##reading in Patrik's descriptors");
-//		iMolecules = readDescriptorData(iMolecules, patrikInput, "patrik");
-//		System.out.println("\t" + iMolecules.size() + "\tMolecules");
+
 		System.out.println("##reading SoM information and treating symmetric atoms");
 		iMolecules = readSoMInfo(iMolecules);
+
 		System.out.println("##selecting a test set");
 		iMolecules = generateTestTraingSet(iMolecules);
+
 		System.out.println("##writing the output files");
 		writeOutput(iMolecules);
 	}

@@ -64,11 +64,11 @@ public class WorkerThread implements Runnable {
 
 			// if requested, generate picture of the molecule with atom numbers and SOMs highlighted
 			if (depict) {
-				File depictions_dir = new File("depictions");
+				File depictions_dir = new File(Globals.DEPICTIONS_OUT);
 				if (!depictions_dir.exists()) {
 					depictions_dir.mkdir();
 				}
-				Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + ".png");
+				Depiction.generateDepiction(molecule, Globals.DEPICTIONS_OUT + ((String) molecule.getProperty(id_prop)) + ".png");
 			}
 
 			// add implicit hydrogens
@@ -84,7 +84,7 @@ public class WorkerThread implements Runnable {
 
 				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
-				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
+//				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 				if (atom.getImplicitHydrogenCount() != null) {
 					implicit_hydrogens += atom.getImplicitHydrogenCount();
 				}
@@ -93,23 +93,24 @@ public class WorkerThread implements Runnable {
 				}
 			}
 
+			// check for some badly represented groups
+			if (Utils.matchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitro group");
+			} else if (Utils.matchesSMARTS(molecule, "[N+]O")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a nitrogen with +1 charge and oxygen with a missing negative charge");
+			} else if (Utils.matchesSMARTS(molecule, "[N,N+]-[OH]")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitroxide");
+			} else if (Utils.matchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
+			} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
+			} else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
+				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
+			}
+
 			// if implicit hydrogens were added, show a warning and make them explicit
 			if (implicit_hydrogens > 0) {
 				System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
-
-				if (Utils.matchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitro group");
-				} else if (Utils.matchesSMARTS(molecule, "[N+]O")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a nitrogen with +1 charge and oxygen with a missing negative charge");
-				} else if (Utils.matchesSMARTS(molecule, "[N,N+]-[OH]")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitroxide");
-				} else if (Utils.matchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
-				} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
-				} else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
-					throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
-				}
 
 				// add convert implicit hydrogens to explicit ones
 				System.err.println("Making all hydrogens explicit...");
@@ -120,7 +121,7 @@ public class WorkerThread implements Runnable {
 				if (depict) {
 					System.err.println("Generating depiction for: " + molecule.getProperty(id_prop));
 					try {
-						Depiction.generateDepiction(molecule, "depictions/" + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
+						Depiction.generateDepiction(molecule, Globals.DEPICTIONS_OUT + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
 					} catch (Exception exp) {
 						System.err.println("Failed to generate depiction for: " + molecule.getProperty(id_prop));
 						exp.printStackTrace();
@@ -178,11 +179,11 @@ public class WorkerThread implements Runnable {
 				throw new Exception("Error: molecule is too large: " + molecule.getProperty(id_prop));
 			}
 
-			File data_dir = new File("data");
+			File data_dir = new File(Globals.DESCRIPTORS_OUT);
 			if (!data_dir.exists()) {
 				data_dir.mkdir();
 			}
-			PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter("data/" + molecule.getProperty(id_prop).toString() + ".csv")));
+			PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + molecule.getProperty(id_prop).toString() + ".csv")));
 
 			outfile.print("Molecule,Atom,AtomType,atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
 					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
