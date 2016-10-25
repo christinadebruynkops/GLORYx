@@ -71,7 +71,7 @@ public class RandomMoleculeSelector {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	private static Map<String, IMolecule> readCDKDescriptors(Map<String, IMolecule> iMolecules, String inFile) throws FileNotFoundException {
+	private static Map<String, IMolecule> readDescriptors(Map<String, IMolecule> iMolecules, String inFile) throws FileNotFoundException {
 //		System.out.println("The map has no. molecules: " + iMolecules.size());
 		Scanner scanner = new Scanner(new File(inFile));
 		String[] descriptorNames = scanner.nextLine().split(",");
@@ -235,7 +235,7 @@ public class RandomMoleculeSelector {
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have been defined valid and unique");
 
 		System.out.println("##reading in CDK descriptors");
-        iMolecules = readCDKDescriptors(iMolecules, args[1]);
+        iMolecules = readDescriptors(iMolecules, args[1]);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have atom descriptors computed for them");
 
 		System.out.println("##reading SoM information and treating symmetric atoms");

@@ -104,7 +104,15 @@ public class WorkerThread implements Runnable {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
 			} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
-			} else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
+			} else if (Utils.matchesSMARTS(molecule, "[As]")) {
+                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains arsenic");
+            } else if (Utils.matchesSMARTS(molecule, "[Sn]")) {
+                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains tin");
+            } else if (Utils.matchesSMARTS(molecule, "[Se]")) {
+                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains selenium");
+            } else if (Utils.matchesSMARTS(molecule, "[SX3]-[O]")) {
+                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains sulfur with three bonds and an oxygen attached with a single bond");
+            } else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
 			}
 
@@ -170,7 +178,7 @@ public class WorkerThread implements Runnable {
 					}
 				}
 			}
-			Utils.fixSybylCarboxyl(molecule);
+//			Utils.fixSybylCarboxyl(molecule);
 //			Utils.protonateCarboxyls(molecule); // protonate the molecule back
 //			Depiction.generateDepiction(molecule, "prot.png");
 

@@ -17,7 +17,17 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * A script that reads in the whole database and sanitizes the entries.
+ * Can read an SD file and 'sanitize' the structures.
+ *
+ * The sanitization involves multiple steps:
+ *
+ *  1. Read the input SD file.
+ *  2. Parse the SoM information in the file and attach it to the respective molecule and its atoms.
+ *  3. Remove all explicit hydrogens from the molecules and adjust the SoM information accordingly.
+ *  4. Write the sanitized molecules into a new file and use Open Babel to add hydrogens (at the end of the SD file) and charge the molecules for pH = 7.
+ *  5. Pass the path to the Open Babel output file back to the caller.
+ *
+ *  See the sanitize() method for details
  *
  * Created by sicho on 10/19/16.
  */
@@ -29,23 +39,17 @@ public class Sanitize {
     }
 
     /**
-     * Removes explicit hydrogens from a molecule and updates the associated SoM
-     * information accordingly.
+     * Reads in the SoM information from the input molecule, removes explicit hydrogens
+     * and updates the associated SoM information and molecule instance accordingly.
      *
      * @param molecule
      * @param sd_writer
      * @throws Exception
      */
-    private static void writeSanitizedData(IMolecule molecule, SDFWriter sd_writer) throws Exception {
-        Map<Integer, List<SoMInfo>> som_map;
-        try {
-            som_map = SoMInfo.parseInfoAndUpdateMol(molecule);
-        } catch (SoMInfo.NoSoMAnnotationException exp) {
-            exp.printStackTrace();
-            return;
-        }
+    private static void sanitizeMolecule(IMolecule molecule) throws Exception {
+        Map<Integer, List<SoMInfo>> som_map = SoMInfo.parseInfoAndUpdateMol(molecule);
 
-        // find spurious hydrogens that need to be removed
+        // find hydrogens and mark them for removal
         List<IAtom> to_remove = new ArrayList<>();
         for (IAtom atm : molecule.atoms()) {
             if (atm.getSymbol().equals("H")) {
@@ -53,28 +57,28 @@ public class Sanitize {
             }
         }
 
-        // update the SoM information accordingly
-        Set<Integer> som_ids = som_map.keySet();
-        for (IAtom removed : to_remove) {
-            Map<Integer, List<SoMInfo>> som_map_new = new HashMap<>();
-            int removed_id = molecule.getAtomNumber(removed) + 1;
-            for (Integer som_id : som_ids) {
-                if (removed_id < som_id) {
+        // update the SoM information
+        Set<Integer> som_ids = som_map.keySet(); // get the ids of atoms that are marked as SoM
+        for (IAtom removed : to_remove) { // iterate over the hydrogens marked for removal
+            Map<Integer, List<SoMInfo>> som_map_new = new HashMap<>(); // the updated map with new indices
+            int removed_id = molecule.getAtomNumber(removed) + 1; // id of the hydrogen currently being removed
+            for (Integer som_id : som_ids) { // iterate over SoM information for all atoms
+                if (removed_id < som_id) { // if SoM information exists for an atom that lies before the currently removed hydrogen in the SD file, ...
                     for (SoMInfo som_info : som_map.get(som_id)) {
-                        som_info.setAtomID(som_id - 1);
+                        som_info.setAtomID(som_id - 1); // ...decrease the atom index for all such SoM infos
                     }
-                    som_map_new.put(som_id - 1, som_map.get(som_id));
+                    som_map_new.put(som_id - 1, som_map.get(som_id)); // update the new map with the modified information
                 } else {
-                    som_map_new.put(som_id, som_map.get(som_id));
+                    som_map_new.put(som_id, som_map.get(som_id)); // if the information is for an atom after this hydrogen, just copy the old information into the new map
                 }
             }
-            som_map.clear();
-            som_map.putAll(som_map_new);
-            som_ids = som_map.keySet();
-            molecule.removeAtomAndConnectedElectronContainers(removed);
+            som_map.clear(); // clear the old map
+            som_map.putAll(som_map_new); // put the modified data in the old map
+            som_ids = som_map.keySet(); // get the new ids for atoms with SoM information attached
+            molecule.removeAtomAndConnectedElectronContainers(removed); // actually remove the currently processed hydrogen (this updates the CDK representation and makes the new indices valid within the molecule instance)
         }
 
-        // update the annotations
+        // update the information in the molecule properties (this information is written into the SD file)
         String atom_ids = "";
         String reasubclass_ids = "";
         String reaclass_ids = "";
@@ -107,11 +111,14 @@ public class Sanitize {
         molecule.removeProperty("cdk:Title");
         molecule.setProperty(Globals.NAME_OTHER_PROP, molecule.getProperty(Globals.NAME_PROP));
         molecule.setProperty(Globals.NAME_PROP, molecule.getProperty(Globals.ID_PROP));
-
-        // write the changed molecule to a new SD file
-        sd_writer.write(molecule);
     }
 
+    /**
+     * Executes a given command in the shell.
+     *
+     * @param command the command to be executed
+     * @return output of the command FIXME: this part does not really work, I think...
+     */
     private static String executeCommand(String command) {
 
         StringBuffer output = new StringBuffer();
@@ -137,9 +144,11 @@ public class Sanitize {
     }
 
     /**
-     * Reads every molecule from the supplied SD file and attempts to create
-     * a sensible representation by removing explicit hydrogens and
-     * ionizing the structures using open babel.
+     * Reads every molecule from the supplied SD file and creates
+     * a CDK representation which is used in the sanitization (see sanitizeMolecule()).
+     *
+     * When all molecules are sanitized and written into an output SDF,
+     * it calls Open Babel to charge them and add hydrogens to them.
      *
      * @param original_file
      * @return
@@ -161,14 +170,19 @@ public class Sanitize {
 //			if (Utils.matchesSMARTS(molecule, "[NX3]([O])[O]")) {
 //            if (molecule.getProperty(Globals.ID_PROP).equals("676") || molecule.getProperty(Globals.ID_PROP).equals("1270")) {
 //                System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
-//                writeSanitizedData(molecule, sd_writer);
+//                sanitizeMolecule(molecule, sd_writer);
 //                break;
 //            }
 			System.out.println("Sanitizing " + molecule.getProperty(Globals.ID_PROP));
             try {
-                writeSanitizedData(molecule, sd_writer);
+                // do the actual sanitization
+                sanitizeMolecule(molecule);
+
+                // write the changed molecule to a new SD file
+                sd_writer.write(molecule);
             } catch (Exception exp) {
                 System.err.println("Error: sanitization failed for molecule: " + molecule.getProperty(Globals.ID_PROP));
+                System.err.println(exp.getMessage());
                 exp.printStackTrace();
             }
             counter++;

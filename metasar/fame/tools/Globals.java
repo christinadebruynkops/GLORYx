@@ -1,7 +1,7 @@
 package fame.tools;
 
 /**
- * A simple class holding some useful global variables that can be used
+ * A simple class holding some useful global constants that are used
  * to configure the scripts.
  *
  * Created by sicho on 10/5/16.
@@ -17,7 +17,7 @@ public class Globals {
     public static final String IS_METAPIE_PROP = "MetaPie";
     public static final String IS_SOM_CONFIRMED_VAL = "confirmed";
     public static final String IS_SOM_POSSIBLE_VAL = "possible";
-    public static final String UNKNOWN_VALUE = "NA";
+    public static final String UNKNOWN_VALUE = "unknown";
     public static final String REASUBCLS_PROP = "reasubclasses";
     public static final String REACLS_PROP = "reaclasses";
     public static final String REAMAIN_PROP = "reamain";

@@ -84,6 +84,15 @@ public class SoMInfo {
         return reagen_id;
     }
 
+    /**
+     * Helper method that reads a line which encodes SoM information in a given format.
+     * Returns a list of values. Each item in the list represents information about one
+     * reaction.
+     *
+     * @param line
+     * @return
+     * @throws InvalidSoMAnnotationException
+     */
     public static List<String> parseValueList(String line) throws InvalidSoMAnnotationException {
         line = line.replaceAll("^'", "").replaceAll("'$", "");
         List<String> values = new ArrayList<>();
@@ -104,6 +113,16 @@ public class SoMInfo {
         return values;
     }
 
+    /**
+     * Add an entry to a line using a given delimiter. If the entry represents
+     * unconfirmed information a question mark is also attached to the entry.
+     *
+     * @param line line to append to
+     * @param entry entry to append
+     * @param delim delimiter to use
+     * @param is_confirmed confirmation status
+     * @return
+     */
     private static String addEntry(String line, String entry, String delim, boolean is_confirmed) {
         if (is_confirmed) {
             line += entry + delim;
@@ -113,6 +132,14 @@ public class SoMInfo {
         return line;
     }
 
+    /**
+     * Generate a string representation of a list of SoM information instances.
+     * Use the given delimiter to separate each value.
+     *
+     * @param infos
+     * @param delimiter
+     * @return
+     */
     public static Map<String, String> concatenateSoMInfos(List<SoMInfo> infos, String delimiter) {
         String atom_ids = "";
         String reasubclass_ids = "";
@@ -138,6 +165,16 @@ public class SoMInfo {
         return ret;
     }
 
+    /**
+     * A helper method that sets an atom property to the values given in Globals.IS_SOM_CONFIRMED_VAL,
+     * Globals.IS_SOM_POSSIBLE_VAL or Globals.UNKNOWN_VALUE based on the information passed by the caller
+     * (name of the property and if it represents a confirmed or just possibly correct information).
+     *
+     * @param atom atom to set the property on
+     * @param property name of the property (it encodes the information -- e.g. this is a SoM)
+     * @param confirmed this information was confirmed and should be correct
+     * @param possible this information was not confirmed and cannot be verified, but there are clues that show it might be true
+     */
     private static void setConfirmationStatus(IAtom atom, String property, boolean confirmed, boolean possible) {
         if (confirmed) {
             atom.setProperty(property, Globals.IS_SOM_CONFIRMED_VAL);
@@ -151,6 +188,9 @@ public class SoMInfo {
     /**
      * Parse the SoM information saved in the SD file. Throws an exception if no SoM information
      * is present or it is in unknown format.
+     *
+     * This method also treats the symmetry in the molecule and associates the same
+     * information with equivalent atoms.
      *
      * @param iMolecule
      * @return
@@ -174,28 +214,34 @@ public class SoMInfo {
         List<String> reacls_list = parseValueList((String) iMolecule.getProperty(Globals.REACLS_PROP));
         List<String> reamain_list = parseValueList((String) iMolecule.getProperty(Globals.REAMAIN_PROP));
         List<String> reagen_list = parseValueList((String) iMolecule.getProperty(Globals.REAGEN_PROP));
-        // TODO: assert that these have the same length
+        if ( (som_list.size() != reasubcls_list.size())
+                || (som_list.size() != reacls_list.size())
+                || (som_list.size() != reamain_list.size())
+                || (som_list.size() != reagen_list.size())
+                ) {
+            throw new Exception("The sizes of parsed SoM information lists do not match.");
+        }
 
-        // parse the SoM information into suitable data structures
-        int list_idx = 0;
-        Map<Integer, List<SoMInfo>> som_info_map = new HashMap<>();
+        // parse the SoM information into the SoMInfo data structures
+        int list_idx = 0; // position in the list of parsed strings
+        Map<Integer, List<SoMInfo>> som_info_map = new HashMap<>(); // maps atom position to all the SoM information available for that atom
         for (String som_entry : som_list) {
             String reasubcls = reasubcls_list.get(list_idx);
             String reacls = reacls_list.get(list_idx);
             String reamain = reamain_list.get(list_idx);
             String reagen = reagen_list.get(list_idx);
 
-            // skip entries without annotated SoMs
+            // skip entries without annotated SoMs (entries with no atom positions)
             if (som_entry.matches("None") || som_entry.isEmpty()) {
                 System.err.println("WARNING: Skipping empty SoM entry ('" + som_entry + "') for molecule " + iMolecule.getProperty(Globals.ID_PROP));
                 list_idx++;
                 continue;
             }
 
-            String[] soms = som_entry.split(",");
+            String[] soms = som_entry.split(","); // more than one atom positions can be annotated per entry
             for (String som : soms) {
-                int som_atom_number;
-                boolean is_confirmed;
+                int som_atom_number; // index of the atom in the molecule
+                boolean is_confirmed; // is it a confirmed SoM or a possible SoM?
 
                 if (som.matches("\\d+")) {
                     som_atom_number = Integer.parseInt(som);
@@ -230,12 +276,12 @@ public class SoMInfo {
             list_idx++;
         }
 
-        // throw an exception if no SoM annotation was found for this molecule
+        // throw an exception if no SoM annotation was found for any atom in this molecule
         if (som_info_map.isEmpty()) {
             throw new NoSoMAnnotationException(iMolecule);
         }
 
-        // add symmetry numbers to the molecule
+        // compute symmetry numbers for the molecule
         int[] symmetryNumbersArray;
         try {
             EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
@@ -246,7 +292,7 @@ public class SoMInfo {
         }
 
         // generate a mapping of symmetry numbers to atom numbers
-        Map<Integer,Set<Integer>> som_map = new HashMap<>();
+        Map<Integer,Set<Integer>> symmetry_map = new HashMap<>();
         for (int i=0; i < iMolecule.getAtomCount(); i++) {
             IAtom iAtom = iMolecule.getAtom(i);
             int symmetry_number = symmetryNumbersArray[i+1];
@@ -254,24 +300,24 @@ public class SoMInfo {
             iMolecule.setAtom(i, iAtom);
 
             int atom_number = iMolecule.getAtomNumber(iAtom) + 1;
-            if (som_map.containsKey(symmetry_number)) {
-                Set<Integer> atom_ids = som_map.get(symmetry_number);
+            if (symmetry_map.containsKey(symmetry_number)) {
+                Set<Integer> atom_ids = symmetry_map.get(symmetry_number);
                 atom_ids.add(atom_number);
-                som_map.put(symmetry_number, atom_ids);
+                symmetry_map.put(symmetry_number, atom_ids);
             } else {
                 Set<Integer> atom_ids = new HashSet<>();
                 atom_ids.add(atom_number);
-                som_map.put(symmetry_number, atom_ids);
+                symmetry_map.put(symmetry_number, atom_ids);
             }
         }
 
-        //add combined SOM information to each unique atom of a molecule
+        // add combined SoM information to each atom of the molecule
         for (int i=0; i < iMolecule.getAtomCount(); i++) {
             IAtom iAtom = iMolecule.getAtom(i);
 
-            // search for SoMs in the equivalence class of this atom
+            // search for SoMs in the equivalence class of this atom and parse what is needed to encode some more SoM information
             int symmetry_number = (Integer) iAtom.getProperty("SymmetryAtomNumber");
-            Set<Integer> equiv_atoms = som_map.get(symmetry_number);
+            Set<Integer> equiv_atoms = symmetry_map.get(symmetry_number);
             boolean equiv_confirmed_som = false;
             boolean equiv_maybe_som = false;
             boolean equiv_possible_phase_I = false;
@@ -280,7 +326,7 @@ public class SoMInfo {
             boolean equiv_confirmed_phase_II = false;
             boolean equiv_possible_metapie = false;
             boolean equiv_confirmed_metapie = false;
-            List<SoMInfo> equiv_som_infos = new ArrayList<>();
+            List<SoMInfo> equiv_som_infos = new ArrayList<>(); // collect all SoM information we have about the atom into this list
             for (int equiv_atom : equiv_atoms) { // iterate over all atoms in the equivalance class for the current atom
                 if (som_info_map.containsKey(equiv_atom)) { // if there is SoM info available for any atom in the class, do this:
                     List<SoMInfo> infos = som_info_map.get(equiv_atom);

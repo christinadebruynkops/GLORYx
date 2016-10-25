@@ -129,6 +129,12 @@ public class Utils {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
     }
 
+    /**
+     * Finds a protonated carboxyl group and marks the oxygens using Sybyl notation.
+     *
+     * @param mol
+     * @throws CDKException
+     */
     public  static void fixSybylCarboxyl(IAtomContainer mol) throws CDKException {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
         SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
