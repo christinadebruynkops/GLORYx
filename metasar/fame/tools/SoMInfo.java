@@ -185,6 +185,10 @@ public class SoMInfo {
         }
     }
 
+    private static boolean checkNone(String val) {
+        return val.equals("") || val.equals("None");
+    }
+
     /**
      * Parse the SoM information saved in the SD file. Throws an exception if no SoM information
      * is present or it is in unknown format.
@@ -232,7 +236,7 @@ public class SoMInfo {
             String reagen = reagen_list.get(list_idx);
 
             // skip entries without annotated SoMs (entries with no atom positions)
-            if (som_entry.matches("None") || som_entry.isEmpty()) {
+            if (checkNone(som_entry)) {
                 System.err.println("WARNING: Skipping empty SoM entry ('" + som_entry + "') for molecule " + iMolecule.getProperty(Globals.ID_PROP));
                 list_idx++;
                 continue;
@@ -253,15 +257,27 @@ public class SoMInfo {
                     throw new InvalidSoMAnnotationException(som);
                 }
 
-                SoMInfo som_info = new SoMInfo(
-                        iMolecule
-                        , som_atom_number
-                        , is_confirmed
-                        , Integer.parseInt(reasubcls)
-                        , Integer.parseInt(reacls)
-                        , Integer.parseInt(reamain)
-                        , Integer.parseInt(reagen)
-                );
+                SoMInfo som_info;
+                if (
+                        !checkNone(reasubcls)
+                        && !checkNone(reacls)
+                        && !checkNone(reamain)
+                        && !checkNone(reagen)
+                        ) {
+                    som_info = new SoMInfo(
+                            iMolecule
+                            , som_atom_number
+                            , is_confirmed
+                            , Integer.parseInt(reasubcls)
+                            , Integer.parseInt(reacls)
+                            , Integer.parseInt(reamain)
+                            , Integer.parseInt(reagen)
+                    );
+                } else {
+                    System.err.println("WARNING: Incomplete SoM information detected. Skipping: " + som_atom_number + " " + reasubcls + " " + reacls + " " + reamain + " " + reagen);
+                    continue;
+                }
+
                 if (som_info_map.containsKey(som_atom_number)) {
                     List<SoMInfo> atom_infos = som_info_map.get(som_atom_number);
                     atom_infos.add(som_info);

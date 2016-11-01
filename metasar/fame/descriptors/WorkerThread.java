@@ -22,15 +22,28 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WorkerThread implements Runnable {
 	private Molecule molecule;
 	private boolean depict;
 	private static final String id_prop = Globals.ID_PROP;
+    private static final Set<String> allowed_atoms = new HashSet<>();
 
 	public WorkerThread(Molecule molecule, boolean depict) throws IOException, ClassNotFoundException{
 		this.molecule = molecule;
 		this.depict = depict;
+        allowed_atoms.add("C");
+        allowed_atoms.add("N");
+        allowed_atoms.add("S");
+        allowed_atoms.add("O");
+        allowed_atoms.add("H");
+        allowed_atoms.add("F");
+        allowed_atoms.add("Cl");
+        allowed_atoms.add("Br");
+        allowed_atoms.add("I");
+        allowed_atoms.add("P");
 	}
 
 	@Override
@@ -73,14 +86,25 @@ public class WorkerThread implements Runnable {
 
 			// add implicit hydrogens
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
-			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
-			adder.addImplicitHydrogens(molecule);
+            CDKHydrogenAdder adder;
+            adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
+            try {
+                adder.addImplicitHydrogens(molecule);
+            } catch (Exception exp) {
+                System.err.println("Error while adding implicit hydrogens: " + molecule.getProperty(id_prop));
+                throw exp;
+            }
 
 			// count all implicit hydrogens
 			int hydrogens_total = 0;
 			int implicit_hydrogens = 0;
 			for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom atom = molecule.getAtom(atomNr);
+
+                String symbol = atom.getSymbol();
+                if (!allowed_atoms.contains(symbol)) {
+                    throw new Exception("Atypical atom detected: " + symbol + ". Skipping: " + molecule.getProperty(id_prop));
+                }
 
 //				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
 //				System.out.println("Iteration Number: " + atomNr);
@@ -104,14 +128,8 @@ public class WorkerThread implements Runnable {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
 			} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
-			} else if (Utils.matchesSMARTS(molecule, "[As]")) {
-                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains arsenic");
-            } else if (Utils.matchesSMARTS(molecule, "[Sn]")) {
-                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains tin");
-            } else if (Utils.matchesSMARTS(molecule, "[Se]")) {
-                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains selenium");
-            } else if (Utils.matchesSMARTS(molecule, "[SX3]-[O]")) {
-                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains sulfur with three bonds and an oxygen attached with a single bond");
+			} else if (molecule.getProperty(id_prop).toString().equals("1559")) {
+                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " is 1559");
             } else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
 				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
 			}
