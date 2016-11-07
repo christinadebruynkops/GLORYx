@@ -225,18 +225,21 @@ public class RandomMoleculeSelector {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("##loading valid, unique molecules");
-		if (args.length != 2) {
-			System.err.println("Bad number of arguments");
-			System.exit(1);
-		}
+//		System.out.println("##loading valid, unique molecules");
+//		if (args.length != 2) {
+//			System.err.println("Bad number of arguments");
+//			System.exit(1);
+//		}
 
-		Map<String, IMolecule> iMolecules = readInMolecules(args[0]);
+		Map<String, IMolecule> iMolecules = readInMolecules("input_data/MetaSAR_all_annotated_rxns_babel_out.sdf");
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have been defined valid and unique");
 
 		System.out.println("##reading in CDK descriptors");
-        iMolecules = readDescriptors(iMolecules, args[1]);
-		System.out.println("\t" + iMolecules.size() + "\tmolecules have atom descriptors computed for them");
+        iMolecules = readDescriptors(iMolecules, "descriptors/all.csv");
+		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK descriptors computed for them");
+		System.out.println("##reading in quantum descriptors");
+		iMolecules = readDescriptors(iMolecules, "descriptors/quantum_descriptors.csv");
+		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK and quantum descriptors computed for them");
 
 		System.out.println("##reading SoM information and treating symmetric atoms");
 		iMolecules = readSoMInfo(iMolecules);
