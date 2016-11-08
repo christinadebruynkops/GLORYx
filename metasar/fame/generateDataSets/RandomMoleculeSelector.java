@@ -22,6 +22,7 @@ public class RandomMoleculeSelector {
 	//parameters
 	private static int foldsCv = 10;
 	private static double testSetRatio = 0.2;
+	private static int seed = 42;
 
 	//output
 	private static String output =  Globals.DATASETS_OUT + "metasar_data.csv";
@@ -136,7 +137,7 @@ public class RandomMoleculeSelector {
         	id_set.add(key);
         }
 
-		Random random = new Random();
+		Random random = new Random(seed);
 		int numberOfRandomlySelectedMolecules=0;
 		int pick=0;
         IMolecule iMolecule = null;
