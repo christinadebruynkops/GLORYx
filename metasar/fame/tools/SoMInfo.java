@@ -1,7 +1,6 @@
 package fame.tools;
 
 import org.openscience.cdk.exception.NoSuchAtomException;
-import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
@@ -185,40 +184,6 @@ public class SoMInfo {
         }
     }
 
-    private static Map<Integer,Set<Integer>> generateSymmetryMap(IAtomContainer iMolecule) throws Exception {
-        // compute symmetry numbers for the molecule
-        int[] symmetryNumbersArray;
-        try {
-            EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
-            symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu(iMolecule);
-        } catch (OutOfMemoryError err) {
-            err.printStackTrace();
-            throw new Exception("memory error");
-        }
-
-        // generate a mapping of symmetry numbers to atom numbers
-        Map<Integer,Set<Integer>> symmetry_map = new HashMap<>();
-        for (int i=0; i < iMolecule.getAtomCount(); i++) {
-            IAtom iAtom = iMolecule.getAtom(i);
-            int symmetry_number = symmetryNumbersArray[i+1];
-            iAtom.setProperty("SymmetryAtomNumber", symmetry_number);
-            iMolecule.setAtom(i, iAtom);
-
-            int atom_number = iMolecule.getAtomNumber(iAtom) + 1;
-            if (symmetry_map.containsKey(symmetry_number)) {
-                Set<Integer> atom_ids = symmetry_map.get(symmetry_number);
-                atom_ids.add(atom_number);
-                symmetry_map.put(symmetry_number, atom_ids);
-            } else {
-                Set<Integer> atom_ids = new HashSet<>();
-                atom_ids.add(atom_number);
-                symmetry_map.put(symmetry_number, atom_ids);
-            }
-        }
-
-        return symmetry_map;
-    }
-
     private static boolean checkNone(String val) {
         return val.equals("") || val.equals("None");
     }
@@ -331,7 +296,7 @@ public class SoMInfo {
             throw new NoSoMAnnotationException(iMolecule);
         }
 
-        Map<Integer,Set<Integer>> symmetry_map = generateSymmetryMap(iMolecule);
+        Map<Integer,Set<Integer>> symmetry_map = Utils.generateSymmetryMap(iMolecule);
 
         // add combined SoM information to each atom of the molecule
         for (int i=0; i < iMolecule.getAtomCount(); i++) {

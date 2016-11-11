@@ -1,14 +1,14 @@
 package fame.tools;
 
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Simple utility class with some helper functions.
@@ -155,6 +155,40 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static Map<Integer,Set<Integer>> generateSymmetryMap(IAtomContainer iMolecule) throws Exception {
+        // compute symmetry numbers for the molecule
+        int[] symmetryNumbersArray;
+        try {
+            EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
+            symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu(iMolecule);
+        } catch (OutOfMemoryError err) {
+            err.printStackTrace();
+            throw new Exception("memory error");
+        }
+
+        // generate a mapping of symmetry numbers to atom numbers
+        Map<Integer,Set<Integer>> symmetry_map = new HashMap<>();
+        for (int i=0; i < iMolecule.getAtomCount(); i++) {
+            IAtom iAtom = iMolecule.getAtom(i);
+            int symmetry_number = symmetryNumbersArray[i+1];
+            iAtom.setProperty("SymmetryAtomNumber", symmetry_number);
+            iMolecule.setAtom(i, iAtom);
+
+            int atom_number = iMolecule.getAtomNumber(iAtom) + 1;
+            if (symmetry_map.containsKey(symmetry_number)) {
+                Set<Integer> atom_ids = symmetry_map.get(symmetry_number);
+                atom_ids.add(atom_number);
+                symmetry_map.put(symmetry_number, atom_ids);
+            } else {
+                Set<Integer> atom_ids = new HashSet<>();
+                atom_ids.add(atom_number);
+                symmetry_map.put(symmetry_number, atom_ids);
+            }
+        }
+
+        return symmetry_map;
     }
 
     public static String strip(String string, String pattern) {
