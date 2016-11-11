@@ -30,7 +30,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
 
 		// sanitize the data and get the path to the modified file
 		String input_file = args[0];
-//		input_file = Sanitize.sanitize(input_file);
+		input_file = Sanitize.sanitize(input_file);
 	    
 		@SuppressWarnings("rawtypes")
 		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(input_file), DefaultChemObjectBuilder.getInstance());
