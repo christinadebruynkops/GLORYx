@@ -1,7 +1,6 @@
 package fame.tools;
 
 import org.openscience.cdk.exception.NoSuchAtomException;
-import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
@@ -28,28 +27,39 @@ public class SoMInfoZaretzki {
 
     private IAtomContainer mol;
     private int atom_id;
-    private boolean is_confirmed;
-    private int reasubclass_id;
-    private int reaclass_id;
-    private int reamain_id;
-    private int reagen_id;
+    private int reagen;
+    private String target_id;
+
+    private static final List<String> targets = new ArrayList<>(
+            Arrays.asList(
+                    "1A2"
+                    , "2A6"
+                    , "2B6"
+                    , "2C8"
+                    , "2C9"
+                    , "2C19"
+                    , "2D6"
+                    , "2E1"
+                    , "3A4"
+            ));
+
+    private static final List<Integer> reagens = new ArrayList<>(
+            Arrays.asList(
+                    1
+                    , 2
+                    , 3
+            ));
 
     private SoMInfoZaretzki(
             IAtomContainer mol
             , int atom_id
-            , boolean is_confirmed
-            , int reasubclass_id
-            , int reaclass_id
-            , int reamain_id
-            , int reagen_id
+            , int reagen
+            , String target_id
     ) {
         this.mol = mol;
         this.atom_id = atom_id;
-        this.is_confirmed = is_confirmed;
-        this.reasubclass_id = reasubclass_id;
-        this.reaclass_id = reaclass_id;
-        this.reamain_id = reamain_id;
-        this.reagen_id = reagen_id;
+        this.reagen = reagen;
+        this.target_id = target_id;
     }
 
     public int getAtomID() {
@@ -64,159 +74,8 @@ public class SoMInfoZaretzki {
         return mol;
     }
 
-    public boolean isConfirmed() {
-        return is_confirmed;
-    }
-
-    public int getReasubclass() {
-        return reasubclass_id;
-    }
-
-    public int getReaclass() {
-        return reaclass_id;
-    }
-
-    public int getReamain() {
-        return reamain_id;
-    }
-
-    public int getReagen() {
-        return reagen_id;
-    }
-
-    /**
-     * Helper method that reads a line which encodes SoM information in a given format.
-     * Returns a list of values. Each item in the list represents information about one
-     * reaction.
-     *
-     * @param line
-     * @return
-     * @throws InvalidSoMAnnotationException
-     */
-    public static List<String> parseValueList(String line) throws InvalidSoMAnnotationException {
-        line = line.replaceAll("^'", "").replaceAll("'$", "");
-        List<String> values = new ArrayList<>();
-        for (String som : line.split("', '")) {
-            if (!som.isEmpty()) {
-                values.add(som);
-            }
-        }
-        for (String val : values) {
-            boolean empty_val = val.matches("None") || val.isEmpty();
-            if (!(
-                    val.matches("^(\\d+\\??,\\s*)*\\d+\\??$")
-                            || empty_val
-            )) {
-                throw new InvalidSoMAnnotationException(val);
-            }
-        }
-        return values;
-    }
-
-    /**
-     * Add an entry to a line using a given delimiter. If the entry represents
-     * unconfirmed information a question mark is also attached to the entry.
-     *
-     * @param line line to append to
-     * @param entry entry to append
-     * @param delim delimiter to use
-     * @param is_confirmed confirmation status
-     * @return
-     */
-    private static String addEntry(String line, String entry, String delim, boolean is_confirmed) {
-        if (is_confirmed) {
-            line += entry + delim;
-        } else {
-            line += entry + "?" + delim;
-        }
-        return line;
-    }
-
-    /**
-     * Generate a string representation of a list of SoM information instances.
-     * Use the given delimiter to separate each value.
-     *
-     * @param infos
-     * @param delimiter
-     * @return
-     */
-    public static Map<String, String> concatenateSoMInfos(List<SoMInfoZaretzki> infos, String delimiter) {
-        String atom_ids = "";
-        String reasubclass_ids = "";
-        String reaclass_ids = "";
-        String reamain_ids = "";
-        String reagen_ids = "";
-
-        for (SoMInfoZaretzki info : infos) {
-            atom_ids = addEntry(atom_ids, Integer.toString(info.atom_id), delimiter, info.is_confirmed);
-            reasubclass_ids = addEntry(reasubclass_ids, Integer.toString(info.reasubclass_id), delimiter, info.is_confirmed);
-            reaclass_ids = addEntry(reaclass_ids, Integer.toString(info.reaclass_id), delimiter, info.is_confirmed);
-            reamain_ids = addEntry(reamain_ids, Integer.toString(info.reamain_id), delimiter, info.is_confirmed);
-            reagen_ids = addEntry(reagen_ids, Integer.toString(info.reagen_id), delimiter, info.is_confirmed);
-        }
-
-        Map<String, String> ret = new HashMap<>();
-        ret.put("atoms", atom_ids);
-        ret.put(Globals.REASUBCLS_PROP, Utils.rstrip(reasubclass_ids, delimiter));
-        ret.put(Globals.REACLS_PROP, Utils.rstrip(reaclass_ids, delimiter));
-        ret.put(Globals.REAMAIN_PROP, Utils.rstrip(reamain_ids, delimiter));
-        ret.put(Globals.REAGEN_PROP, Utils.rstrip(reagen_ids, delimiter));
-
-        return ret;
-    }
-
-    /**
-     * A helper method that sets an atom property to the values given in Globals.IS_SOM_CONFIRMED_VAL,
-     * Globals.IS_SOM_POSSIBLE_VAL or Globals.UNKNOWN_VALUE based on the information passed by the caller
-     * (name of the property and if it represents a confirmed or just possibly correct information).
-     *
-     * @param atom atom to set the property on
-     * @param property name of the property (it encodes the information -- e.g. this is a SoM)
-     * @param confirmed this information was confirmed and should be correct
-     * @param possible this information was not confirmed and cannot be verified, but there are clues that show it might be true
-     */
-    private static void setConfirmationStatus(IAtom atom, String property, boolean confirmed, boolean possible) {
-        if (confirmed) {
-            atom.setProperty(property, Globals.IS_SOM_CONFIRMED_VAL);
-        } else if (possible) {
-            atom.setProperty(property, Globals.IS_SOM_POSSIBLE_VAL);
-        } else {
-            atom.setProperty(property, Globals.UNKNOWN_VALUE);
-        }
-    }
-
-    private static Map<Integer,Set<Integer>> generateSymmetryMap(IAtomContainer iMolecule) throws Exception {
-        // compute symmetry numbers for the molecule
-        int[] symmetryNumbersArray;
-        try {
-            EquivalentClassPartitioner symmtest = new EquivalentClassPartitioner(iMolecule);
-            symmetryNumbersArray = symmtest.getTopoEquivClassbyHuXu(iMolecule);
-        } catch (OutOfMemoryError err) {
-            err.printStackTrace();
-            throw new Exception("memory error");
-        }
-
-        // generate a mapping of symmetry numbers to atom numbers
-        Map<Integer,Set<Integer>> symmetry_map = new HashMap<>();
-        for (int i=0; i < iMolecule.getAtomCount(); i++) {
-            IAtom iAtom = iMolecule.getAtom(i);
-            int symmetry_number = symmetryNumbersArray[i+1];
-            iAtom.setProperty("SymmetryAtomNumber", symmetry_number);
-            iMolecule.setAtom(i, iAtom);
-
-            int atom_number = iMolecule.getAtomNumber(iAtom) + 1;
-            if (symmetry_map.containsKey(symmetry_number)) {
-                Set<Integer> atom_ids = symmetry_map.get(symmetry_number);
-                atom_ids.add(atom_number);
-                symmetry_map.put(symmetry_number, atom_ids);
-            } else {
-                Set<Integer> atom_ids = new HashSet<>();
-                atom_ids.add(atom_number);
-                symmetry_map.put(symmetry_number, atom_ids);
-            }
-        }
-
-        return symmetry_map;
+    public String getTarget() {
+        return target_id;
     }
 
     private static boolean checkNone(String val) {
@@ -246,84 +105,52 @@ public class SoMInfoZaretzki {
             iAtom.setCharge((double) iAtom.getFormalCharge());
         }
 
-        // parse SoMs from the file
-        List<String> som_list = parseValueList((String) iMolecule.getProperty(Globals.SOM_PROP));
-        List<String> reasubcls_list = parseValueList((String) iMolecule.getProperty(Globals.REASUBCLS_PROP));
-        List<String> reacls_list = parseValueList((String) iMolecule.getProperty(Globals.REACLS_PROP));
-        List<String> reamain_list = parseValueList((String) iMolecule.getProperty(Globals.REAMAIN_PROP));
-        List<String> reagen_list = parseValueList((String) iMolecule.getProperty(Globals.REAGEN_PROP));
-        if ( (som_list.size() != reasubcls_list.size())
-                || (som_list.size() != reacls_list.size())
-                || (som_list.size() != reamain_list.size())
-                || (som_list.size() != reagen_list.size())
-                ) {
-            throw new Exception("The sizes of parsed SoM information lists do not match.");
-        }
-
         // parse the SoM information into the SoMInfo data structures
-        int list_idx = 0; // position in the list of parsed strings
         Map<Integer, List<SoMInfoZaretzki>> som_info_map = new HashMap<>(); // maps atom position to all the SoM information available for that atom
-        for (String som_entry : som_list) {
-            String reasubcls = reasubcls_list.get(list_idx);
-            String reacls = reacls_list.get(list_idx);
-            String reamain = reamain_list.get(list_idx);
-            String reagen = reagen_list.get(list_idx);
+        for (Map.Entry<Object, Object> som_entry : iMolecule.getProperties().entrySet()) {
+            String key = (String) som_entry.getKey();
 
-            // skip entries without annotated SoMs (entries with no atom positions)
-            if (checkNone(som_entry)) {
-                System.err.println("WARNING: Skipping empty SoM entry ('" + som_entry + "') for molecule " + iMolecule.getProperty(Globals.ID_PROP));
-                list_idx++;
-                continue;
-            }
+            if (key.startsWith(Globals.PRIM_SOM_PROP_PREFIX)
+                    || key.startsWith(Globals.SEC_SOM_PROP_PREFIX)
+                    || key.startsWith(Globals.TER_SOM_PROP_PREFIX)
+                    ) {
 
-            String[] soms = som_entry.split(","); // more than one atom positions can be annotated per entry
-            for (String som : soms) {
-                int som_atom_number; // index of the atom in the molecule
-                boolean is_confirmed; // is it a confirmed SoM or a possible SoM?
+                String value = (String) som_entry.getValue();
 
-                if (som.matches("\\d+")) {
-                    som_atom_number = Integer.parseInt(som);
-                    is_confirmed = true;
-                } else if (som.matches("\\d+\\?")) {
-                    som_atom_number = Integer.parseInt(som.replaceAll("\\?", ""));
-                    is_confirmed = false;
+                int atom_id = Integer.parseInt(value); // FIXME: can be more than one separated by space
+                int reagen;
+                String prop_prefix;
+                if (key.startsWith(Globals.PRIM_SOM_PROP_PREFIX)) {
+                    reagen = 1;
+                    prop_prefix = Globals.PRIM_SOM_PROP_PREFIX;
+                } else if (key.startsWith(Globals.SEC_SOM_PROP_PREFIX)) {
+                    reagen = 2;
+                    prop_prefix = Globals.SEC_SOM_PROP_PREFIX;
+                } else if (key.startsWith(Globals.TER_SOM_PROP_PREFIX)) {
+                    reagen = 3;
+                    prop_prefix = Globals.TER_SOM_PROP_PREFIX;
                 } else {
-                    throw new InvalidSoMAnnotationException(som);
+                    throw new Exception("This shouldn't have happened :(");
                 }
+                String target_id = key.replaceAll(prop_prefix, "");
 
-                SoMInfoZaretzki som_info;
-                if (
-                        !checkNone(reasubcls)
-                                && !checkNone(reacls)
-                                && !checkNone(reamain)
-                                && !checkNone(reagen)
-                        ) {
-                    som_info = new SoMInfoZaretzki(
-                            iMolecule
-                            , som_atom_number
-                            , is_confirmed
-                            , Integer.parseInt(reasubcls)
-                            , Integer.parseInt(reacls)
-                            , Integer.parseInt(reamain)
-                            , Integer.parseInt(reagen)
-                    );
-                } else {
-                    System.err.println("WARNING: Incomplete SoM information detected. Skipping: " + som_atom_number + " " + reasubcls + " " + reacls + " " + reamain + " " + reagen);
-                    continue;
-                }
+                SoMInfoZaretzki som_info = new SoMInfoZaretzki(
+                        iMolecule
+                        , atom_id
+                        , reagen
+                        , target_id
+                );
 
-                if (som_info_map.containsKey(som_atom_number)) {
-                    List<SoMInfoZaretzki> atom_infos = som_info_map.get(som_atom_number);
+                if (som_info_map.containsKey(atom_id)) {
+                    List<SoMInfoZaretzki> atom_infos = som_info_map.get(atom_id);
                     atom_infos.add(som_info);
-                    som_info_map.put(som_atom_number, atom_infos);
+                    som_info_map.put(atom_id, atom_infos);
                 } else {
                     List<SoMInfoZaretzki> atom_infos = new ArrayList<>();
                     atom_infos.add(som_info);
-                    som_info_map.put(som_atom_number, atom_infos);
+                    som_info_map.put(atom_id, atom_infos);
                 }
             }
-
-            list_idx++;
         }
 
         // throw an exception if no SoM annotation was found for any atom in this molecule
@@ -331,7 +158,7 @@ public class SoMInfoZaretzki {
             throw new NoSoMAnnotationException(iMolecule);
         }
 
-        Map<Integer,Set<Integer>> symmetry_map = generateSymmetryMap(iMolecule);
+        Map<Integer,Set<Integer>> symmetry_map = Utils.generateSymmetryMap(iMolecule);
 
         // add combined SoM information to each atom of the molecule
         for (int i=0; i < iMolecule.getAtomCount(); i++) {
@@ -341,65 +168,40 @@ public class SoMInfoZaretzki {
             int symmetry_number = (Integer) iAtom.getProperty("SymmetryAtomNumber");
             Set<Integer> equiv_atoms = symmetry_map.get(symmetry_number);
             boolean equiv_confirmed_som = false;
-            boolean equiv_maybe_som = false;
-            boolean equiv_possible_phase_I = false;
-            boolean equiv_confirmed_phase_I = false;
-            boolean equiv_possible_phase_II = false;
-            boolean equiv_confirmed_phase_II = false;
-            boolean equiv_possible_metapie = false;
-            boolean equiv_confirmed_metapie = false;
             List<SoMInfoZaretzki> equiv_som_infos = new ArrayList<>(); // collect all SoM information we have about the atom into this list
             for (int equiv_atom : equiv_atoms) { // iterate over all atoms in the equivalance class for the current atom
                 if (som_info_map.containsKey(equiv_atom)) { // if there is SoM info available for any atom in the class, do this:
                     List<SoMInfoZaretzki> infos = som_info_map.get(equiv_atom);
                     for (SoMInfoZaretzki info : infos) {
-                        if (info.is_confirmed) {
-                            equiv_confirmed_som = true;
-                        }
-                        if (!equiv_confirmed_som) {
-                            equiv_maybe_som = true;
-                        }
-                        if (info.is_confirmed && (info.reamain_id == 1 || info.reamain_id == 2)) {
-                            equiv_confirmed_phase_I = true;
-                        }
-                        if (!info.is_confirmed && (info.reamain_id == 1 || info.reamain_id == 2)) {
-                            equiv_possible_phase_I = true;
-                        }
-                        if (info.is_confirmed && info.reamain_id == 3) {
-                            equiv_confirmed_phase_II = true;
-                        }
-                        if (!info.is_confirmed && info.reamain_id == 3) {
-                            equiv_possible_phase_II = true;
-                        }
-                        if (info.is_confirmed && info.reamain_id == 4) {
-                            equiv_confirmed_metapie = true;
-                        }
-                        if (!info.is_confirmed && info.reamain_id == 4) {
-                            equiv_possible_metapie = true;
-                        }
+                        equiv_confirmed_som = true;
                     }
                     equiv_som_infos.addAll(infos); // get all the information associated with the SoM identified
                 }
             }
 
-            // if any of the atoms in the equivalence class is a possible or confirmed SoM, mark this atom the same way and save all the info
-            setConfirmationStatus(iAtom, Globals.IS_SOM_PROP, equiv_confirmed_som, equiv_maybe_som);
-            setConfirmationStatus(iAtom, Globals.IS_PI_PROP, equiv_confirmed_phase_I, equiv_possible_phase_I);
-            setConfirmationStatus(iAtom, Globals.IS_PII_PROP, equiv_confirmed_phase_II, equiv_possible_phase_II);
-            setConfirmationStatus(iAtom, Globals.IS_METAPIE_PROP, equiv_confirmed_metapie, equiv_possible_metapie);
+            // initialize map of output data
+            Map<String, String> written_data = new TreeMap<>();
+            written_data.put(Globals.IS_SOM_PROP, Globals.UNKNOWN_VALUE);
+            for (String target_id : targets) {
+                written_data.put(target_id, Globals.UNKNOWN_VALUE);
+                for (Integer reagen_id : reagens) {
+                    written_data.put(target_id + "_" + Integer.toString(reagen_id), Globals.UNKNOWN_VALUE);
+                }
+            }
 
-            Map<String, String> concated_vals = concatenateSoMInfos(equiv_som_infos, "/");
+            // write som information into the 'table'
+            if (equiv_confirmed_som) {
+                written_data.put(Globals.IS_SOM_PROP, Globals.IS_SOM_CONFIRMED_VAL);
 
-            if (equiv_confirmed_som || equiv_maybe_som) {
-                iAtom.setProperty(Globals.REASUBCLS_PROP, concated_vals.get(Globals.REASUBCLS_PROP));
-                iAtom.setProperty(Globals.REACLS_PROP, concated_vals.get(Globals.REACLS_PROP));
-                iAtom.setProperty(Globals.REAMAIN_PROP, concated_vals.get(Globals.REAMAIN_PROP));
-                iAtom.setProperty(Globals.REAGEN_PROP, concated_vals.get(Globals.REAGEN_PROP));
-            } else {
-                iAtom.setProperty(Globals.REASUBCLS_PROP, Globals.UNKNOWN_VALUE);
-                iAtom.setProperty(Globals.REACLS_PROP, Globals.UNKNOWN_VALUE);
-                iAtom.setProperty(Globals.REAMAIN_PROP, Globals.UNKNOWN_VALUE);
-                iAtom.setProperty(Globals.REAGEN_PROP, Globals.UNKNOWN_VALUE);
+                for (SoMInfoZaretzki info : equiv_som_infos) {
+                    written_data.put(info.target_id, Globals.IS_SOM_CONFIRMED_VAL);
+                    written_data.put(info.target_id + "_" + Integer.toString(info.reagen), Globals.IS_SOM_CONFIRMED_VAL);
+                }
+            }
+
+            // write atom properties
+            for (Map.Entry<String, String> entry : written_data.entrySet()) {
+                iAtom.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
