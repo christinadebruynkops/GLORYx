@@ -2,14 +2,18 @@
 
 set -e
 
+INPUT_FILE="input_data/CYP_DBs/HLM.sdf"
+ERR_LOG="descriptors_errors_zaretzki.log"
+STD_LOG="descriptors_zaretzki.log"
+
 cd run_dir
 
 (
-  java -jar ../out/artifacts/descriptors/metasar.jar input_data/MetaSAR_all_annotated_rxns.sdf \
-  | tee descriptors.log
-) 3>&1 1>&2 2>&3 | tee descriptors_errors.log
+  java -jar ../out/artifacts/descriptors/metasar.jar $INPUT_FILE \
+  | tee $STD_LOG
+) 3>&1 1>&2 2>&3 | tee $ERR_LOG
 
-cd descriptors/
+cd descriptors_zaretzki/
 PATTERN='*.csv'
 ALL_DATA=all.csv
 rm -f $ALL_DATA

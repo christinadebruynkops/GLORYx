@@ -117,7 +117,6 @@ public class SoMInfoZaretzki {
 
                 String value = (String) som_entry.getValue();
 
-                int atom_id = Integer.parseInt(value); // FIXME: can be more than one separated by space
                 int reagen;
                 String prop_prefix;
                 if (key.startsWith(Globals.PRIM_SOM_PROP_PREFIX)) {
@@ -134,21 +133,25 @@ public class SoMInfoZaretzki {
                 }
                 String target_id = key.replaceAll(prop_prefix, "");
 
-                SoMInfoZaretzki som_info = new SoMInfoZaretzki(
-                        iMolecule
-                        , atom_id
-                        , reagen
-                        , target_id
-                );
+                String[] atom_ids = value.split("\\s"); // FIXME: can be more than one separated by space
+                for (String atom_id_str : atom_ids) {
+                    int atom_id = Integer.parseInt(atom_id_str);
+                    SoMInfoZaretzki som_info = new SoMInfoZaretzki(
+                            iMolecule
+                            , atom_id
+                            , reagen
+                            , target_id
+                    );
 
-                if (som_info_map.containsKey(atom_id)) {
-                    List<SoMInfoZaretzki> atom_infos = som_info_map.get(atom_id);
-                    atom_infos.add(som_info);
-                    som_info_map.put(atom_id, atom_infos);
-                } else {
-                    List<SoMInfoZaretzki> atom_infos = new ArrayList<>();
-                    atom_infos.add(som_info);
-                    som_info_map.put(atom_id, atom_infos);
+                    if (som_info_map.containsKey(atom_id)) {
+                        List<SoMInfoZaretzki> atom_infos = som_info_map.get(atom_id);
+                        atom_infos.add(som_info);
+                        som_info_map.put(atom_id, atom_infos);
+                    } else {
+                        List<SoMInfoZaretzki> atom_infos = new ArrayList<>();
+                        atom_infos.add(som_info);
+                        som_info_map.put(atom_id, atom_infos);
+                    }
                 }
             }
         }
@@ -171,11 +174,8 @@ public class SoMInfoZaretzki {
             List<SoMInfoZaretzki> equiv_som_infos = new ArrayList<>(); // collect all SoM information we have about the atom into this list
             for (int equiv_atom : equiv_atoms) { // iterate over all atoms in the equivalance class for the current atom
                 if (som_info_map.containsKey(equiv_atom)) { // if there is SoM info available for any atom in the class, do this:
-                    List<SoMInfoZaretzki> infos = som_info_map.get(equiv_atom);
-                    for (SoMInfoZaretzki info : infos) {
-                        equiv_confirmed_som = true;
-                    }
-                    equiv_som_infos.addAll(infos); // get all the information associated with the SoM identified
+                    equiv_confirmed_som = true;
+                    equiv_som_infos.addAll(som_info_map.get(equiv_atom)); // get all the information associated with the SoM identified
                 }
             }
 
