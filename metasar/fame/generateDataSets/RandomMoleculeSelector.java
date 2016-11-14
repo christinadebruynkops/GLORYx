@@ -1,7 +1,7 @@
 package fame.generateDataSets;
 
 import fame.tools.Globals;
-import fame.tools.SoMInfo;
+import fame.tools.SoMInfoZaretzki;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -24,8 +24,14 @@ public class RandomMoleculeSelector {
 	private static double testSetRatio = 0.2;
 	private static int seed = 42;
 
+	// input SDF
+	private static String input_sdf =  "input_data/CYP_DBs/HLM.sdf";
+
+	// CDK descriptors
+	private static String cdk_path =  Globals.DESCRIPTORS_OUT + "all.csv";
+
 	//output
-	private static String output =  Globals.DATASETS_OUT + "metasar_data.csv";
+	private static String output =  Globals.DATASETS_OUT + "zaretzki_data.csv";
 
 	/**
 	 * Reads in all unique and valid molecules. Valid molecules are molecules that do not contain salts.
@@ -113,7 +119,7 @@ public class RandomMoleculeSelector {
 			IMolecule iMolecule = iMolecules.get(key);
 
             try {
-				SoMInfo.parseInfoAndUpdateMol(iMolecule);
+				SoMInfoZaretzki.parseInfoAndUpdateMol(iMolecule);
 			} catch (Exception exp) {
 				System.err.println("WARNING: Failed to parse molecule (" + key + ") due to the following error: ");
 				exp.printStackTrace();
@@ -232,15 +238,12 @@ public class RandomMoleculeSelector {
 //			System.exit(1);
 //		}
 
-		Map<String, IMolecule> iMolecules = readInMolecules("input_data/MetaSAR_all_annotated_rxns_babel_out.sdf");
+		Map<String, IMolecule> iMolecules = readInMolecules(input_sdf);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have been defined valid and unique");
 
 		System.out.println("##reading in CDK descriptors");
-        iMolecules = readDescriptors(iMolecules, "descriptors/all.csv");
+        iMolecules = readDescriptors(iMolecules, cdk_path);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK descriptors computed for them");
-		System.out.println("##reading in quantum descriptors");
-		iMolecules = readDescriptors(iMolecules, "descriptors/quantum_descriptors.csv");
-		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK and quantum descriptors computed for them");
 
 		System.out.println("##reading SoM information and treating symmetric atoms");
 		iMolecules = readSoMInfo(iMolecules);
