@@ -2,6 +2,7 @@ package fame.descriptors;
 
 import fame.tools.Globals;
 import fame.tools.SoMInfo;
+import fame.tools.Utils;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtom;
@@ -10,10 +11,8 @@ import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -114,36 +113,6 @@ public class Sanitize {
     }
 
     /**
-     * Executes a given command in the shell.
-     *
-     * @param command the command to be executed
-     * @return output of the command FIXME: this part does not really work, I think...
-     */
-    private static String executeCommand(String command) {
-
-        StringBuffer output = new StringBuffer();
-
-        Process p;
-        try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line = "";
-            while ((line = reader.readLine())!= null) {
-                output.append(line + "\n");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return output.toString();
-
-    }
-
-    /**
      * Reads every molecule from the supplied SD file and creates
      * a CDK representation which is used in the sanitization (see sanitizeMolecule()).
      *
@@ -191,7 +160,7 @@ public class Sanitize {
 
         // use open babel to ionize the structures
         String command = "babel -p 7 -isdf " + babel_in_file + " -osdf " + babel_out_file;
-        System.out.printf(executeCommand(command));
+        System.out.printf(Utils.executeCommand(command));
 
         return babel_out_file;
     }

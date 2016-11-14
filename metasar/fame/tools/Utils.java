@@ -7,6 +7,8 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -189,6 +191,36 @@ public class Utils {
         }
 
         return symmetry_map;
+    }
+
+    /**
+     * Executes a given command in the shell.
+     *
+     * @param command the command to be executed
+     * @return output of the command FIXME: this part does not really work, I think...
+     */
+    public static String executeCommand(String command) {
+
+        StringBuffer output = new StringBuffer();
+
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = "";
+            while ((line = reader.readLine())!= null) {
+                output.append(line + "\n");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return output.toString();
+
     }
 
     public static String strip(String string, String pattern) {
