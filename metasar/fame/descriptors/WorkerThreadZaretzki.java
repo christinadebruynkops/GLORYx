@@ -56,6 +56,11 @@ public class WorkerThreadZaretzki implements Runnable {
 
             System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
 
+            // remove molecules that cause trouble in the machine learning phase
+            if (molecule.getProperty(id_prop).equals("M17055")) {
+                throw new Exception("Removed M17055");
+            }
+
             // parse the SoM information and save the essential data to the molecule (throws exception for molecules without SoMs annotated)
             SoMInfoZaretzki.parseInfoAndUpdateMol(molecule);
 
