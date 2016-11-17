@@ -5,7 +5,6 @@ package fame.descriptors;
 import fame.tools.Depiction;
 import fame.tools.Globals;
 import fame.tools.SoMInfo;
-import fame.tools.Utils;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -29,21 +28,21 @@ public class WorkerThread implements Runnable {
 	private Molecule molecule;
 	private boolean depict;
 	private static final String id_prop = Globals.ID_PROP;
-    private static final Set<String> allowed_atoms = new HashSet<>();
+	private static final Set<String> allowed_atoms = new HashSet<>();
 
 	public WorkerThread(Molecule molecule, boolean depict) throws IOException, ClassNotFoundException{
 		this.molecule = molecule;
 		this.depict = depict;
-        allowed_atoms.add("C");
-        allowed_atoms.add("N");
-        allowed_atoms.add("S");
-        allowed_atoms.add("O");
-        allowed_atoms.add("H");
-        allowed_atoms.add("F");
-        allowed_atoms.add("Cl");
-        allowed_atoms.add("Br");
-        allowed_atoms.add("I");
-        allowed_atoms.add("P");
+		allowed_atoms.add("C");
+		allowed_atoms.add("N");
+		allowed_atoms.add("S");
+		allowed_atoms.add("O");
+		allowed_atoms.add("H");
+		allowed_atoms.add("F");
+		allowed_atoms.add("Cl");
+		allowed_atoms.add("Br");
+		allowed_atoms.add("I");
+		allowed_atoms.add("P");
 	}
 
 	@Override
@@ -55,22 +54,12 @@ public class WorkerThread implements Runnable {
 				throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
 			}
 
-			// check if the molecule has SOMs annotated
-			String som_info = (String) molecule.getProperty(Globals.SOM_PROP);
-			if (som_info.equals("None")) {
-				throw new Exception("Error: no SoMs annotated: " + molecule.getProperty(id_prop));
-			}
-
 			System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
 
-			//this code is not used. it was initially written to add charges
-//	            Constructor<AtomTypeCharges> constructor = AtomTypeCharges.class.getDeclaredConstructor(new Class[0]);
-//	         	constructor.setAccessible(true);
-//	         	AtomTypeCharges atomTypeCharges = constructor.newInstance(new Object[0]);
-//	         	atomTypeCharges.calculateCharges(molecule);
-//				for(int x = 0; x < molecule.getAtomCount(); x++){
-//					System.out.println(molecule.getAtom(x).getCharge());
-//				}
+			// remove molecules that cause trouble in the machine learning phase
+			if (molecule.getProperty(id_prop).equals("M17055")) {
+				throw new Exception("Removed M17055");
+			}
 
 			// parse the SoM information and save the essential data to the molecule (throws exception for molecules without SoMs annotated)
 			SoMInfo.parseInfoAndUpdateMol(molecule);
@@ -86,14 +75,14 @@ public class WorkerThread implements Runnable {
 
 			// add implicit hydrogens
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
-            CDKHydrogenAdder adder;
-            adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
-            try {
-                adder.addImplicitHydrogens(molecule);
-            } catch (Exception exp) {
-                System.err.println("Error while adding implicit hydrogens: " + molecule.getProperty(id_prop));
-                throw exp;
-            }
+			CDKHydrogenAdder adder;
+			adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
+			try {
+				adder.addImplicitHydrogens(molecule);
+			} catch (Exception exp) {
+				System.err.println("Error while adding implicit hydrogens: " + molecule.getProperty(id_prop));
+				throw exp;
+			}
 
 			// count all implicit hydrogens
 			int hydrogens_total = 0;
@@ -101,37 +90,17 @@ public class WorkerThread implements Runnable {
 			for (int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom atom = molecule.getAtom(atomNr);
 
-                String symbol = atom.getSymbol();
-                if (!allowed_atoms.contains(symbol)) {
-                    throw new Exception("Atypical atom detected: " + symbol + ". Skipping: " + molecule.getProperty(id_prop));
-                }
+				String symbol = atom.getSymbol();
+				if (!allowed_atoms.contains(symbol)) {
+					throw new Exception("Atypical atom detected: " + symbol + ". Skipping: " + molecule.getProperty(id_prop));
+				}
 
-//				System.out.println("----- " + atom.getAtomTypeName() + " (#" + (molecule.getAtomNumber(atom) + 1) + ")");
-//				System.out.println("Iteration Number: " + atomNr);
-//				System.out.println("Implicit Hydrogens: " + atom.getImplicitHydrogenCount());
 				if (atom.getImplicitHydrogenCount() != null) {
 					implicit_hydrogens += atom.getImplicitHydrogenCount();
 				}
 				if (atom.getSymbol().equals("H")) {
 					hydrogens_total++;
 				}
-			}
-
-			// check for some badly represented groups
-			if (Utils.matchesSMARTS(molecule, "[NX3]([OH])[OH]")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitro group");
-			} else if (Utils.matchesSMARTS(molecule, "[N+]O")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a nitrogen with +1 charge and oxygen with a missing negative charge");
-			} else if (Utils.matchesSMARTS(molecule, "[N,N+]-[OH]")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented nitroxide");
-			} else if (Utils.matchesSMARTS(molecule, "[CX3](O[H])O[H]")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented carboxyl group");
-			} else if (Utils.matchesSMARTS(molecule, "[NH2]-[N]~N")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing triple bond)");
-			} else if (molecule.getProperty(id_prop).toString().equals("1559")) {
-                throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " is 1559");
-            } else if (Utils.matchesSMARTS(molecule, "N=[N+][N-]")) {
-				throw new Exception("SMARTS match: molecule " + molecule.getProperty(id_prop) + " contains a badly represented azide group (missing double bond)");
 			}
 
 			// if implicit hydrogens were added, show a warning and make them explicit
