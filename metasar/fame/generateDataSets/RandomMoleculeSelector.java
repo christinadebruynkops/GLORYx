@@ -1,7 +1,7 @@
 package fame.generateDataSets;
 
 import fame.tools.Globals;
-import fame.tools.SoMInfoZaretzki;
+import fame.tools.SoMInfo;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -30,8 +30,11 @@ public class RandomMoleculeSelector {
 	// CDK descriptors
 	private static String cdk_path =  Globals.DESCRIPTORS_OUT + "all.csv";
 
+	// quantum descriptors
+	private static String quantum_path =  Globals.DESCRIPTORS_OUT + "zaretzki_quantum_descriptors.csv";
+
 	//output
-	private static String output =  Globals.DATASETS_OUT + "zaretzki_data.csv";
+	private static String output =  Globals.DATASETS_OUT + "zaretzki_data_quantum.csv";
 
 	/**
 	 * Reads in all unique and valid molecules. Valid molecules are molecules that do not contain salts.
@@ -119,7 +122,7 @@ public class RandomMoleculeSelector {
 			IMolecule iMolecule = iMolecules.get(key);
 
             try {
-				SoMInfoZaretzki.parseInfoAndUpdateMol(iMolecule);
+				SoMInfo.parseInfoAndUpdateMol(iMolecule);
 			} catch (Exception exp) {
 				System.err.println("WARNING: Failed to parse molecule (" + key + ") due to the following error: ");
 				exp.printStackTrace();
@@ -134,7 +137,7 @@ public class RandomMoleculeSelector {
 	 * @return
 	 * @throws CDKException
 	 */
-	private static Map<String, IMolecule> generateTestTraingSet(Map<String, IMolecule> iMolecules) throws CDKException {
+	private static Map<String, IMolecule> generateTestTraingSet(Map<String, IMolecule> iMolecules, int folds) throws CDKException {
 		//generate an ArrayList containing all RMTB IDs
 		ArrayList<String> id_set = new ArrayList<String>(); //list containing all RMTB IDs
 
@@ -159,7 +162,7 @@ public class RandomMoleculeSelector {
         System.out.println(numberOfRandomlySelectedMolecules + "/" + iMolecules.size());
 
         while (id_set.size() > 0) {
-        	for (int i=0; i<foldsCv; i++) {
+        	for (int i=0; i<folds; i++) {
         		pick = random.nextInt(id_set.size());
         		iMolecule = iMolecules.get(id_set.get(pick));
         		iMolecule.setProperty("set", i + "CV");
@@ -245,11 +248,16 @@ public class RandomMoleculeSelector {
         iMolecules = readDescriptors(iMolecules, cdk_path);
 		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK descriptors computed for them");
 
+		System.out.println("##reading in CDK descriptors");
+		iMolecules = readDescriptors(iMolecules, quantum_path);
+		System.out.println("\t" + iMolecules.size() + "\tmolecules have CDK and quantum descriptors computed for them");
+
 		System.out.println("##reading SoM information and treating symmetric atoms");
 		iMolecules = readSoMInfo(iMolecules);
 
 		System.out.println("##selecting a test set");
-		iMolecules = generateTestTraingSet(iMolecules);
+//		iMolecules = generateTestTraingSet(iMolecules, iMolecules.size());
+		iMolecules = generateTestTraingSet(iMolecules, foldsCv);
 
 		System.out.println("##writing the output files");
 		writeOutput(iMolecules);
