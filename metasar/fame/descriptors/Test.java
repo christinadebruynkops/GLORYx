@@ -57,13 +57,17 @@ public class Test {
         SmilesParser smiles_parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 //        SmilesGenerator smiles_generator = new SmilesGenerator();
         IMolecule mol = smiles_parser.parseSmiles("OC(=O)CC(=O)O");
+//        for (int i = 0; i < mol.getAtomCount(); i++) {
+//            IAtom iAtom = mol.getAtom(i);
+//            iAtom.setCharge((double) iAtom.getFormalCharge());
+//        }
         Depiction.generateDepiction(mol, "test.png");
 
         int depth = 1;
         int frag_counter = 0;
         for (IAtom atm : mol.atoms()) {
             int idx = mol.getAtomNumber(atm);
-            System.out.println("Atom #" + idx + ": " + atm.getSymbol());
+            System.out.println("Atom #" + idx + ": " + atm.getAtomTypeName());
             Set<IAtom> atoms_all = new HashSet<>();
             Set<IAtom> atoms_current = new HashSet<>();
             Set<IAtom> atoms_next = new HashSet<>();
@@ -94,6 +98,7 @@ public class Test {
             mol_frag.setBonds(bonds_all.toArray(b_arr));
             mol_frag.setAtoms(atoms_all.toArray(a_arr));
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol_frag);
+            System.out.println("Central atom in fragment: " + (mol_frag.getAtomNumber(atm) + 1));
 
             AtomSignature atm_sig = new AtomSignature(mol_frag.getAtomNumber(atm), mol_frag);
             System.out.println(atm_sig.toCanonicalString());
