@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface NeighborhoodCollector {
 
-    void collect(IAtom atm, Set<IAtom> neigbors, int current_depth);
+    void collect(IAtom atm, Set<IAtom> neighbors, int current_depth);
 }

@@ -1,8 +1,8 @@
 package fame.descriptors;
 
 import fame.tools.Depiction;
+import fame.tools.Globals;
 import fame.tools.NeighborhoodCollector;
-import fame.tools.NeighborhoodIterator;
 import fame.tools.Utils;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
@@ -77,10 +77,14 @@ public class Test {
     public static void main(String[] args) throws Exception {
         SmilesParser smiles_parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         IMolecule mol = smiles_parser.parseSmiles("[O-]C(=O)CC(=O)[O-]");
-        Depiction.generateDepiction(mol, "test.png");
+        mol.setProperty(Globals.ID_PROP, "_test_mol");
+        Depiction.generateDepiction(mol, "_test_mol.png");
 
-        NeighborhoodCollector collector = new MyCollector(mol);
-        NeighborhoodIterator iterator = new NeighborhoodIterator(mol, 1, true);
-        iterator.iterate(collector);
+//        NeighborhoodCollector collector = new MyCollector(mol);
+//        NeighborhoodIterator iterator = new NeighborhoodIterator(mol, 1, true);
+//        iterator.iterate(collector);
+
+        WorkerThread my_thread = new WorkerThread(mol, true);
+        my_thread.run();
     }
 }

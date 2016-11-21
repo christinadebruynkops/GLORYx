@@ -75,7 +75,7 @@ public class NeighborhoodIterator {
                     for (Integer val : neigborhood_map.keySet()) {
                         fragment_atoms.addAll(neigborhood_map.get(val));
                     }
-                    depictNeighborhood(mol, fragment_atoms, String.format("test_%d.png", idx + 1));
+                    depictNeighborhood(mol, fragment_atoms, String.format("%s_%d.png", mol.getProperty(Globals.ID_PROP), idx + 1));
                 } catch (Exception exp) {
                     System.err.println("WARNING: failed to generate neigborhood depiction");
                     exp.printStackTrace();
