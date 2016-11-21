@@ -76,12 +76,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         SmilesParser smiles_parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-//        SmilesGenerator smiles_generator = new SmilesGenerator();
         IMolecule mol = smiles_parser.parseSmiles("[O-]C(=O)CC(=O)[O-]");
-//        for (int i = 0; i < mol.getAtomCount(); i++) {
-//            IAtom iAtom = mol.getAtom(i);
-//            iAtom.setCharge((double) iAtom.getFormalCharge());"org/openscience/cdk/dict/data/sybyl-atom-types.owl"
-//        }
         Depiction.generateDepiction(mol, "test.png");
 
         NeighborhoodCollector collector = new MyCollector(mol);
