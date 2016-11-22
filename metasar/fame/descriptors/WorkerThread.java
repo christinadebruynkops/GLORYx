@@ -253,6 +253,7 @@ public class WorkerThread implements Runnable {
 			List<String> to_write = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"
+					, "AtomType"
 			));
 			to_write.addAll(Arrays.asList(desc_names));
 			to_write.addAll(collector.getSignatures());
