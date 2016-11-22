@@ -70,7 +70,9 @@ public class NeighborhoodIterator {
                     List<IAtom> nbs = mol.getConnectedAtomsList(atm_current);
                     atoms_next.addAll(nbs);
                 }
-                atoms_next.removeAll(neigborhood_map.get(i));
+                if (i > 0) {
+                    atoms_next.removeAll(neigborhood_map.get(i-1));
+                }
                 neigborhood_map.put(i + 1, new HashSet<>(atoms_next));
                 collector.collect(atm, neigborhood_map.get(i + 1), i + 1);
                 atoms_current.clear();
