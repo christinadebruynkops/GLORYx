@@ -31,7 +31,7 @@ public class RandomMoleculeSelector {
 	private static String cdk_path =  Globals.DESCRIPTORS_OUT + "all.csv";
 
 	// quantum descriptors
-	private static String quantum_path =  Globals.DESCRIPTORS_OUT + "zaretzki_quantum_descriptors.csv";
+	private static String quantum_path =  Globals.DESCRIPTORS_OUT + "QC_descs/zaretzki_quantum_descriptors.csv";
 
 	//output
 	private static String output =  Globals.DATASETS_OUT + "zaretzki_data_quantum.csv";
