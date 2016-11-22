@@ -4,11 +4,13 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -221,6 +223,20 @@ public class Utils {
 
         return output.toString();
 
+    }
+
+    public static void writeAtomData(IMolecule mol, PrintWriter writer, List<String> properties) {
+        for (IAtom atom : mol.atoms()) {
+            if (atom.getSymbol().equals("H")) {
+                continue;
+            }
+            String result = "";
+            for (String prop : properties) {
+                result += atom.getProperty(prop) + ",";
+            }
+            rstrip(result, ",");
+            writer.println(result);
+        }
     }
 
     public static String strip(String string, String pattern) {

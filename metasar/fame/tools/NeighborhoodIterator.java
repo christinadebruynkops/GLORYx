@@ -18,6 +18,7 @@ public class NeighborhoodIterator {
     private int depth;
     private IMolecule mol;
     private boolean depict = false;
+    private boolean ignore_hydrogens = true;
 
     public NeighborhoodIterator(IMolecule mol, int depth) {
         this.mol = mol;
@@ -25,9 +26,13 @@ public class NeighborhoodIterator {
     }
 
     public NeighborhoodIterator(IMolecule mol, int depth, boolean depict) {
-        this.mol = mol;
-        this.depth = depth;
+        this(mol, depth);
         this.depict = depict;
+    }
+
+    public NeighborhoodIterator(IMolecule mol, int depth, boolean depict, boolean ignore_hydrogens) {
+        this(mol, depth, depict);
+        this.ignore_hydrogens = ignore_hydrogens;
     }
 
     private static void depictNeighborhood(IMolecule mol, Set<IAtom> frag_atms, String outfile) throws Exception {
@@ -49,6 +54,9 @@ public class NeighborhoodIterator {
 
     public void iterate(NeighborhoodCollector collector) {
         for (IAtom atm : mol.atoms()) {
+            if (ignore_hydrogens && atm.getSymbol().equals("H")) {
+                continue;
+            }
             int idx = mol.getAtomNumber(atm);
             Map<Integer, Set<IAtom>> neigborhood_map = new HashMap<>();
             Set<IAtom> atoms_current = new HashSet<>();

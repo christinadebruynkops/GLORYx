@@ -2,13 +2,9 @@
 
 package fame.descriptors;
 
-import fame.tools.Depiction;
-import fame.tools.Globals;
-import fame.tools.NeighborhoodIterator;
-import fame.tools.SoMInfo;
+import fame.tools.*;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
-import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.PathTools;
@@ -28,16 +24,6 @@ import java.util.*;
 
 public class WorkerThread implements Runnable {
 
-	class BasicCombinator implements NeighborCombinator {
-
-		@Override
-		public Object combine(Object current, Object added) {
-			double current_ = Double.parseDouble(current.toString());
-			double added_ = Double.parseDouble(added.toString());
-			return current_ + added_;
-		}
-	}
-
 	private IMolecule molecule;
 	private boolean depict;
 	private static final String id_prop = Globals.ID_PROP;
@@ -53,9 +39,6 @@ public class WorkerThread implements Runnable {
 			, "I"
 			, "P"
 	));
-	private static final InputStream stream = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance()).getClass().getClassLoader().getResourceAsStream("org/openscience/cdk/dict/data/sybyl-atom-types.owl");
-	private static final AtomTypeFactory factory = AtomTypeFactory.getInstance(stream, "owl", SilentChemObjectBuilder.getInstance());
-	private static final IAtomType[] types = factory.getAllAtomTypes();
 
 	public WorkerThread(IMolecule molecule, boolean depict) throws IOException, ClassNotFoundException{
 		this.molecule = molecule;
@@ -131,7 +114,7 @@ public class WorkerThread implements Runnable {
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
 				if (depict) {
-					System.err.println("Generating depiction for: " + molecule.getProperty(id_prop));
+//					System.err.println("Generating depiction for: " + molecule.getProperty(id_prop));
 					try {
 						Depiction.generateDepiction(molecule, Globals.DEPICTIONS_OUT + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
 					} catch (Exception exp) {
@@ -195,16 +178,6 @@ public class WorkerThread implements Runnable {
 			if (!data_dir.exists()) {
 				data_dir.mkdir();
 			}
-			PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + molecule.getProperty(id_prop).toString() + ".csv")));
-
-			outfile.print("Molecule,Atom,AtomType,atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
-					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
-					"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule");
-			outfile.println();
-
-			String[] desc_names = ("atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
-					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
-					"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule").split(",");
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
@@ -226,6 +199,9 @@ public class WorkerThread implements Runnable {
 //				PartialPiChargeDescriptor partialPiChargeDescriptor = new PartialPiChargeDescriptor();
 //				PartialTChargePEOEDescriptor partialTChargePEOEDescriptor = new PartialTChargePEOEDescriptor();
 
+			String[] desc_names = ("atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
+					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
+					"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule").split(",");
 			for(int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ){
 				IAtom iAtom = molecule.getAtom(atomNr);
 				//determine Sybyl atom types
@@ -269,21 +245,20 @@ public class WorkerThread implements Runnable {
 			}
 
 			int circ_depth = 1;
-			Map<String, NeighborCombinator> combinator_map = new HashMap<>();
-			for (String desc : desc_names) {
-				for (IAtomType tp : types) {
-					for (int depth = 0; depth <= circ_depth; depth++) {
-						combinator_map.put(String.format("%s_%s_%d", desc, tp.getAtomTypeName(), depth), new BasicCombinator());
-					}
-				}
-			}
 
 			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names));
         	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
 			iterator.iterate(collector);
-			collector.writeData(molecule, combinator_map);
-
-
+			collector.writeData(molecule);
+			List<String> to_write = new ArrayList<>(Arrays.asList(
+					"Molecule"
+					, "Atom"
+			));
+			to_write.addAll(Arrays.asList(desc_names));
+			to_write.addAll(collector.getSignatures());
+			PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + molecule.getProperty(id_prop).toString() + ".csv")));
+			outfile.println(String.join(",", to_write));
+			Utils.writeAtomData(molecule, outfile, to_write);
 			outfile.close();
 //			}
 		}
