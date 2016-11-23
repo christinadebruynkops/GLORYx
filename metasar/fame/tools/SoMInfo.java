@@ -133,7 +133,7 @@ public class SoMInfo {
                 }
                 String target_id = key.replaceAll(prop_prefix, "");
 
-                String[] atom_ids = value.split("\\s"); // FIXME: can be more than one separated by space
+                String[] atom_ids = value.split("\\s");
                 for (String atom_id_str : atom_ids) {
                     int atom_id = Integer.parseInt(atom_id_str);
                     SoMInfo som_info = new SoMInfo(
