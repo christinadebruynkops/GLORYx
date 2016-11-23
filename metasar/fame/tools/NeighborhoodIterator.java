@@ -69,6 +69,13 @@ public class NeighborhoodIterator {
                 for (IAtom atm_current : atoms_current) {
                     List<IAtom> nbs = mol.getConnectedAtomsList(atm_current);
                     atoms_next.addAll(nbs);
+                    if (ignore_hydrogens) {
+                        for (IAtom nb : nbs) {
+                            if (nb.getSymbol().equals("H")) {
+                                atoms_next.remove(nb);
+                            }
+                        }
+                    }
                 }
                 if (i > 0) {
                     atoms_next.removeAll(neigborhood_map.get(i-1));
