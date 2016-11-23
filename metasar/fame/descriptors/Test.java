@@ -1,6 +1,5 @@
 package fame.descriptors;
 
-import fame.tools.Depiction;
 import fame.tools.Globals;
 import fame.tools.NeighborhoodCollector;
 import fame.tools.Utils;
@@ -78,7 +77,7 @@ public class Test {
         SmilesParser smiles_parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         IMolecule mol = smiles_parser.parseSmiles("[O-]C(=O)CC(=O)[O-]");
         mol.setProperty(Globals.ID_PROP, "_test_mol");
-        Depiction.generateDepiction(mol, "_test_mol.png");
+//        Depiction.generateDepiction(mol, "_test_mol.png");
 
 //        NeighborhoodCollector collector = new MyCollector(mol);
 //        NeighborhoodIterator iterator = new NeighborhoodIterator(mol, 1, true);
