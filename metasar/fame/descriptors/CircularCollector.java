@@ -13,13 +13,40 @@ import java.util.*;
 
 public class CircularCollector implements NeighborhoodCollector {
 
-    public class SumCombinator implements NeighborCombinator {
+    public interface NeighborJoiner {
+
+        Object combine(List<Object> to_combine);
+    }
+
+    public static class SumJoiner implements NeighborJoiner {
 
         @Override
-        public Object combine(Object current, Object added) {
-            double current_ = Double.parseDouble(current.toString());
-            double added_ = Double.parseDouble(added.toString());
-            return current_ + added_;
+        public Object combine(List<Object> to_combine) {
+            double result = 0;
+            for (Object val : to_combine) {
+                result += Double.parseDouble(val.toString());
+            }
+            return result;
+        }
+    }
+
+    public static class MeanJoiner implements NeighborJoiner {
+
+        @Override
+        public Object combine(List<Object> to_combine) {
+            double result = 0;
+            for (Object val : to_combine) {
+                result += Double.parseDouble(val.toString());
+            }
+            return result / to_combine.size();
+        }
+    }
+
+    public static class CountJoiner implements NeighborJoiner {
+
+        @Override
+        public Object combine(List<Object> to_combine) {
+            return to_combine.size();
         }
     }
 
@@ -29,24 +56,31 @@ public class CircularCollector implements NeighborhoodCollector {
 
     private Map<IAtom, Set<NeighborData>> molecule_map;
     private List<String> descriptors;
-    private Map<String, NeighborCombinator> combinators;
+    private NeighborJoiner default_joiner = new SumJoiner();
+    private Map<String, NeighborJoiner> joiners;
     private int depth_reached = -1;
     private boolean ignore_zero_depth = true;
 
     CircularCollector(List<String> descriptors) {
         this.descriptors = new ArrayList<>(descriptors);
         this.molecule_map = new HashMap<>();
-        this.combinators = new TreeMap<>();
+        this.joiners = new TreeMap<>();
     }
 
-    CircularCollector(List<String> descriptors, boolean ignore_zero_depth) {
+    CircularCollector(List<String> descriptors, NeighborJoiner default_joiner) {
+        this(descriptors);
+        this.default_joiner = default_joiner;
+    }
+
+    CircularCollector(List<String> descriptors, NeighborJoiner default_joiner, boolean ignore_zero_depth) {
         this(descriptors);
         this.ignore_zero_depth = ignore_zero_depth;
+        this.default_joiner = default_joiner;
     }
 
-    CircularCollector(List<String> descriptors, Map<String, NeighborCombinator> combinators, boolean ignore_zero_depth) {
+    CircularCollector(List<String> descriptors, Map<String, NeighborJoiner> joiners, boolean ignore_zero_depth) {
         this(descriptors);
-        this.combinators = combinators;
+        this.joiners = joiners;
         this.ignore_zero_depth = ignore_zero_depth;
     }
 
@@ -77,7 +111,7 @@ public class CircularCollector implements NeighborhoodCollector {
     }
 
     public Set<String> getSignatures() {
-        return combinators.keySet();
+        return joiners.keySet();
     }
 
     public void writeData(IMolecule mol) throws Exception {
@@ -86,11 +120,11 @@ public class CircularCollector implements NeighborhoodCollector {
             starting_depth = 1;
         }
 
-        if (combinators.isEmpty()) {
+        if (joiners.isEmpty()) {
             for (String desc : this.descriptors) {
                 for (IAtomType tp : types) {
                     for (int depth = starting_depth; depth <= depth_reached; depth++) {
-                        combinators.put(String.format("%s_%s_%d", desc, tp.getAtomTypeName(), depth), new SumCombinator());
+                        joiners.put(String.format("%s_%s_%d", desc, tp.getAtomTypeName(), depth), default_joiner.getClass().newInstance());
                     }
                 }
             }
@@ -100,26 +134,24 @@ public class CircularCollector implements NeighborhoodCollector {
             if (ignore_zero_depth && atm.getSymbol().equals("H")) {
                 continue;
             }
-            for (String sig : combinators.keySet()) {
+            for (String sig : joiners.keySet()) {
                 atm.setProperty(sig, null);
             }
+            Map<String, List<Object>> sig_val_map = new HashMap<>();
             for (NeighborData data : molecule_map.get(atm)) {
                 String signature = data.getSignature();
-                if (combinators.containsKey(signature)) {
-                    if (atm.getProperty(signature) != null) {
-                        atm.setProperty(
-                                signature
-                                , combinators.get(signature).combine(
-                                        atm.getProperty(signature)
-                                        , data.getValue()
-                                )
-                        );
-                    } else {
-                        atm.setProperty(signature, data.getValue());
+                if (joiners.containsKey(signature)) {
+                    if (!sig_val_map.containsKey(signature)) {
+                        sig_val_map.put(signature, new ArrayList<>());
                     }
+                    sig_val_map.get(signature).add(data.getValue());
                 } else {
                     throw new Exception("invalid signature");
                 }
+            }
+
+            for (String signature : sig_val_map.keySet()) {
+                atm.setProperty(signature, joiners.get(signature).combine(sig_val_map.get(signature)));
             }
         }
     }

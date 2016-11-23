@@ -244,9 +244,9 @@ public class WorkerThread implements Runnable {
 				}
 			}
 
-			int circ_depth = 1;
+			int circ_depth = 2;
 
-			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names));
+			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.SumJoiner());
         	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
 			iterator.iterate(collector);
 			collector.writeData(molecule);
