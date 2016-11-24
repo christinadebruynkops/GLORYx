@@ -27,7 +27,7 @@ public class RandomMoleculeSelector {
 
 	// CDK descriptors
 	private static String cdk_folder =  Globals.DESCRIPTORS_OUT;
-	private static String cdk_all_file=  cdk_folder + "all.csv";
+//	private static String cdk_all_file=  cdk_folder + "all.csv";
 	private static Set<String> removed_circ_descs = new HashSet<>();
 
 	// quantum descriptors

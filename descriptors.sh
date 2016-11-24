@@ -13,10 +13,10 @@ cd run_dir
   | tee $STD_LOG
 ) 3>&1 1>&2 2>&3 | tee $ERR_LOG
 
-cd descriptors_zaretzki/
-PATTERN='*.csv'
-ALL_DATA=all.csv
-rm -f $ALL_DATA
-cat $PATTERN | egrep -v 'Mol' > $ALL_DATA
-FILES=( $PATTERN )
-echo -e "$(head -1 ${FILES[0]})\n$(cat $ALL_DATA)" > $ALL_DATA
+#cd descriptors_zaretzki/
+#PATTERN='*.csv'
+#ALL_DATA=all.csv
+#rm -f $ALL_DATA
+#cat $PATTERN | egrep -v 'Mol' > $ALL_DATA
+#FILES=( $PATTERN )
+#echo -e "$(head -1 ${FILES[0]})\n$(cat $ALL_DATA)" > $ALL_DATA
