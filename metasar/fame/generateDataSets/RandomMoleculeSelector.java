@@ -20,7 +20,7 @@ public class RandomMoleculeSelector {
 	private static int foldsCv = 10;
 	private static double testSetRatio = 0.2;
 	private static int seed = 42;
-	private static int circ_occurence_limit = 30;
+	private static int circ_occurence_limit = 10;
 
 	// input SDF
 	private static String input_sdf =  "input_data/CYP_DBs/HLM.sdf";
@@ -99,7 +99,11 @@ public class RandomMoleculeSelector {
 					if (removed_circ_descs.contains(descriptorNames[i])) {
 						continue;
 					}
-					atm.setProperty(descriptorNames[i], splitLine[i]);
+					if (!splitLine[i].equals("null")) {
+						atm.setProperty(descriptorNames[i], splitLine[i]);
+					} else {
+						atm.setProperty(descriptorNames[i], null);
+					}
 				}
 				available_mols.put(thisMolecule, mol);
 			}
