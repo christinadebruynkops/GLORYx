@@ -39,6 +39,11 @@ public class WorkerThread implements Runnable {
 			, "I"
 			, "P"
 	));
+	private static final Map<String, Integer> circ_descs_stats = new HashMap<>();
+
+	public static Map<String, Integer> getStats() {
+		return circ_descs_stats;
+	}
 
 	public WorkerThread(IMolecule molecule, boolean depict) throws IOException, ClassNotFoundException{
 		this.molecule = molecule;
@@ -244,12 +249,16 @@ public class WorkerThread implements Runnable {
 				}
 			}
 
+			// calculate the circular descriptors
 			int circ_depth = 2;
-
 			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.SumJoiner());
         	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
 			iterator.iterate(collector);
-			collector.writeData(molecule);
+			synchronized (circ_descs_stats) {
+				collector.writeData(molecule, circ_descs_stats);
+			}
+
+			// write the file
 			List<String> to_write = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"

@@ -85,5 +85,7 @@ public class Test {
 
         WorkerThread my_thread = new WorkerThread(mol, true);
         my_thread.run();
+        my_thread = new WorkerThread(mol, true);
+        my_thread.run();
     }
 }
