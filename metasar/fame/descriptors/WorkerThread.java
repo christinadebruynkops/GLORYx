@@ -251,7 +251,7 @@ public class WorkerThread implements Runnable {
 
 			// calculate the circular descriptors
 			int circ_depth = 2;
-			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.SumJoiner());
+			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.MeanJoiner());
         	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
 			iterator.iterate(collector);
 			synchronized (circ_descs_stats) {
