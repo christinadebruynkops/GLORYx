@@ -9,7 +9,7 @@ STD_LOG="descriptors_zaretzki.log"
 cd run_dir
 
 (
-  java -jar ../out/artifacts/descriptors/metasar.jar $INPUT_FILE \
+  java -Xmx4000m -jar ../out/artifacts/descriptors/metasar.jar $INPUT_FILE \
   | tee $STD_LOG
 ) 3>&1 1>&2 2>&3 | tee $ERR_LOG
 

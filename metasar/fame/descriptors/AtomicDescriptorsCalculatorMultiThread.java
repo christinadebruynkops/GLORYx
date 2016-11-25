@@ -1,6 +1,5 @@
 package fame.descriptors;
 
-import fame.generateDataSets.RandomMoleculeSelector;
 import fame.tools.Globals;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
@@ -56,6 +55,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
         	Runnable worker = new WorkerThread(molecules.get(i), true); // insert true to generate SOMs depictions
         	executor.execute(worker);
         }
+        molecules = null; // this is to save memory, GC should take care of the rest when workers finish
         executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
 		System.out.println("Descriptor calculator finished. All threads completed.");
@@ -68,9 +68,9 @@ public class AtomicDescriptorsCalculatorMultiThread {
 		fos.close();
 		System.out.println("Serialized circular descriptors statistics to: " + Globals.DESCRIPTORS_OUT + "circular_stats.ser");
 
-		System.out.println("Generating data set...");
-		String[] dummy = new String[0];
-		RandomMoleculeSelector.main(dummy);
-		System.out.println("Done.");
+//		System.out.println("Generating data set...");
+//		String[] dummy = new String[0];
+//		RandomMoleculeSelector.main(dummy);
+//		System.out.println("Done.");
 	}
 }

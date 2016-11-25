@@ -19,7 +19,8 @@ import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class WorkerThread implements Runnable {
@@ -250,27 +251,42 @@ public class WorkerThread implements Runnable {
 			}
 
 			// calculate the circular descriptors
-			int circ_depth = 2;
-			CircularCollector collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.MeanJoiner());
+			int circ_depth = 3;
+			CircularCollector circ_collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.MeanAggregator());
         	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
-			iterator.iterate(collector);
+			iterator.iterate(circ_collector);
 			synchronized (circ_descs_stats) {
-				collector.writeData(molecule, circ_descs_stats);
+				circ_collector.writeData(molecule, circ_descs_stats);
 			}
 
+			// calculate the circular fingerprints
+			int fg_circ_depth = 6;
+			CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
+			NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, fg_circ_depth);
+			fg_iterator.iterate(fg_collector);
+			synchronized (circ_descs_stats) {
+				fg_collector.writeData(molecule, circ_descs_stats);
+			}
+
+
 			// write the file
-			List<String> to_write = new ArrayList<>(Arrays.asList(
+			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"
 					, "AtomType"
 			));
-			to_write.addAll(Arrays.asList(desc_names));
-			to_write.addAll(collector.getSignatures());
-			PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + molecule.getProperty(id_prop).toString() + ".csv")));
-			outfile.println(String.join(",", to_write));
-			Utils.writeAtomData(molecule, outfile, to_write);
-			outfile.close();
-//			}
+			basic_descs.addAll(Arrays.asList(desc_names));
+			Utils.writeAtomData(molecule, basic_descs, "_basic", false);
+
+			List<String> fingerprints = new ArrayList<>();
+			fingerprints.addAll(basic_descs);
+			fingerprints.addAll(fg_collector.getSignatures());
+			Utils.writeAtomData(molecule, fingerprints, "_fing", true);
+
+			List<String> circ_descs = new ArrayList<>();
+			circ_descs.addAll(basic_descs);
+			circ_descs.addAll(circ_collector.getSignatures());
+			Utils.writeAtomData(molecule, circ_descs, "_circ", false);
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {

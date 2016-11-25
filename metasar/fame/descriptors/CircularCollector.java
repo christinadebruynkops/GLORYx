@@ -13,12 +13,12 @@ import java.util.*;
 
 public class CircularCollector implements NeighborhoodCollector {
 
-    public interface NeighborJoiner {
+    public interface Aggregator {
 
         Object combine(List<Object> to_combine);
     }
 
-    public static class SumJoiner implements NeighborJoiner {
+    public static class SumAggregator implements Aggregator {
 
         @Override
         public Object combine(List<Object> to_combine) {
@@ -30,7 +30,7 @@ public class CircularCollector implements NeighborhoodCollector {
         }
     }
 
-    public static class MeanJoiner implements NeighborJoiner {
+    public static class MeanAggregator implements Aggregator {
 
         @Override
         public Object combine(List<Object> to_combine) {
@@ -42,7 +42,7 @@ public class CircularCollector implements NeighborhoodCollector {
         }
     }
 
-    public static class CountJoiner implements NeighborJoiner {
+    public static class CountJoiner implements Aggregator {
 
         @Override
         public Object combine(List<Object> to_combine) {
@@ -56,8 +56,8 @@ public class CircularCollector implements NeighborhoodCollector {
 
     private Map<IAtom, Set<NeighborData>> molecule_map;
     private List<String> descriptors;
-    private NeighborJoiner default_joiner = new SumJoiner();
-    private Map<String, NeighborJoiner> joiners;
+    private Aggregator default_joiner = new SumAggregator();
+    private Map<String, Aggregator> joiners;
     private int depth_reached = -1;
     private boolean ignore_zero_depth = true;
 
@@ -67,18 +67,18 @@ public class CircularCollector implements NeighborhoodCollector {
         this.joiners = new TreeMap<>();
     }
 
-    CircularCollector(List<String> descriptors, NeighborJoiner default_joiner) {
+    CircularCollector(List<String> descriptors, Aggregator default_joiner) {
         this(descriptors);
         this.default_joiner = default_joiner;
     }
 
-    CircularCollector(List<String> descriptors, NeighborJoiner default_joiner, boolean ignore_zero_depth) {
+    CircularCollector(List<String> descriptors, Aggregator default_joiner, boolean ignore_zero_depth) {
         this(descriptors);
         this.ignore_zero_depth = ignore_zero_depth;
         this.default_joiner = default_joiner;
     }
 
-    CircularCollector(List<String> descriptors, Map<String, NeighborJoiner> joiners, boolean ignore_zero_depth) {
+    CircularCollector(List<String> descriptors, Map<String, Aggregator> joiners, boolean ignore_zero_depth) {
         this(descriptors);
         this.joiners = joiners;
         this.ignore_zero_depth = ignore_zero_depth;

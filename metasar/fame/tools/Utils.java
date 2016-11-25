@@ -8,9 +8,7 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -225,18 +223,25 @@ public class Utils {
 
     }
 
-    public static void writeAtomData(IMolecule mol, PrintWriter writer, List<String> properties) {
+    public static void writeAtomData(IMolecule mol, List<String> properties, String suffix, boolean null_as_zero) throws Exception {
+        PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + mol.getProperty(Globals.ID_PROP).toString() + suffix + ".csv")));
+        outfile.println(String.join(",", properties));
         for (IAtom atom : mol.atoms()) {
             if (atom.getSymbol().equals("H")) {
                 continue;
             }
             String result = "";
-            for (String prop : properties) {
-                result += atom.getProperty(prop) + ",";
+            for (String prop_name : properties) {
+                Object prop = atom.getProperty(prop_name);
+                if (prop == null && null_as_zero) {
+                    prop = 0;
+                }
+                result += prop + ",";
             }
             rstrip(result, ",");
-            writer.println(result);
+            outfile.println(result);
         }
+        outfile.close();
     }
 
     public static String strip(String string, String pattern) {
