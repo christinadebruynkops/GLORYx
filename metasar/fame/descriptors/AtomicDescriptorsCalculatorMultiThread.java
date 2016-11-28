@@ -55,7 +55,7 @@ public class AtomicDescriptorsCalculatorMultiThread {
         	Runnable worker = new WorkerThread(molecules.get(i), true); // insert true to generate SOMs depictions
         	executor.execute(worker);
         }
-        molecules = null; // this is to save memory, GC should take care of the rest when workers finish
+        molecules = null; // this is to save memory, GC should take care of the rest when a worker finishes processing a molecule
         executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
 		System.out.println("Descriptor calculator finished. All threads completed.");

@@ -2,6 +2,7 @@
 
 package fame.descriptors;
 
+import fame.generateDataSets.RandomMoleculeSelector;
 import fame.tools.*;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -44,6 +45,16 @@ public class WorkerThread implements Runnable {
 
 	public static Map<String, Integer> getStats() {
 		return circ_descs_stats;
+	}
+
+	private Set<String> computeCircDescriptors(List<String> desc_names, CircularCollector.Aggregator aggregator, int circ_depth) throws Exception {
+		CircularCollector circ_collector = new CircularCollector(desc_names, aggregator);
+		NeighborhoodIterator circ_iterator = new NeighborhoodIterator(molecule, circ_depth);
+		circ_iterator.iterate(circ_collector);
+		synchronized (circ_descs_stats) {
+			circ_collector.writeData(molecule, circ_descs_stats);
+		}
+		return circ_collector.getSignatures();
 	}
 
 	public WorkerThread(IMolecule molecule, boolean depict) throws IOException, ClassNotFoundException{
@@ -250,16 +261,26 @@ public class WorkerThread implements Runnable {
 				}
 			}
 
-			// calculate the circular descriptors
-			int circ_depth = 3;
-			CircularCollector circ_collector = new CircularCollector(Arrays.asList(desc_names), new CircularCollector.MeanAggregator());
-        	NeighborhoodIterator iterator = new NeighborhoodIterator(molecule, circ_depth);
-			iterator.iterate(circ_collector);
-			synchronized (circ_descs_stats) {
-				circ_collector.writeData(molecule, circ_descs_stats);
-			}
+			// read in the QC descriptors
+			int circ_qc_depth = 6;
+			List<String> qc_desc_names = Arrays.asList(
+					"De(r)", "Dn(r)", "NetCharge", "NumOfElecs", "OrbEPop_px",
+					"OrbEPop_py", "OrbEPop_pz", "OrbEPop_s", "homo", "homo-1",
+					"lumo", "lumo+1", "homo_minus_lumo", "mull_charge",
+					"mull_pop", "p-Pop", "piS(r)", "q(r)-Z(r)", "s-Pop"
+			);
+			Map<String, IMolecule> dummy = new HashMap<>();
+			dummy.put(molecule.getProperty(id_prop).toString(), molecule);
+			RandomMoleculeSelector.readDescriptors(dummy, RandomMoleculeSelector.quantum_path);
 
-			// calculate the circular fingerprints
+			// calculate all circular descriptors (CDK and QC)
+			List<String> base_descriptors = new ArrayList<>();
+			base_descriptors.addAll(Arrays.asList(desc_names));
+			base_descriptors.addAll(qc_desc_names);
+			int circ_depth = 6;
+			Set<String> circ_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), 6);
+
+			// calculate the atom type circular fingerprints
 			int fg_circ_depth = 6;
 			CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
 			NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, fg_circ_depth);
@@ -268,8 +289,7 @@ public class WorkerThread implements Runnable {
 				fg_collector.writeData(molecule, circ_descs_stats);
 			}
 
-
-			// write the file
+			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"
@@ -278,15 +298,23 @@ public class WorkerThread implements Runnable {
 			basic_descs.addAll(Arrays.asList(desc_names));
 			Utils.writeAtomData(molecule, basic_descs, "_basic", false);
 
+			// write the basic QC descriptors
+			List<String> qc_descs = new ArrayList<>();
+			qc_descs.addAll(basic_descs);
+			qc_descs.addAll(qc_desc_names);
+			Utils.writeAtomData(molecule, qc_descs, "_qc", false);
+
+			// write the atom type fingerprints
 			List<String> fingerprints = new ArrayList<>();
 			fingerprints.addAll(basic_descs);
 			fingerprints.addAll(fg_collector.getSignatures());
 			Utils.writeAtomData(molecule, fingerprints, "_fing", true);
 
+			// write the circular descriptors
 			List<String> circ_descs = new ArrayList<>();
 			circ_descs.addAll(basic_descs);
-			circ_descs.addAll(circ_collector.getSignatures());
-			Utils.writeAtomData(molecule, circ_descs, "_circ", false);
+			circ_descs.addAll(circ_signatures);
+			Utils.writeAtomData(molecule, circ_descs, "_circ6_all", false);
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {
