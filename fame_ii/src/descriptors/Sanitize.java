@@ -1,6 +1,6 @@
-package fame.descriptors;
+package descriptors;
 
-import fame.tools.Utils;
+import utils.Utils;
 
 /**
  * Runs open babel and ionizes the molecules to pH = 7.

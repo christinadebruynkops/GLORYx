@@ -1,4 +1,4 @@
-package fame.tools;
+package globals;
 
 /**
  * A simple class holding some useful global constants that are used

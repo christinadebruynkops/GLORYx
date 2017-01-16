@@ -1,4 +1,4 @@
-package fame.tools;
+package utils;
 
 import org.openscience.cdk.interfaces.IAtom;
 

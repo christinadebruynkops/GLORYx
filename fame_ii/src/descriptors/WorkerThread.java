@@ -1,9 +1,8 @@
 //Span descriptor calculation taken from SmartCyp
 
-package fame.descriptors;
+package descriptors;
 
-import fame.generateDataSets.RandomMoleculeSelector;
-import fame.tools.*;
+import globals.Globals;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -19,6 +18,10 @@ import org.openscience.cdk.qsar.descriptors.atomic.*;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import utils.Depiction;
+import utils.NeighborhoodIterator;
+import utils.SoMInfo;
+import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -262,21 +265,21 @@ public class WorkerThread implements Runnable {
 			}
 
 			// read in the QC descriptors
-			int circ_qc_depth = 6;
-			List<String> qc_desc_names = Arrays.asList(
-					"De(r)", "Dn(r)", "NetCharge", "NumOfElecs", "OrbEPop_px",
-					"OrbEPop_py", "OrbEPop_pz", "OrbEPop_s", "homo", "homo-1",
-					"lumo", "lumo+1", "homo_minus_lumo", "mull_charge",
-					"mull_pop", "p-Pop", "piS(r)", "q(r)-Z(r)", "s-Pop"
-			);
-			Map<String, IMolecule> dummy = new HashMap<>();
-			dummy.put(molecule.getProperty(id_prop).toString(), molecule);
-			RandomMoleculeSelector.readDescriptors(dummy, RandomMoleculeSelector.quantum_path);
+//			int circ_qc_depth = 6;
+//			List<String> qc_desc_names = Arrays.asList(
+//					"De(r)", "Dn(r)", "NetCharge", "NumOfElecs", "OrbEPop_px",
+//					"OrbEPop_py", "OrbEPop_pz", "OrbEPop_s", "homo", "homo-1",
+//					"lumo", "lumo+1", "homo_minus_lumo", "mull_charge",
+//					"mull_pop", "p-Pop", "piS(r)", "q(r)-Z(r)", "s-Pop"
+//			);
+//			Map<String, IMolecule> dummy = new HashMap<>();
+//			dummy.put(molecule.getProperty(id_prop).toString(), molecule);
+//			RandomMoleculeSelector.readDescriptors(dummy, RandomMoleculeSelector.quantum_path);
 
 			// calculate all circular descriptors (CDK and QC)
 			List<String> base_descriptors = new ArrayList<>();
 			base_descriptors.addAll(Arrays.asList(desc_names));
-			base_descriptors.addAll(qc_desc_names);
+//			base_descriptors.addAll(qc_desc_names);
 			int circ_depth = 6;
 			Set<String> circ_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), 6);
 
@@ -301,7 +304,7 @@ public class WorkerThread implements Runnable {
 			// write the basic QC descriptors
 			List<String> qc_descs = new ArrayList<>();
 			qc_descs.addAll(basic_descs);
-			qc_descs.addAll(qc_desc_names);
+//			qc_descs.addAll(qc_desc_names);
 			Utils.writeAtomData(molecule, qc_descs, "_qc", false);
 
 			// write the atom type fingerprints

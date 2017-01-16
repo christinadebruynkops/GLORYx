@@ -1,5 +1,6 @@
-package fame.tools;
+package utils;
 
+import globals.Globals;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;

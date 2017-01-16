@@ -1,4 +1,4 @@
-package fame.descriptors;
+package descriptors;
 
 import org.openscience.cdk.interfaces.IAtom;
 

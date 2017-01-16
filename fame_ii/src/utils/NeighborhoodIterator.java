@@ -1,5 +1,6 @@
-package fame.tools;
+package utils;
 
+import globals.Globals;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;

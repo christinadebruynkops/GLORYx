@@ -1,6 +1,6 @@
-package fame.descriptors;
+package descriptors;
 
-import fame.tools.NeighborhoodCollector;
+import utils.NeighborhoodCollector;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.interfaces.IAtom;

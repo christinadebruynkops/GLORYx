@@ -1,6 +1,6 @@
-package fame.descriptors;
+package descriptors;
 
-import fame.tools.Globals;
+import globals.Globals;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
