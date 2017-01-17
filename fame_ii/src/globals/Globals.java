@@ -7,6 +7,7 @@ package globals;
  * Created by sicho on 10/5/16.
  */
 public class Globals {
+    public static final String INPUT_SDF = "input.sdf";
     public static final String ID_PROP = "ID"; // SDF file property variable holding the ID of the molecule
     public static final String PRIM_SOM_PROP_PREFIX = "PRIMARY_SOM_";
     public static final String SEC_SOM_PROP_PREFIX = "SECONDARY_SOM_";
