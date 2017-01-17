@@ -5,6 +5,7 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import utils.Sanitize;
 
 import java.io.File;
 import java.io.FileInputStream;

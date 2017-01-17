@@ -1,4 +1,4 @@
-package utils;
+package descriptors.circular;
 
 import globals.Globals;
 import org.openscience.cdk.Molecule;
@@ -6,6 +6,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import utils.Depiction;
 
 import java.util.*;
 

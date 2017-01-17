@@ -1,6 +1,5 @@
-package descriptors;
+package descriptors.circular;
 
-import utils.NeighborhoodCollector;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.interfaces.IAtom;
@@ -67,7 +66,7 @@ public class CircularCollector implements NeighborhoodCollector {
         this.joiners = new TreeMap<>();
     }
 
-    CircularCollector(List<String> descriptors, Aggregator default_joiner) {
+    public CircularCollector(List<String> descriptors, Aggregator default_joiner) {
         this(descriptors);
         this.default_joiner = default_joiner;
     }

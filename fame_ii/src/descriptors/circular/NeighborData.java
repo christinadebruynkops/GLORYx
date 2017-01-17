@@ -1,4 +1,4 @@
-package descriptors;
+package descriptors.circular;
 
 import org.openscience.cdk.interfaces.IAtom;
 

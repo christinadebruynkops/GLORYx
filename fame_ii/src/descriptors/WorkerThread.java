@@ -2,6 +2,8 @@
 
 package descriptors;
 
+import descriptors.circular.CircularCollector;
+import descriptors.circular.NeighborhoodIterator;
 import globals.Globals;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -19,7 +21,6 @@ import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.Depiction;
-import utils.NeighborhoodIterator;
 import utils.SoMInfo;
 import utils.Utils;
 

@@ -1,6 +1,4 @@
-package descriptors;
-
-import utils.Utils;
+package utils;
 
 /**
  * Runs open babel and ionizes the molecules to pH = 7.
