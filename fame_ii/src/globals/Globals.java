@@ -7,8 +7,8 @@ package globals;
  * Created by sicho on 10/5/16.
  */
 public class Globals {
-    public static final String INPUT_SDF = "input.sdf";
-    public static final String ID_PROP = "ID"; // SDF file property variable holding the ID of the molecule
+    public static final String INPUT_SDF = "test_files/tamoxifen.sdf";
+    public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
     public static final String PRIM_SOM_PROP_PREFIX = "PRIMARY_SOM_";
     public static final String SEC_SOM_PROP_PREFIX = "SECONDARY_SOM_";
     public static final String TER_SOM_PROP_PREFIX = "TERTIARY_SOM_";
@@ -27,7 +27,7 @@ public class Globals {
     public static final String REAMAIN_PROP = "reamain";
     public static final String REAGEN_PROP = "reagens";
     public static final int LOAD_MAX_MOL = -1; // load this many molecules at max (-1 for unlimited)
-    public static final String DESCRIPTORS_OUT = "./descriptors_zaretzki/";
+    public static final String DESCRIPTORS_OUT = "./test_files/descriptors/";
     public static final String DEPICTIONS_OUT = "./depictions_zaretzki/";
     public static final String DATASETS_OUT = "./datasets_zaretzki/";
 }

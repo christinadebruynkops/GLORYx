@@ -1,6 +1,5 @@
 package utils;
 
-import globals.Globals;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
@@ -224,8 +223,8 @@ public class Utils {
 
     }
 
-    public static void writeAtomData(IMolecule mol, List<String> properties, String suffix, boolean null_as_zero) throws Exception {
-        PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(Globals.DESCRIPTORS_OUT + mol.getProperty(Globals.ID_PROP).toString() + suffix + ".csv")));
+    public static void writeAtomData(IMolecule mol, String path, List<String> properties, boolean null_as_zero) throws Exception {
+        PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(path)));
         outfile.println(String.join(",", properties));
         for (IAtom atom : mol.atoms()) {
             if (atom.getSymbol().equals("H")) {

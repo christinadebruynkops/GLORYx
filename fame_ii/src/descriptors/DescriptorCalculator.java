@@ -18,13 +18,17 @@ import java.util.concurrent.TimeUnit;
 public class DescriptorCalculator {
 	private String input_file;
 	private String output_dir;
-	private String id_prop = Globals.ID_PROP; // TODO: this will be the cdk property assigned by default to a molecule
+	private String id_prop = Globals.ID_PROP;
 	private Set<String> desc_groups = new HashSet<>();
 
 	public DescriptorCalculator(String input_file, String output_dir, Set<String> desc_groups) {
 		if (!new File(input_file).exists()) {
 			System.err.println("File not found: " + input_file);
 			System.exit(1);
+		}
+		File outdir = new File(output_dir);
+		if (!outdir.exists()) {
+			outdir.mkdir();
 		}
 		this.input_file = input_file;
 		this.output_dir = output_dir;
@@ -49,10 +53,16 @@ public class DescriptorCalculator {
 
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		for (int i = 0; i < molecules.size(); i++) {
-			Runnable worker = new WorkerThread(molecules.get(i), true); // insert true to generate SOMs depictions
+			Runnable worker = new WorkerThread(
+					molecules.get(i)
+					, id_prop
+					, output_dir
+					, desc_groups
+					, true // insert true to generate depictions
+			);
 			executor.execute(worker);
 		}
-		molecules = null; // this is to save memory, GC should take care of the rest when a worker finishes processing a molecule
+		molecules = null; // this is to save memory, GC should take care of the rest when a worker finishes processing a molecule -> we want molecules out of memory as soon as the descriptors are in the file
 		executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
 		System.out.println("Descriptor calculator finished. All threads completed.");

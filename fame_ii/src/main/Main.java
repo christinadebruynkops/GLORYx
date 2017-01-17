@@ -27,9 +27,12 @@ public class Main {
                 , "ccdk"
                 )
         );
+        boolean santize = true;
 
         // sanitize the data and get the path to the modified file
-        input_sdf = Sanitize.sanitize(input_sdf);
+        if (santize) {
+            input_sdf = Sanitize.sanitize(input_sdf);
+        }
 
         // calculate the descriptors
         DescriptorCalculator desc_calc = new DescriptorCalculator(input_sdf, out_dir, desc_groups);
