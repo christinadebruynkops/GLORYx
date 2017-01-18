@@ -4,6 +4,10 @@ package descriptors;
 
 import descriptors.circular.CircularCollector;
 import descriptors.circular.NeighborhoodIterator;
+import globals.Globals;
+import modelling.Encoder;
+import modelling.Modeller;
+import modelling.Result;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -72,7 +76,7 @@ public class WorkerThread implements Runnable {
 		this.depict = depict;
 		this.id_prop = id_prop;
 		this.out_dir = out_dir;
-		this.depict_dir = out_dir + "/depictions";
+		this.depict_dir = out_dir + "depictions/";
 		this.desc_groups.addAll(desc_groups);
 	}
 
@@ -290,6 +294,17 @@ public class WorkerThread implements Runnable {
 					fing_signatures = fg_collector.getSignatures();
 				}
 			}
+
+			// encode atom types
+            Encoder at_encoder = new Encoder("AtomType");
+            at_encoder.encode(molecule);
+
+            // impute missing values for circular fingerprints
+            // TODO: implement (prolly via an Imputer class)
+
+			// do the modelling
+			Modeller modeller = new Modeller(Globals.MODEL_PATH);
+			Map<IAtom, Result> results = modeller.predict(molecule); // TODO: process the results
 
 			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(

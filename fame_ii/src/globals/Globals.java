@@ -8,6 +8,9 @@ package globals;
  */
 public class Globals {
     public static final String INPUT_SDF = "test_files/tamoxifen.sdf";
+    public static final String MODEL_PATH = "test_files/final_model.pmml";
+    public static final String ENCODERS_PATH = "test_files/encoders.json";
+    public static final String TARGET_VAR = "HLM";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
     public static final String PRIM_SOM_PROP_PREFIX = "PRIMARY_SOM_";
     public static final String SEC_SOM_PROP_PREFIX = "SECONDARY_SOM_";
