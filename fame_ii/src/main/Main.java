@@ -2,11 +2,6 @@ package main;
 
 import descriptors.DescriptorCalculator;
 import globals.Globals;
-import utils.Sanitize;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The main method of FAME II.
@@ -16,26 +11,23 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
         // TODO: this stuff will be the parameters of the program
-        String input_sdf = Globals.INPUT_SDF;
-        String out_dir = Globals.DESCRIPTORS_OUT;
-        Set<String> desc_groups = new HashSet<>(
-                Arrays.asList(
-                "cdk"
-                , "fing"
-                , "ccdk"
-                )
-        );
+        String input_sdf = "test_files/compounds/tamoxifen.sdf";
+        String out_dir = "test_files/results";
+        String model_code = "cdk"; // can be 'cdk', 'cdk_ccdk', 'cdk_fing' or 'cdk_fing_ccdk'
+        String target_var = "HLM";
         boolean santize = true;
 
-        // sanitize the data and get the path to the modified file
-        if (santize) {
-            input_sdf = Sanitize.sanitize(input_sdf);
-        }
+        Globals params = new Globals(
+                input_sdf
+                , out_dir
+                , model_code
+                , target_var
+                , santize
+        );
 
         // calculate the descriptors
-        DescriptorCalculator desc_calc = new DescriptorCalculator(input_sdf, out_dir, desc_groups);
+        DescriptorCalculator desc_calc = new DescriptorCalculator(params);
         desc_calc.calculate();
     }
 }

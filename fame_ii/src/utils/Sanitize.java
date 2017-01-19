@@ -1,5 +1,7 @@
 package utils;
 
+import globals.Globals;
+
 import java.io.File;
 
 /**
@@ -12,27 +14,26 @@ public class Sanitize {
     /**
      * Calls Open Babel to charge them and add hydrogens to them.
      *
-     * @param original_file
+     * @param params
      * @return
      * @throws Exception
      */
-    public static String sanitize(String original_file) throws Exception {
-        if (!new File(original_file).exists()) {
-            System.err.println("File not found: " + original_file);
+    public static String sanitize(Globals params) throws Exception {
+        File origin = new File(params.input_sdf);
+        if (!origin.exists()) {
+            System.err.println("Input file not found: " + params.input_sdf);
             System.exit(1);
         }
 
-        String babel_out_file = original_file.replaceAll("\\.sdf$", "") + "_babel_sanitized.sdf";
+        String origin_name = origin.getName();
+        String babel_out_file = new File(params.output_dir, origin_name.replaceAll("\\.sdf$", "") + "_babel_sanitized.sdf").getPath();
+
 
         // use open babel to ionize the structures
-        String command = "babel -p 7 -isdf " + original_file + " -osdf " + babel_out_file;
+        String command = "babel -p 7 -isdf " + params.input_sdf + " -osdf " + babel_out_file;
         System.out.println("Running: " + command);
         System.out.printf(Utils.executeCommand(command));
 
         return babel_out_file;
-    }
-
-    public static void main(String[] args) throws Exception {
-        sanitize(args[0]);
     }
 }

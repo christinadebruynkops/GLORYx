@@ -1,7 +1,6 @@
 package modelling;
 
 import com.google.common.collect.RangeSet;
-import globals.Globals;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
@@ -10,15 +9,11 @@ import org.jpmml.model.PMMLUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler.logger;
 
 /**
  * Created by sicho on 1/18/17.
@@ -26,31 +21,21 @@ import static com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler.logger;
 public class Modeller {
 
     private Evaluator evaluator;
-    private String target_var = Globals.TARGET_VAR;
+    private String target_var;
     private int yes_val = 0;
     private int no_val = 1;
 
-    public Modeller(String pmml_path) throws Exception {
+    public Modeller(String pmml_path, String target_var) throws Exception {
+        this.target_var = target_var;
         PMML pmml = loadModel(pmml_path);
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
         evaluator = modelEvaluator;
     }
 
-    private PMML loadModel(String file) throws Exception {
-
-        PMML pmml = null;
-
-        File inputFilePath = new File( file );
-
-        try( InputStream in = new FileInputStream( inputFilePath ) ){
-
-            pmml = PMMLUtil.unmarshal(in);
-
-        } catch( Exception e) {
-            logger.error( e.toString() );
-            throw e;
-        }
+    private static PMML loadModel(String pmml_path) throws Exception {
+        InputStream res = Modeller.class.getResourceAsStream(pmml_path);
+        PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;
     }
 
@@ -93,7 +78,7 @@ public class Modeller {
 
 //            System.out.println(outfields.get("probability_1"));
 //            System.out.println(outfields.get("probability_0"));
-//            System.out.println(targetfields.get(Globals.TARGET_VAR).getResult());
+//            System.out.println(targetfields.get(Globals.target_var).getResult());
             Result res = new Result();
             res.probability_yes = outfields.get("probability_" + Integer.toString(yes_val));
             res.probability_no = outfields.get("probability_" + Integer.toString(no_val));
@@ -103,6 +88,7 @@ public class Modeller {
             } else {
                 res.is_som = false;
             }
+            atom.setProperty("isSoM", res.is_som);
             results.put(atom, res);
         }
         return results;

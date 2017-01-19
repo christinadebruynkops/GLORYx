@@ -6,7 +6,6 @@ import descriptors.circular.CircularCollector;
 import descriptors.circular.NeighborhoodIterator;
 import globals.Globals;
 import modelling.Encoder;
-import modelling.Modeller;
 import modelling.Result;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -35,13 +34,9 @@ import java.util.*;
 public class WorkerThread implements Runnable {
 
 	private IMolecule molecule;
-	private boolean depict;
-	private String id_prop;
+	private String mol_name;
 	private String out_dir;
-	private String depict_dir;
-	private Set<String> desc_groups = new HashSet<>();
-	int circ_depth = 6;
-	int fing_depth = 6;
+	private Globals globals;
 
 	private static final Set<String> allowed_atoms = new HashSet<>(Arrays.asList(
 			"C"
@@ -55,29 +50,23 @@ public class WorkerThread implements Runnable {
 			, "I"
 			, "P"
 	));
-	private static final Map<String, Integer> circ_descs_stats = new HashMap<>();
-
-	public static Map<String, Integer> getStats() {
-		return circ_descs_stats;
-	}
 
 	private Set<String> computeCircDescriptors(List<String> desc_names, CircularCollector.Aggregator aggregator, int circ_depth) throws Exception {
 		CircularCollector circ_collector = new CircularCollector(desc_names, aggregator);
 		NeighborhoodIterator circ_iterator = new NeighborhoodIterator(molecule, circ_depth);
 		circ_iterator.iterate(circ_collector);
-		synchronized (circ_descs_stats) {
-			circ_collector.writeData(molecule, circ_descs_stats);
-		}
 		return circ_collector.getSignatures();
 	}
 
-	public WorkerThread(IMolecule molecule, String id_prop, String out_dir, Set<String> desc_groups, boolean depict) throws IOException, ClassNotFoundException{
+	public WorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
+		this.globals = globals;
 		this.molecule = molecule;
-		this.depict = depict;
-		this.id_prop = id_prop;
-		this.out_dir = out_dir;
-		this.depict_dir = out_dir + "depictions/";
-		this.desc_groups.addAll(desc_groups);
+		mol_name = molecule.getProperty(Globals.ID_PROP).toString();
+		File out_dir = new File(globals.output_dir, mol_name);
+		if (!out_dir.exists()) {
+			out_dir.mkdir();
+		}
+		this.out_dir = out_dir.toPath().toString() + '/';
 	}
 
 	@Override
@@ -85,22 +74,11 @@ public class WorkerThread implements Runnable {
 		try {
 			//check if salt
 			if (!ConnectivityChecker.isConnected(molecule)) {
-				throw new Exception("Error: salt: " + molecule.getProperty(id_prop));
+				throw new Exception("Error: salt: " + mol_name);
 			}
 
-			System.out.println("************** Molecule " + (molecule.getProperty(id_prop) + " **************"));
-
-//			// parse the SoM information and save the essential data to the molecule (throws exception for molecules without SoMs annotated)
-//			SoMInfo.parseInfoAndUpdateMol(molecule);
-
-			// if requested, generate picture of the molecule with atom numbers and SOMs highlighted
-			if (depict) {
-				File depictions_dir = new File(depict_dir);
-				if (!depictions_dir.exists()) {
-					depictions_dir.mkdir();
-				}
-				Depiction.generateDepiction(molecule, depict_dir + ((String) molecule.getProperty(id_prop)) + ".png");
-			}
+			System.out.println("************** Molecule " + mol_name + " **************");
+			Depiction.generateDepiction(molecule, out_dir + mol_name + ".png");
 
 			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
@@ -109,7 +87,7 @@ public class WorkerThread implements Runnable {
 			try {
 				adder.addImplicitHydrogens(molecule);
 			} catch (Exception exp) {
-				System.err.println("CDK internal error for: " + molecule.getProperty(id_prop));
+				System.err.println("CDK internal error for: " + mol_name);
 				throw exp;
 			}
 
@@ -121,7 +99,7 @@ public class WorkerThread implements Runnable {
 
 				String symbol = atom.getSymbol();
 				if (!allowed_atoms.contains(symbol)) {
-					throw new Exception("Atypical atom detected: " + symbol + ". Skipping: " + molecule.getProperty(id_prop));
+					throw new Exception("Atypical atom detected: " + symbol + ". Skipping: " + mol_name);
 				}
 
 				if (atom.getImplicitHydrogenCount() != null) {
@@ -134,7 +112,7 @@ public class WorkerThread implements Runnable {
 
 			// if implicit hydrogens were added, show a warning and make them explicit
 			if (implicit_hydrogens > 0) {
-				System.err.println("WARNING: implicit hydrogens detected for molecule: " + molecule.getProperty(id_prop));
+				System.err.println("WARNING: implicit hydrogens detected for molecule: " + mol_name);
 
 				// add convert implicit hydrogens to explicit ones
 				System.err.println("Making all hydrogens explicit...");
@@ -142,15 +120,12 @@ public class WorkerThread implements Runnable {
 				System.err.println("Added Implicit Hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
-				if (depict) {
-//					System.err.println("Generating depiction for: " + molecule.getProperty(id_prop));
-					try {
-						Depiction.generateDepiction(molecule, depict_dir + ((String) molecule.getProperty(id_prop)) + "_with_hs.png");
-					} catch (Exception exp) {
-						System.err.println("Failed to generate depiction for: " + molecule.getProperty(id_prop));
-						exp.printStackTrace();
-					}
-
+				System.err.println("Generating depiction for: " + mol_name);
+				try {
+					Depiction.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
+				} catch (Exception exp) {
+					System.err.println("Failed to generate depiction for: " + mol_name);
+					exp.printStackTrace();
 				}
 			}
 
@@ -200,7 +175,7 @@ public class WorkerThread implements Runnable {
 
 			//check if molecule too large
 			if (heavyAtomCount > 100) {
-				throw new Exception("Error: molecule is too large: " + molecule.getProperty(id_prop));
+				throw new Exception("Error: molecule is too large: " + mol_name);
 			}
 
 			File data_dir = new File(out_dir);
@@ -238,7 +213,7 @@ public class WorkerThread implements Runnable {
 //					System.out.println("AtomNr " + atomNr);
 
 					iAtom.setProperty("Atom", iAtom.getSymbol() + "." + (atomNr + 1));
-					iAtom.setProperty("Molecule", molecule.getProperty(id_prop));
+					iAtom.setProperty("Molecule", mol_name);
 
 					int desc_idx = 0;
 					for (IAtomicDescriptor calc : calculators) {
@@ -279,83 +254,84 @@ public class WorkerThread implements Runnable {
 
 			// calculate circular descriptors (CDK)
 			Set<String> ccdk_signatures = new HashSet<>();
-			if (desc_groups.contains("ccdk")) {
-				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), circ_depth);
+			if (globals.desc_groups.contains("ccdk")) {
+				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), Globals.circ_depth);
 			}
 
 			// calculate the atom type circular fingerprints
 			Set<String> fing_signatures = new HashSet<>();
-			if (desc_groups.contains("fing")) {
+			if (globals.desc_groups.contains("fing")) {
 				CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
-				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, fing_depth);
+				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, Globals.fing_depth);
 				fg_iterator.iterate(fg_collector);
-				synchronized (circ_descs_stats) {
-					fg_collector.writeData(molecule, circ_descs_stats);
-					fing_signatures = fg_collector.getSignatures();
-				}
+                fing_signatures = fg_collector.getSignatures();
 			}
 
 			// encode atom types
-            Encoder at_encoder = new Encoder("AtomType");
+            Encoder at_encoder = new Encoder("AtomType", globals.encoders_json);
             at_encoder.encode(molecule);
 
-            // impute missing values for circular fingerprints
-            // TODO: implement (prolly via an Imputer class)
+            // impute missing values for circular descriptors
+            // TODO: implement
 
 			// do the modelling
-			Modeller modeller = new Modeller(Globals.MODEL_PATH);
-			Map<IAtom, Result> results = modeller.predict(molecule); // TODO: process the results
+			Map<IAtom, Result> results = globals.modeller.predict(molecule); // TODO: process the results
 
 			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"
+					, "isSoM"
 					, "AtomType"
 			));
 			basic_descs.addAll(Arrays.asList(desc_names));
 			Utils.writeAtomData(
 					molecule
-					, out_dir + molecule.getProperty(id_prop).toString() + "_basic" + ".csv"
+					, out_dir + mol_name + "_basic" + ".csv"
 					, basic_descs
 					, false
 			);
 
 			// write the atom type fingerprints
-			List<String> fingerprints = new ArrayList<>();
-			fingerprints.addAll(basic_descs);
-			fingerprints.addAll(fing_signatures);
-			Utils.writeAtomData(
-					molecule
-					, out_dir + molecule.getProperty(id_prop).toString() + "_fing_level" + Integer.toString(fing_depth) + ".csv"
-					, fingerprints
-					, true
-			);
+			if (globals.desc_groups.contains("fing")) {
+				List<String> fingerprints = new ArrayList<>();
+				fingerprints.addAll(basic_descs);
+				fingerprints.addAll(fing_signatures);
+				Utils.writeAtomData(
+						molecule
+						, out_dir + mol_name + "_fing_level" + Integer.toString(Globals.fing_depth) + ".csv"
+						, fingerprints
+						, true
+				);
+			}
 
 			// write the circular descriptors
-			List<String> circ_descs = new ArrayList<>();
-			circ_descs.addAll(basic_descs);
-			circ_descs.addAll(ccdk_signatures);
-			Utils.writeAtomData(
-					molecule
-					, out_dir + molecule.getProperty(id_prop).toString() + "_circ_level" + Integer.toString(circ_depth) + ".csv"
-					, circ_descs
-					, false
-			);
+			if (globals.desc_groups.contains("ccdk")) {
+				List<String> circ_descs = new ArrayList<>();
+				circ_descs.addAll(basic_descs);
+				circ_descs.addAll(ccdk_signatures);
+				Utils.writeAtomData(
+						molecule
+						, out_dir + mol_name + "_circ_level" + Integer.toString(Globals.circ_depth) + ".csv"
+						, circ_descs
+						, false
+				);
+			}
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {
 			//catches some massive molecules
-			System.out.println("Error: ArrayIndexOutOfBoundsException: " + molecule.getProperty(id_prop));
+			System.out.println("Error: ArrayIndexOutOfBoundsException: " + mol_name);
 		}
 		catch (CDKException e) {
-			System.out.println("Error: CDKException: " + molecule.getProperty(id_prop));
+			System.out.println("Error: CDKException: " + mol_name);
 			e.printStackTrace();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		catch (Exception e) {
-			System.out.println("Error: Exception: " + molecule.getProperty(id_prop));
+			System.out.println("Error: Exception: " + mol_name);
 			e.printStackTrace();
 		}
 	}
