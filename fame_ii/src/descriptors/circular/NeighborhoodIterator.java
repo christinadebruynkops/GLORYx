@@ -6,7 +6,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import utils.Depiction;
+import utils.Depictor;
 
 import java.util.*;
 
@@ -51,7 +51,7 @@ public class NeighborhoodIterator {
         mol_frag.setAtoms(frag_atms.toArray(a_arr));
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol_frag);
 
-        Depiction.generateDepiction(mol_frag, outfile);
+        new Depictor().generateDepiction(mol_frag, outfile);
     }
 
     public void iterate(NeighborhoodCollector collector) {

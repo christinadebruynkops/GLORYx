@@ -22,8 +22,11 @@ public class Modeller {
 
     private Evaluator evaluator;
     private String target_var;
-    private int yes_val = 0;
-    private int no_val = 1;
+    public static final int yes_val = 0;
+    public static final int no_val = 1;
+    public static final String proba_yes_fld = "probability_" + Integer.toString(yes_val);
+    public static final String proba_no_fld = "probability_" + Integer.toString(no_val);
+    public static final String is_som_fld = "isSoM";
 
     public Modeller(String pmml_path, String target_var) throws Exception {
         this.target_var = target_var;
@@ -80,15 +83,17 @@ public class Modeller {
 //            System.out.println(outfields.get("probability_0"));
 //            System.out.println(targetfields.get(Globals.target_var).getResult());
             Result res = new Result();
-            res.probability_yes = outfields.get("probability_" + Integer.toString(yes_val));
-            res.probability_no = outfields.get("probability_" + Integer.toString(no_val));
+            res.probability_yes = outfields.get(proba_yes_fld);
+            res.probability_no = outfields.get(proba_no_fld);
             int prediction = (Integer) targetfields.get(target_var).getResult();
             if (prediction == yes_val) {
                 res.is_som = true;
             } else {
                 res.is_som = false;
             }
-            atom.setProperty("isSoM", res.is_som);
+            atom.setProperty(is_som_fld, res.is_som);
+            atom.setProperty(proba_yes_fld, res.probability_yes);
+            atom.setProperty(proba_no_fld, res.probability_no);
             results.put(atom, res);
         }
         return results;

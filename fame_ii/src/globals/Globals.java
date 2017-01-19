@@ -1,6 +1,7 @@
 package globals;
 
 import modelling.Modeller;
+import utils.Depictor;
 import utils.Sanitize;
 import utils.Utils;
 
@@ -26,6 +27,8 @@ public class Globals {
     public String target_var;
     public Set<String> desc_groups;
     public boolean sanitize;
+    public Depictor depictor = new Depictor();
+    public Depictor som_depictor = new Depictor(new Depictor.SoMColorer());
 
     public static final int circ_depth = 6;
     public static final int fing_depth = 6;

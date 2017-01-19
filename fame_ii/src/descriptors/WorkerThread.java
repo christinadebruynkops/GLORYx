@@ -6,7 +6,7 @@ import descriptors.circular.CircularCollector;
 import descriptors.circular.NeighborhoodIterator;
 import globals.Globals;
 import modelling.Encoder;
-import modelling.Result;
+import modelling.Modeller;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -22,7 +22,6 @@ import org.openscience.cdk.qsar.descriptors.atomic.*;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import utils.Depiction;
 import utils.Utils;
 
 import java.io.File;
@@ -78,7 +77,7 @@ public class WorkerThread implements Runnable {
 			}
 
 			System.out.println("************** Molecule " + mol_name + " **************");
-			Depiction.generateDepiction(molecule, out_dir + mol_name + ".png");
+			globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
 
 			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
@@ -122,7 +121,7 @@ public class WorkerThread implements Runnable {
 
 				System.err.println("Generating depiction for: " + mol_name);
 				try {
-					Depiction.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
+					globals.depictor.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
 				} catch (Exception exp) {
 					System.err.println("Failed to generate depiction for: " + mol_name);
 					exp.printStackTrace();
@@ -155,7 +154,7 @@ public class WorkerThread implements Runnable {
 			SMSDNormalizer.aromatizeMolecule(molecule);
 			IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
 //			Utils.deprotonateCarboxyls(molecule);
-//			Depiction.generateDepiction(molecule, "deprot.png");
+//			Depictor.generateDepiction(molecule, "deprot.png");
 			int heavyAtomCount = 0;
 			for(int atomNr = 0; atomNr < molecule.getAtomCount(); atomNr++){
 				IAtom iAtom = molecule.getAtom(atomNr);
@@ -171,7 +170,7 @@ public class WorkerThread implements Runnable {
 			}
 //			Utils.fixSybylCarboxyl(molecule);
 //			Utils.protonateCarboxyls(molecule); // protonate the molecule back
-//			Depiction.generateDepiction(molecule, "prot.png");
+//			Depictor.generateDepiction(molecule, "prot.png");
 
 			//check if molecule too large
 			if (heavyAtomCount > 100) {
@@ -274,14 +273,17 @@ public class WorkerThread implements Runnable {
             // impute missing values for circular descriptors
             // TODO: implement
 
-			// do the modelling
-			Map<IAtom, Result> results = globals.modeller.predict(molecule); // TODO: process the results
+			// do the modelling and process the results
+			globals.modeller.predict(molecule);
+			globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 
 			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
 					, "Atom"
-					, "isSoM"
+					, Modeller.is_som_fld
+					, Modeller.proba_yes_fld
+					, Modeller.proba_no_fld
 					, "AtomType"
 			));
 			basic_descs.addAll(Arrays.asList(desc_names));
