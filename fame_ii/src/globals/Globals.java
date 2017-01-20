@@ -27,8 +27,8 @@ public class Globals {
     public String target_var;
     public Set<String> desc_groups;
     public boolean sanitize;
-    public Depictor depictor = new Depictor();
-    public Depictor som_depictor = new Depictor(new Depictor.SoMColorer());
+    public Depictor depictor;
+    public Depictor som_depictor;
 
     public static final int circ_depth = 6;
     public static final int fing_depth = 6;
@@ -43,6 +43,9 @@ public class Globals {
             , boolean sanitize
             ) throws Exception
     {
+        this.depictor = new Depictor();
+        this.som_depictor = new Depictor(new Depictor.SoMColorer());
+
         this.input_sdf = input_sdf;
         this.output_dir = output_dir;
         desc_groups = new HashSet<>(

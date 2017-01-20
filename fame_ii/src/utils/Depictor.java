@@ -29,11 +29,7 @@ import java.util.List;
 public class Depictor {
 
     private static final String is_som_prop = Modeller.is_som_fld;
-    private RendererModel model;
-    private Graphics2D graphics;
-    private Image image;
-    private AtomContainerRenderer renderer;
-    private int side;
+    private SoMColorer colorer;
 
     public static class SoMColorer implements IAtomColorer {
 
@@ -68,35 +64,12 @@ public class Depictor {
     }
 
     public Depictor() {
-        // make generators
-        List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
-        generators.add(new BasicSceneGenerator());
-        generators.add(new BasicBondGenerator());
-        generators.add(new RingGenerator());
-        generators.add(new BasicAtomGenerator());
-        generators.add(new AtomNumberGenerator());
-
-        // setup the renderer
-        renderer = new AtomContainerRenderer(generators, new AWTFontManager());
-        model = renderer.getRenderer2DModel();
-//		model.set(BasicAtomGenerator.CompactAtom.class, true);
-//		model.set(BasicAtomGenerator.CompactShape.class, BasicAtomGenerator.Shape.OVAL);
-        model.set(BasicAtomGenerator.KekuleStructure.class, true);
-        model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, true);
-        model.set(AtomNumberGenerator.WillDrawAtomNumbers.class, true);
-        model.set(AtomNumberGenerator.ColorByType.class, true);
-
-        // get the image
-        side = 3 * 400;
-        image = new BufferedImage(side, side, BufferedImage.TYPE_4BYTE_ABGR);
-        graphics = (Graphics2D)image.getGraphics();
-        graphics.setColor(Color.WHITE);
-        graphics.fill(new Rectangle2D.Double(0, 0, side, side));
+        // no action
     }
 
     public Depictor(SoMColorer colorer) {
         this();
-        model.set(AtomNumberGenerator.AtomColorer.class, colorer);
+        this.colorer = colorer;
     }
 
     /**
@@ -111,6 +84,35 @@ public class Depictor {
         StructureDiagramGenerator sdg = new StructureDiagramGenerator();
         sdg.setMolecule(molecule, false);
         sdg.generateCoordinates();
+
+        // make generators
+        List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
+        generators.add(new BasicSceneGenerator());
+        generators.add(new BasicBondGenerator());
+        generators.add(new RingGenerator());
+        generators.add(new BasicAtomGenerator());
+//        generators.add(new AtomNumberGenerator());
+
+        // setup the renderer
+        AtomContainerRenderer renderer = new AtomContainerRenderer(generators, new AWTFontManager());
+        RendererModel model = renderer.getRenderer2DModel();
+//		model.set(BasicAtomGenerator.CompactAtom.class, true);
+//		model.set(BasicAtomGenerator.CompactShape.class, BasicAtomGenerator.Shape.OVAL);
+        model.set(BasicAtomGenerator.KekuleStructure.class, true);
+        model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, false);
+//        model.set(AtomNumberGenerator.WillDrawAtomNumbers.class, true);
+//        model.set(AtomNumberGenerator.ColorByType.class, true);
+        if (colorer != null) {
+            model.set(BasicAtomGenerator.AtomColorer.class, colorer);
+//            model.set(AtomNumberGenerator.AtomColorer.class, colorer);
+        }
+
+        // get the image
+        int side = 3 * 400;
+        BufferedImage image = new BufferedImage(side, side, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D graphics = (Graphics2D)image.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.fill(new Rectangle2D.Double(0, 0, side, side));
 
         // paint
         renderer.paint(molecule, new AWTDrawVisitor(graphics),
