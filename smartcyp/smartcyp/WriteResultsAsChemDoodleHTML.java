@@ -25,49 +25,40 @@
 package smartcyp;
 
 
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.TreeSet;
-import java.util.Iterator;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.MoleculeSet;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.geometry.Projector;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.smiles.DeduceBondSystemTool;
-
 import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.TreeSet;
 
 
 
 public class WriteResultsAsChemDoodleHTML {
 
 
-	PrintWriter outfile;
-	TreeSet<Atom> sortedAtomsTreeSet;
-	String moleculeID;
-	private String dateAndTime;
-	String[] namesOfInfiles;
-	DecimalFormat twoDecimalFormat = new DecimalFormat();
-	String OutputDir;
-	String OutputFile;
+	protected PrintWriter outfile;
+	protected TreeSet<Atom> sortedAtomsTreeSet;
+	protected String moleculeID;
+	protected  String dateAndTime;
+	protected String[] namesOfInfiles;
+	protected DecimalFormat twoDecimalFormat = new DecimalFormat();
+	protected String OutputDir;
+	protected String OutputFile;
 
 	
 	public WriteResultsAsChemDoodleHTML(String dateTime, String[] infileNames, String outputdir, String outputfile){
