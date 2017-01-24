@@ -1,20 +1,17 @@
 package utils;
 
-import org.openscience.cdk.Atom;
-import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.CDKConstants;
+import globals.Globals;
+import modelling.Modeller;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.geometry.Projector;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.listener.PropertiesListener;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
 import smartcyp.MoleculeKU;
 import smartcyp.WriteResultsAsChemDoodleHTML;
 
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
@@ -27,6 +24,25 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile) {
         super(dateTime, infileNames, outputdir, outputfile);
+    }
+
+    public void writeHTML(MoleculeSet moleculeSet) {
+
+        if (OutputFile=="") OutputFile = "FAME_2_Results_" + this.dateAndTime;
+
+        try {
+            outfile = new PrintWriter(new BufferedWriter(new FileWriter(this.OutputFile)));
+        } catch (IOException e) {
+            System.out.println("Could not create HTML outfile");
+            e.printStackTrace();
+        }
+
+        this.writeHead(moleculeSet);
+
+        this.writeBody(moleculeSet);
+
+        outfile.close();
+
     }
 
     public void writeHead(MoleculeSet moleculeSet){
@@ -67,27 +83,32 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("border: 0px;");
         outfile.println("border-top-left-radius: 3px;");
         outfile.println("border-top-right-radius: 3px; }");
-        outfile.println("ul#navlist li#cyp3A4 {");
+        outfile.println("ul#navlist li#cypHLM {");
         outfile.println("border-bottom: 1px solid rgb(242,238,234);");
         outfile.println("background-color: rgb(242,238,234); }");
-        outfile.println("li#cyp3A4 a { color:  rgb(80,80,100); }");
-        outfile.println("ul#navlist li#cyp2D6 {");
-        outfile.println("border-bottom: 1px solid rgb(228,235,240);");
-        outfile.println("background-color: rgb(228,235,240); }");
-        outfile.println("li#cyp2D6 a { color: rgb(80,80,100); }");
-        outfile.println("ul#navlist li#cyp2C9 {");
-        outfile.println("border-bottom: 1px solid rgb(255,235,235);");
-        outfile.println("background-color: rgb(255,235,235); }");
-        outfile.println("li#cyp2C9 a { color: rgb(80,80,100); }");
+        outfile.println("li#cypHLM a { color:  rgb(80,80,100); }");
+//        outfile.println("ul#navlist li#cyp3A4 {");
+//        outfile.println("border-bottom: 1px solid rgb(242,238,234);");
+//        outfile.println("background-color: rgb(242,238,234); }");
+//        outfile.println("li#cyp3A4 a { color:  rgb(80,80,100); }");
+//        outfile.println("ul#navlist li#cyp2D6 {");
+//        outfile.println("border-bottom: 1px solid rgb(228,235,240);");
+//        outfile.println("background-color: rgb(228,235,240); }");
+//        outfile.println("li#cyp2D6 a { color: rgb(80,80,100); }");
+//        outfile.println("ul#navlist li#cyp2C9 {");
+//        outfile.println("border-bottom: 1px solid rgb(255,235,235);");
+//        outfile.println("background-color: rgb(255,235,235); }");
+//        outfile.println("li#cyp2C9 a { color: rgb(80,80,100); }");
         outfile.println("#navlist a	{ ");
         outfile.println("float: left;");
         outfile.println("display: block;");
         outfile.println("text-decoration: none;");
         outfile.println("padding: 4px;");
         outfile.println("font-style: italic; }");
-        outfile.println(".table2c9 {background-color:rgb(255,235,235); border-radius: 5px; padding: 5px}");
-        outfile.println(".table2d6 {background-color:rgb(228,235,240); border-radius: 5px; padding: 5px}");
-        outfile.println(".table3a4 {background-color:rgb(242,238,234); border-radius: 5px; padding: 5px}");
+        outfile.println(".tableHLM {background-color:rgb(255,235,235); border-radius: 5px; padding: 5px}");
+//        outfile.println(".table2c9 {background-color:rgb(255,235,235); border-radius: 5px; padding: 5px}");
+//        outfile.println(".table2d6 {background-color:rgb(228,235,240); border-radius: 5px; padding: 5px}");
+//        outfile.println(".table3a4 {background-color:rgb(242,238,234); border-radius: 5px; padding: 5px}");
         outfile.println("canvas.ChemDoodleWebComponent {border: none;}");
         outfile.println("-->");
         outfile.println("</style>");
@@ -108,7 +129,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("	var cypHLMlist = [];");
         for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
             int iplusone = moleculeIndex + 1;
-            outfile.println("	cypHLMlist[" + moleculeIndex + "] = \"molecule" + iplusone + "HLM\";");
+            outfile.println("	cypHLMlist[" + moleculeIndex + "] = \"molecule" + iplusone + "CYPHLMdiv\";");
         }
 //        outfile.println("	var cyp2c9list = [];");
 //        for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
@@ -191,15 +212,12 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     public void writeMoleculeKUTable(MoleculeKU moleculeKU) {
 
-        moleculeID = moleculeKU.getID();
+        moleculeID = "MyMolecule";
 
         outfile.println("");
         outfile.println("<!-- Molecule " + moleculeID + " -->");	// Invisible code marker for molecule
 
-        String title = moleculeID + ": " + (String) moleculeKU.getProperty(CDKConstants.TITLE);
-        if (title==null || title==""){
-            title = "Molecule " + moleculeID;
-        }
+        String title = "Molecule " + moleculeID;
 
         //preconstruct coordinates and stuff for each molecule
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -236,59 +254,60 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         int minLenghtForIncrease = 8;
         if(ylength > minLenghtForIncrease){ycanvassize = (int) (300+(ylength-minLenghtForIncrease)*20);}
 
-        //Write 2D6 output
-        String MolName2D6 = "molecule" + moleculeID + "2D6";
-        outfile.println("<div id='molecule" + moleculeID + "CYP2D6div' style='display:none;'>");
+        // Write HLM output
+        String MolNameHLM = "molecule" + moleculeKU.getProperty(Globals.ID_PROP).toString() + "HLM";
+        outfile.println("<div id='molecule" + moleculeID + "CYPHLMdiv'>");
+//        outfile.println("<div id='molecule" + moleculeID + "CYPHLMdiv' style='display:none;'>");
         outfile.println("<table>");
         outfile.println("<tr>");
         outfile.println("<td style='vertical-align:top;'>");
 
         // Table row, contains 1 molecule canvas through ChemDoodle
-        //output chemdoodle 2D6 molecule here
+        //output chemdoodle HLM molecule here
 
         outfile.println("<script>");
-        outfile.println("var " + MolName2D6 + " = new ChemDoodle.ViewerCanvas('" + MolName2D6 + "', 400, " + ycanvassize + ");");
-        outfile.println(MolName2D6 + ".specs.atoms_useJMOLColors = true;");
-        outfile.print("var " + MolName2D6 + "MolFile = '");
+        outfile.println("var " + MolNameHLM + " = new ChemDoodle.ViewerCanvas('" + MolNameHLM + "', 400, " + ycanvassize + ");");
+        outfile.println(MolNameHLM + ".specs.atoms_useJMOLColors = true;");
+        outfile.print("var " + MolNameHLM + "MolFile = '");
         for(int i=0; i<Moleculelines.length; i++){
             outfile.print(Moleculelines[i]);
             outfile.print("\\n");
         }
         outfile.print("'; \n");
-        outfile.println("var " + MolName2D6 + "Mol = ChemDoodle.readMOL(" + MolName2D6 + "MolFile); ");
+        outfile.println("var " + MolNameHLM + "Mol = ChemDoodle.readMOL(" + MolNameHLM + "MolFile); ");
         outfile.println("// get the dimension of the molecule");
-        outfile.println("var size = " + MolName2D6 + "Mol.getDimension();");
+        outfile.println("var size = " + MolNameHLM + "Mol.getDimension();");
         outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
-        outfile.println("var scale = Math.min(" + MolName2D6 + ".width/size.x, " + MolName2D6 + ".height/size.y);");
+        outfile.println("var scale = Math.min(" + MolNameHLM + ".width/size.x, " + MolNameHLM + ".height/size.y);");
         outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
-        outfile.println(MolName2D6 + ".loadMolecule(" + MolName2D6 + "Mol);");
+        outfile.println(MolNameHLM + ".loadMolecule(" + MolNameHLM + "Mol);");
         outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
-        outfile.println(MolName2D6 + ".specs.scale = scale*.8;");
-        outfile.println(MolName2D6 + ".mouseover = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName2D6 + "Mol.atoms[i].altLabel = i+1;");
+        outfile.println(MolNameHLM + ".specs.scale = scale*.8;");
+        outfile.println(MolNameHLM + ".mouseover = function(){");
+        outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
+        outfile.println("		" + MolNameHLM + "Mol.atoms[i].altLabel = i+1;");
         outfile.println("	}");
         outfile.println("this.repaint();");
         outfile.println("}");
-        outfile.println(MolName2D6 + ".mouseout = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName2D6 + "Mol.atoms[i].altLabel;");
+        outfile.println(MolNameHLM + ".mouseout = function(){");
+        outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
+        outfile.println("		delete " + MolNameHLM + "Mol.atoms[i].altLabel;");
         outfile.println("	}");
         outfile.println("	this.repaint();");
         outfile.println("}");
-        outfile.println(MolName2D6 + ".touchstart = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName2D6 + "Mol.atoms[i].altLabel = i+1;");
+        outfile.println(MolNameHLM + ".touchstart = function(){");
+        outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
+        outfile.println("		" + MolNameHLM + "Mol.atoms[i].altLabel = i+1;");
         outfile.println("	}");
         outfile.println("this.repaint();");
         outfile.println("}");
-        outfile.println(MolName2D6 + ".touchend = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName2D6 + "Mol.atoms[i].altLabel;");
+        outfile.println(MolNameHLM + ".touchend = function(){");
+        outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
+        outfile.println("		delete " + MolNameHLM + "Mol.atoms[i].altLabel;");
         outfile.println("	}");
         outfile.println("	this.repaint();");
         outfile.println("}");
-        outfile.println(MolName2D6 + ".drawChildExtras = function(ctx){");
+        outfile.println(MolNameHLM + ".drawChildExtras = function(ctx){");
         outfile.println("	ctx.save();");
         outfile.println("	ctx.translate(this.width/2, this.height/2);");
         outfile.println("	ctx.rotate(this.specs.rotateAngle);");
@@ -297,15 +316,19 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("	//draw atom numbers and draw circles on ranked atoms");
         outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
         outfile.println("	radius = 6 + 6/this.specs.scale;");
-        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		var atom = " + MolName2D6 + "Mol.atoms[i];");
+        outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
+        outfile.println("		var atom = " + MolNameHLM + "Mol.atoms[i];");
         //iterate through the atoms and add circles to top 3 rank
         // Iterate over the Atoms in this molecule
         IAtom rankAtom;
         for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
             rankAtom = moleculeKU.getAtom(atomIndex);
+            if (rankAtom.getSymbol().equals("H")) {
+                continue;
+            }
             String AtomNr = rankAtom.getID();
-            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 1){
+            boolean is_som = (Boolean) rankAtom.getProperty(Modeller.is_som_fld);
+            if(is_som){
                 outfile.println("		if((i + 1) == " + AtomNr + "){");
                 outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
                 outfile.println("			ctx.beginPath();");
@@ -313,54 +336,56 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
                 outfile.println("			ctx.stroke();");
                 outfile.println("		}");
             }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 2){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 3){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 2){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 3){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
         }
         outfile.println("	}");
         outfile.println("	ctx.restore();");
         outfile.println("}");
-        outfile.println(MolName2D6 + ".repaint();");
+        outfile.println(MolNameHLM + ".repaint();");
         outfile.println("</script>");
-        //end of chemdoodle 2D6 molecule
+        //end of chemdoodle HLM molecule
         outfile.println("</td>");
         outfile.println("<td style='vertical-align:top;'>");
         outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
-        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
-        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");
+        outfile.println("<li id='cypHLM'><a href=\"javascript:Switch2D6and3A4('HLM')\" title=\"Click to show HLM predictions\">HLM</a></li>");
+//        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
+//        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
+//        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");
         outfile.println("</ul>");
 
-        outfile.println("<div class='table2d6'>");
+        outfile.println("<div class='tableHLM'>");
 
         // Visible header for Molecule
         outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>S2End</th><th>N+Dist</th><th>2DSASA</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>SoM Probability (yes)</th><th>SoM Probability (no)</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
-        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA2D6();
-        Iterator<Atom> sortedAtomsTreeSetIterator2D6 = sortedAtomsTreeSet.iterator();
-        Atom currentAtom2D6;
+        TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
 
-        while(sortedAtomsTreeSetIterator2D6.hasNext()){
-            currentAtom2D6 = sortedAtomsTreeSetIterator2D6.next();
-            this.writeAtomRowinMoleculeKUTable2D6(currentAtom2D6);
+        Iterator<IAtom> sortedAtomsTreeSetIteratorHLM = sortedAtomsTreeSet.iterator();
+        IAtom currentAtomHLM;
+
+        while(sortedAtomsTreeSetIteratorHLM.hasNext()){
+            currentAtomHLM = sortedAtomsTreeSetIteratorHLM.next();
+            this.writeAtomRowinMoleculeKUTableHLM(currentAtomHLM);
         }
         outfile.println("</table>");
         outfile.println("</div>");
@@ -368,381 +393,540 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("</tr>");
         outfile.println("</table>");
         outfile.println("</div>");
-        //end of 2D6 output
+        //end of HLM output
 
-        //Write 2C9 output
-        String MolName2C9 = "molecule" + moleculeID + "2C9";
-        outfile.println("<div id='molecule" + moleculeID + "CYP2C9' style='display:none;'>");
-        outfile.println("<table>");
-        outfile.println("<tr>");
-        outfile.println("<td style='vertical-align:top;'>");
+        //Write 2D6 output
+//        String MolName2D6 = "molecule" + moleculeID + "2D6";
+//        outfile.println("<div id='molecule" + moleculeID + "CYP2D6div' style='display:none;'>");
+//        outfile.println("<table>");
+//        outfile.println("<tr>");
+//        outfile.println("<td style='vertical-align:top;'>");
 
-        // Table row, contains 1 molecule canvas through ChemDoodle
-        //output chemdoodle 2C9 molecule here
+//        // Table row, contains 1 molecule canvas through ChemDoodle
+//        //output chemdoodle 2D6 molecule here
+//
+//        outfile.println("<script>");
+//        outfile.println("var " + MolName2D6 + " = new ChemDoodle.ViewerCanvas('" + MolName2D6 + "', 400, " + ycanvassize + ");");
+//        outfile.println(MolName2D6 + ".specs.atoms_useJMOLColors = true;");
+//        outfile.print("var " + MolName2D6 + "MolFile = '");
+//        for(int i=0; i<Moleculelines.length; i++){
+//            outfile.print(Moleculelines[i]);
+//            outfile.print("\\n");
+//        }
+//        outfile.print("'; \n");
+//        outfile.println("var " + MolName2D6 + "Mol = ChemDoodle.readMOL(" + MolName2D6 + "MolFile); ");
+//        outfile.println("// get the dimension of the molecule");
+//        outfile.println("var size = " + MolName2D6 + "Mol.getDimension();");
+//        outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
+//        outfile.println("var scale = Math.min(" + MolName2D6 + ".width/size.x, " + MolName2D6 + ".height/size.y);");
+//        outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
+//        outfile.println(MolName2D6 + ".loadMolecule(" + MolName2D6 + "Mol);");
+//        outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
+//        outfile.println(MolName2D6 + ".specs.scale = scale*.8;");
+//        outfile.println(MolName2D6 + ".mouseover = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName2D6 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2D6 + ".mouseout = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName2D6 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2D6 + ".touchstart = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName2D6 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2D6 + ".touchend = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName2D6 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2D6 + ".drawChildExtras = function(ctx){");
+//        outfile.println("	ctx.save();");
+//        outfile.println("	ctx.translate(this.width/2, this.height/2);");
+//        outfile.println("	ctx.rotate(this.specs.rotateAngle);");
+//        outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
+//        outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
+//        outfile.println("	//draw atom numbers and draw circles on ranked atoms");
+//        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
+//        outfile.println("	radius = 6 + 6/this.specs.scale;");
+//        outfile.println("	for (var i = 0, ii=" + MolName2D6 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		var atom = " + MolName2D6 + "Mol.atoms[i];");
+//        //iterate through the atoms and add circles to top 3 rank
+//        // Iterate over the Atoms in this molecule
+//        IAtom rankAtom;
+//        for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
+//            rankAtom = moleculeKU.getAtom(atomIndex);
+//            String AtomNr = rankAtom.getID();
+//            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 1){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 2){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(rankAtom).intValue() == 3){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//        }
+//        outfile.println("	}");
+//        outfile.println("	ctx.restore();");
+//        outfile.println("}");
+//        outfile.println(MolName2D6 + ".repaint();");
+//        outfile.println("</script>");
+//        //end of chemdoodle 2D6 molecule
+//        outfile.println("</td>");
+//        outfile.println("<td style='vertical-align:top;'>");
+//        outfile.println("<ul id='navlist'>");
+//        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
+//        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
+//        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");
+//        outfile.println("</ul>");
+//
+//        outfile.println("<div class='table2d6'>");
+//
+//        // Visible header for Molecule
+//        outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
+//
+//        // Table of Atom data
+//        outfile.println("<table class=\"molecule\">");
+//        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>S2End</th><th>N+Dist</th><th>2DSASA</th></tr>");
+//
+//        // Iterate over the Atoms in this sortedAtomsTreeSet
+//        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA2D6();
+//        Iterator<Atom> sortedAtomsTreeSetIterator2D6 = sortedAtomsTreeSet.iterator();
+//        Atom currentAtom2D6;
+//
+//        while(sortedAtomsTreeSetIterator2D6.hasNext()){
+//            currentAtom2D6 = sortedAtomsTreeSetIterator2D6.next();
+//            this.writeAtomRowinMoleculeKUTable2D6(currentAtom2D6);
+//        }
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        outfile.println("</td>");
+//        outfile.println("</tr>");
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        //end of 2D6 output
+//
+//        //Write 2C9 output
+//        String MolName2C9 = "molecule" + moleculeID + "2C9";
+//        outfile.println("<div id='molecule" + moleculeID + "CYP2C9' style='display:none;'>");
+//        outfile.println("<table>");
+//        outfile.println("<tr>");
+//        outfile.println("<td style='vertical-align:top;'>");
+//
+//        // Table row, contains 1 molecule canvas through ChemDoodle
+//        //output chemdoodle 2C9 molecule here
+//
+//        outfile.println("<script>");
+//        outfile.println("var " + MolName2C9 + " = new ChemDoodle.ViewerCanvas('" + MolName2C9 + "', 400, " + ycanvassize + ");");
+//        outfile.println(MolName2C9 + ".specs.atoms_useJMOLColors = true;");
+//        outfile.print("var " + MolName2C9 + "MolFile = '");
+//        for(int i=0; i<Moleculelines.length; i++){
+//            outfile.print(Moleculelines[i]);
+//            outfile.print("\\n");
+//        }
+//        outfile.print("'; \n");
+//        outfile.println("var " + MolName2C9 + "Mol = ChemDoodle.readMOL(" + MolName2C9 + "MolFile); ");
+//        outfile.println("// get the dimension of the molecule");
+//        outfile.println("var size = " + MolName2C9 + "Mol.getDimension();");
+//        outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
+//        outfile.println("var scale = Math.min(" + MolName2C9 + ".width/size.x, " + MolName2C9 + ".height/size.y);");
+//        outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
+//        outfile.println(MolName2C9 + ".loadMolecule(" + MolName2C9 + "Mol);");
+//        outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
+//        outfile.println(MolName2C9 + ".specs.scale = scale*.8;");
+//        outfile.println(MolName2C9 + ".mouseover = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName2C9 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2C9 + ".mouseout = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName2C9 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2C9 + ".touchstart = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName2C9 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2C9 + ".touchend = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName2C9 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName2C9 + ".drawChildExtras = function(ctx){");
+//        outfile.println("	ctx.save();");
+//        outfile.println("	ctx.translate(this.width/2, this.height/2);");
+//        outfile.println("	ctx.rotate(this.specs.rotateAngle);");
+//        outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
+//        outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
+//        outfile.println("	//draw atom numbers and draw circles on ranked atoms");
+//        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
+//        outfile.println("	radius = 6 + 6/this.specs.scale;");
+//        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		var atom = " + MolName2C9 + "Mol.atoms[i];");
+//        //iterate through the atoms and add circles to top 3 rank
+//        // Iterate over the Atoms in this molecule
+//        for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
+//            rankAtom = moleculeKU.getAtom(atomIndex);
+//            String AtomNr = rankAtom.getID();
+//            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 1){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 2){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 3){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//        }
+//        outfile.println("	}");
+//        outfile.println("	ctx.restore();");
+//        outfile.println("}");
+//        outfile.println(MolName2C9 + ".repaint();");
+//        outfile.println("</script>");
+//        //end of chemdoodle 2C9 molecule
 
-        outfile.println("<script>");
-        outfile.println("var " + MolName2C9 + " = new ChemDoodle.ViewerCanvas('" + MolName2C9 + "', 400, " + ycanvassize + ");");
-        outfile.println(MolName2C9 + ".specs.atoms_useJMOLColors = true;");
-        outfile.print("var " + MolName2C9 + "MolFile = '");
-        for(int i=0; i<Moleculelines.length; i++){
-            outfile.print(Moleculelines[i]);
-            outfile.print("\\n");
-        }
-        outfile.print("'; \n");
-        outfile.println("var " + MolName2C9 + "Mol = ChemDoodle.readMOL(" + MolName2C9 + "MolFile); ");
-        outfile.println("// get the dimension of the molecule");
-        outfile.println("var size = " + MolName2C9 + "Mol.getDimension();");
-        outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
-        outfile.println("var scale = Math.min(" + MolName2C9 + ".width/size.x, " + MolName2C9 + ".height/size.y);");
-        outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
-        outfile.println(MolName2C9 + ".loadMolecule(" + MolName2C9 + "Mol);");
-        outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
-        outfile.println(MolName2C9 + ".specs.scale = scale*.8;");
-        outfile.println(MolName2C9 + ".mouseover = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName2C9 + "Mol.atoms[i].altLabel = i+1;");
-        outfile.println("	}");
-        outfile.println("this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName2C9 + ".mouseout = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName2C9 + "Mol.atoms[i].altLabel;");
-        outfile.println("	}");
-        outfile.println("	this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName2C9 + ".touchstart = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName2C9 + "Mol.atoms[i].altLabel = i+1;");
-        outfile.println("	}");
-        outfile.println("this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName2C9 + ".touchend = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName2C9 + "Mol.atoms[i].altLabel;");
-        outfile.println("	}");
-        outfile.println("	this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName2C9 + ".drawChildExtras = function(ctx){");
-        outfile.println("	ctx.save();");
-        outfile.println("	ctx.translate(this.width/2, this.height/2);");
-        outfile.println("	ctx.rotate(this.specs.rotateAngle);");
-        outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
-        outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
-        outfile.println("	//draw atom numbers and draw circles on ranked atoms");
-        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
-        outfile.println("	radius = 6 + 6/this.specs.scale;");
-        outfile.println("	for (var i = 0, ii=" + MolName2C9 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		var atom = " + MolName2C9 + "Mol.atoms[i];");
-        //iterate through the atoms and add circles to top 3 rank
-        // Iterate over the Atoms in this molecule
-        for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
-            rankAtom = moleculeKU.getAtom(atomIndex);
-            String AtomNr = rankAtom.getID();
-            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 1){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 2){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(rankAtom).intValue() == 3){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-        }
-        outfile.println("	}");
-        outfile.println("	ctx.restore();");
-        outfile.println("}");
-        outfile.println(MolName2C9 + ".repaint();");
-        outfile.println("</script>");
-        //end of chemdoodle 2C9 molecule
+
+//        outfile.println("</td>");
+//        outfile.println("<td style='vertical-align:top;'>");
+//        outfile.println("<ul id='navlist'>");
+//        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
+//        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" >CYP2C</a></li>");
+//        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" title=\"Click to show CYP2D6 predictions\">CYP2D6</a></li>");
+//        outfile.println("</ul>");
+//
+//        outfile.println("<div class='table2c9'>");
+//
+//        // Visible header for Molecule
+//        outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
+//
+//        // Table of Atom data
+//        outfile.println("<table class=\"molecule\">");
+//        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>S2End</th><th>COODist</th><th>2DSASA</th></tr>");
+//
+//        // Iterate over the Atoms in this sortedAtomsTreeSet
+//        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA2C9();
+//        Iterator<Atom> sortedAtomsTreeSetIterator2C9 = sortedAtomsTreeSet.iterator();
+//        Atom currentAtom2C9;
+//
+//        while(sortedAtomsTreeSetIterator2C9.hasNext()){
+//            currentAtom2C9 = sortedAtomsTreeSetIterator2C9.next();
+//            this.writeAtomRowinMoleculeKUTable2C9(currentAtom2C9);
+//        }
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        outfile.println("</td>");
+//        outfile.println("</tr>");
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        //end of 2C9 output
 
 
-        outfile.println("</td>");
-        outfile.println("<td style='vertical-align:top;'>");
-        outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
-        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" >CYP2C</a></li>");
-        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" title=\"Click to show CYP2D6 predictions\">CYP2D6</a></li>");
-        outfile.println("</ul>");
-
-        outfile.println("<div class='table2c9'>");
-
-        // Visible header for Molecule
-        outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
-
-        // Table of Atom data
-        outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>S2End</th><th>COODist</th><th>2DSASA</th></tr>");
-
-        // Iterate over the Atoms in this sortedAtomsTreeSet
-        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA2C9();
-        Iterator<Atom> sortedAtomsTreeSetIterator2C9 = sortedAtomsTreeSet.iterator();
-        Atom currentAtom2C9;
-
-        while(sortedAtomsTreeSetIterator2C9.hasNext()){
-            currentAtom2C9 = sortedAtomsTreeSetIterator2C9.next();
-            this.writeAtomRowinMoleculeKUTable2C9(currentAtom2C9);
-        }
-        outfile.println("</table>");
-        outfile.println("</div>");
-        outfile.println("</td>");
-        outfile.println("</tr>");
-        outfile.println("</table>");
-        outfile.println("</div>");
-        //end of 2C9 output
-
-
-        //Write 3A4 output
-        String MolName3A4 = "molecule" + moleculeID + "standard";
-        outfile.println("<div id='" + MolName3A4 + "div' style='display:;'>");
-        outfile.println("<table>");
-        outfile.println("<tr>");
-        outfile.println("<td style='vertical-align:top;'>");
-
-        // Table row, contains 1 molecule images and mouseover to a second image with atom numbers
-        //output chemdoodle 3A4 molecule here
-        outfile.println("<script>");
-        outfile.println("var " + MolName3A4 + " = new ChemDoodle.ViewerCanvas('" + MolName3A4 + "', 400, " + ycanvassize + ");");
-        outfile.println(MolName3A4 + ".specs.atoms_useJMOLColors = true;");
-        outfile.print("var " + MolName3A4 + "MolFile = '");
-        //now use the multiple lines of the structure defined above in 2D6 output to enable explicit printout of \n
-        for(int i=0; i<Moleculelines.length; i++){
-            outfile.print(Moleculelines[i]);
-            outfile.print("\\n");
-        }
-        outfile.print("'; \n");
-        outfile.println("var " + MolName3A4 + "Mol = ChemDoodle.readMOL(" + MolName3A4 + "MolFile); ");
-        outfile.println("// get the dimension of the molecule");
-        outfile.println("var size = " + MolName3A4 + "Mol.getDimension();");
-        outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
-        outfile.println("var scale = Math.min(" + MolName3A4 + ".width/size.x, " + MolName3A4 + ".height/size.y);");
-        outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
-        outfile.println(MolName3A4 + ".loadMolecule(" + MolName3A4 + "Mol);");
-        outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
-        outfile.println(MolName3A4 + ".specs.scale = scale*.8;");
-        outfile.println(MolName3A4 + ".mouseover = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName3A4 + "Mol.atoms[i].altLabel = i+1;");
-        outfile.println("	}");
-        outfile.println("this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName3A4 + ".mouseout = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName3A4 + "Mol.atoms[i].altLabel;");
-        outfile.println("	}");
-        outfile.println("	this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName3A4 + ".touchstart = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		" + MolName3A4 + "Mol.atoms[i].altLabel = i+1;");
-        outfile.println("	}");
-        outfile.println("this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName3A4 + ".touchend = function(){");
-        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		delete " + MolName3A4 + "Mol.atoms[i].altLabel;");
-        outfile.println("	}");
-        outfile.println("	this.repaint();");
-        outfile.println("}");
-        outfile.println(MolName3A4 + ".drawChildExtras = function(ctx){");
-        outfile.println("	ctx.save();");
-        outfile.println("	ctx.translate(this.width/2, this.height/2);");
-        outfile.println("	ctx.rotate(this.specs.rotateAngle);");
-        outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
-        outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
-        outfile.println("	//draw atom numbers and draw circles on ranked atoms");
-        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
-        outfile.println("	radius = 6 + 6/this.specs.scale;");
-        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
-        outfile.println("		var atom = " + MolName3A4 + "Mol.atoms[i];");
-        //iterate through the atoms and add circles to top 3 rank
-        // Iterate over the Atoms in this molecule
-        for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
-            rankAtom = moleculeKU.getAtom(atomIndex);
-            String AtomNr = rankAtom.getID();
-            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 1){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 2){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 3){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
-                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
-                outfile.println("			ctx.beginPath();");
-                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
-                outfile.println("			ctx.stroke();");
-                outfile.println("		}");
-            }
-        }
-        outfile.println("	}");
-        outfile.println("	ctx.restore();");
-        outfile.println("}");
-        outfile.println(MolName3A4 + ".repaint();");
-        //end of chemdoodle 3A4 molecule
-        outfile.println("</script>");
-        outfile.println("</td>");
-        outfile.println("<td style='vertical-align:top;'>");
-        outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\">Standard</a></li>");
-        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
-        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" title=\"Click to show CYP2D6 predictions\">CYP2D6</a></li>");
-        outfile.println("</ul>");
-
-        outfile.println("<div class='table3a4'>");
-
-        // Visible header for Molecule
-        outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
-
-        // Table of Atom data
-        outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>Accessibility</th><th>2DSASA</th></tr>");
-
-        // Iterate over the Atoms in this sortedAtomsTreeSet
-        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA();
-        Iterator<Atom> sortedAtomsTreeSetIterator = sortedAtomsTreeSet.iterator();
-        Atom currentAtom;
-
-        while(sortedAtomsTreeSetIterator.hasNext()){
-            currentAtom = sortedAtomsTreeSetIterator.next();
-            this.writeAtomRowinMoleculeKUTable(currentAtom);
-        }
-        outfile.println("</table>");
-        outfile.println("</div>");
-        outfile.println("</td>");
-        outfile.println("</tr>");
-        outfile.println("</table>");
-        outfile.println("</div>");
-        //end of 3A4 output
+//        //Write 3A4 output
+//        String MolName3A4 = "molecule" + moleculeID + "standard";
+//        outfile.println("<div id='" + MolName3A4 + "div' style='display:;'>");
+//        outfile.println("<table>");
+//        outfile.println("<tr>");
+//        outfile.println("<td style='vertical-align:top;'>");
+//
+//        // Table row, contains 1 molecule images and mouseover to a second image with atom numbers
+//        //output chemdoodle 3A4 molecule here
+//        outfile.println("<script>");
+//        outfile.println("var " + MolName3A4 + " = new ChemDoodle.ViewerCanvas('" + MolName3A4 + "', 400, " + ycanvassize + ");");
+//        outfile.println(MolName3A4 + ".specs.atoms_useJMOLColors = true;");
+//        outfile.print("var " + MolName3A4 + "MolFile = '");
+//        //now use the multiple lines of the structure defined above in 2D6 output to enable explicit printout of \n
+//        for(int i=0; i<Moleculelines.length; i++){
+//            outfile.print(Moleculelines[i]);
+//            outfile.print("\\n");
+//        }
+//        outfile.print("'; \n");
+//        outfile.println("var " + MolName3A4 + "Mol = ChemDoodle.readMOL(" + MolName3A4 + "MolFile); ");
+//        outfile.println("// get the dimension of the molecule");
+//        outfile.println("var size = " + MolName3A4 + "Mol.getDimension();");
+//        outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
+//        outfile.println("var scale = Math.min(" + MolName3A4 + ".width/size.x, " + MolName3A4 + ".height/size.y);");
+//        outfile.println("// load the molecule first (this function automatically sets scale, so we need to change specs after");
+//        outfile.println(MolName3A4 + ".loadMolecule(" + MolName3A4 + "Mol);");
+//        outfile.println("// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off");
+//        outfile.println(MolName3A4 + ".specs.scale = scale*.8;");
+//        outfile.println(MolName3A4 + ".mouseover = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName3A4 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName3A4 + ".mouseout = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName3A4 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName3A4 + ".touchstart = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		" + MolName3A4 + "Mol.atoms[i].altLabel = i+1;");
+//        outfile.println("	}");
+//        outfile.println("this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName3A4 + ".touchend = function(){");
+//        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		delete " + MolName3A4 + "Mol.atoms[i].altLabel;");
+//        outfile.println("	}");
+//        outfile.println("	this.repaint();");
+//        outfile.println("}");
+//        outfile.println(MolName3A4 + ".drawChildExtras = function(ctx){");
+//        outfile.println("	ctx.save();");
+//        outfile.println("	ctx.translate(this.width/2, this.height/2);");
+//        outfile.println("	ctx.rotate(this.specs.rotateAngle);");
+//        outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
+//        outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
+//        outfile.println("	//draw atom numbers and draw circles on ranked atoms");
+//        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
+//        outfile.println("	radius = 6 + 6/this.specs.scale;");
+//        outfile.println("	for (var i = 0, ii=" + MolName3A4 + "Mol.atoms.length; i<ii; i++) {");
+//        outfile.println("		var atom = " + MolName3A4 + "Mol.atoms[i];");
+//        //iterate through the atoms and add circles to top 3 rank
+//        // Iterate over the Atoms in this molecule
+//        for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
+//            rankAtom = moleculeKU.getAtom(atomIndex);
+//            String AtomNr = rankAtom.getID();
+//            if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 1){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 2){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(223,189,174)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//            else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom) != null && MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(rankAtom).intValue() == 3){
+//                outfile.println("		if((i + 1) == " + AtomNr + "){");
+//                outfile.println("			ctx.strokeStyle = 'rgb(214,227,181)';");
+//                outfile.println("			ctx.beginPath();");
+//                outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
+//                outfile.println("			ctx.stroke();");
+//                outfile.println("		}");
+//            }
+//        }
+//        outfile.println("	}");
+//        outfile.println("	ctx.restore();");
+//        outfile.println("}");
+//        outfile.println(MolName3A4 + ".repaint();");
+//        //end of chemdoodle 3A4 molecule
+//        outfile.println("</script>");
+//        outfile.println("</td>");
+//        outfile.println("<td style='vertical-align:top;'>");
+//        outfile.println("<ul id='navlist'>");
+//        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\">Standard</a></li>");
+//        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
+//        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" title=\"Click to show CYP2D6 predictions\">CYP2D6</a></li>");
+//        outfile.println("</ul>");
+//
+//        outfile.println("<div class='table3a4'>");
+//
+//        // Visible header for Molecule
+//        outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
+//
+//        // Table of Atom data
+//        outfile.println("<table class=\"molecule\">");
+//        outfile.println("<tr><th>Rank</th><th>Atom</th><th>Score</th><th>Energy</th><th>Accessibility</th><th>2DSASA</th></tr>");
+//
+//        // Iterate over the Atoms in this sortedAtomsTreeSet
+//        sortedAtomsTreeSet = (TreeSet<Atom>) moleculeKU.getAtomsSortedByEnA();
+//        Iterator<Atom> sortedAtomsTreeSetIterator = sortedAtomsTreeSet.iterator();
+//        Atom currentAtom;
+//
+//        while(sortedAtomsTreeSetIterator.hasNext()){
+//            currentAtom = sortedAtomsTreeSetIterator.next();
+//            this.writeAtomRowinMoleculeKUTable(currentAtom);
+//        }
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        outfile.println("</td>");
+//        outfile.println("</tr>");
+//        outfile.println("</table>");
+//        outfile.println("</div>");
+//        //end of 3A4 output
         outfile.println("<hr />");
     }
 
-    public void writeAtomRowinMoleculeKUTable(Atom atom){
+    public void writeAtomRowinMoleculeKUTableHLM(IAtom atom){
 
-        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
+        if((Boolean) atom.getProperty(Modeller.is_som_fld)) outfile.println("<tr class=\"highlight1\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
         else outfile.println("<tr>");
 
-        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() + "</td>");
-        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
-        if(MoleculeKU.SMARTCYP_PROPERTY.Score.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score.get(atom)) + "</td>");
-        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
-        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Accessibility.get(atom)) + "</td>");
-        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
+        double proba_yes = (Double) atom.getProperty(Modeller.proba_yes_fld);
+        double proba_no = (Double) atom.getProperty(Modeller.proba_no_fld);
+
+        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
+        outfile.println("<td>" + Double.toString(proba_yes) + "</td>");
+        outfile.println("<td>" + Double.toString(proba_no) + "</td>");
+
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
+//        outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Span2End.get(atom).intValue() + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
         outfile.println("</tr>");
     }
 
-    public void writeAtomRowinMoleculeKUTable2D6(Atom atom){
+//    public void writeAtomRowinMoleculeKUTable(Atom atom){
+//
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
+//        else outfile.println("<tr>");
+//
+//        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Score.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score.get(atom)) + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
+//        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Accessibility.get(atom)) + "</td>");
+//        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
+//        outfile.println("</tr>");
+//    }
 
-        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
-        else outfile.println("<tr>");
+//    public void writeAtomRowinMoleculeKUTable2D6(Atom atom){
+//
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
+//        else outfile.println("<tr>");
+//
+//        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
+//        outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Span2End.get(atom).intValue() + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
+//        outfile.println("</tr>");
+//    }
 
-        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() + "</td>");
-        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
-        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");
-        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
-        outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Span2End.get(atom).intValue() + "</td>");
-        if(MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Dist2ProtAmine.get(atom).intValue() + "</td>");
-        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
-        outfile.println("</tr>");
-    }
-
-    public void writeAtomRowinMoleculeKUTable2C9(Atom atom){
-
-        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
-        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
-        else outfile.println("<tr>");
-
-        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() + "</td>");
-        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
-        if(MoleculeKU.SMARTCYP_PROPERTY.Score2C9.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2C9.get(atom)) + "</td>");
-        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
-        outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Span2End.get(atom).intValue() + "</td>");
-        if(MoleculeKU.SMARTCYP_PROPERTY.Dist2CarboxylicAcid.get(atom) == null) outfile.println("<td>-</td>");
-        else outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Dist2CarboxylicAcid.get(atom).intValue() + "</td>");
-        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
-        outfile.println("</tr>");
-    }
+//    public void writeAtomRowinMoleculeKUTable2C9(Atom atom){
+//
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 1) outfile.println("<tr class=\"highlight1\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 2) outfile.println("<tr class=\"highlight2\">");
+//        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
+//        else outfile.println("<tr>");
+//
+//        outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Ranking2C9.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>");			// For example C.22 or N.9
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Score2C9.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2C9.get(atom)) + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" + MoleculeKU.SMARTCYP_PROPERTY.Energy.get(atom) + "</td>");
+//        outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Span2End.get(atom).intValue() + "</td>");
+//        if(MoleculeKU.SMARTCYP_PROPERTY.Dist2CarboxylicAcid.get(atom) == null) outfile.println("<td>-</td>");
+//        else outfile.println("<td>" +  MoleculeKU.SMARTCYP_PROPERTY.Dist2CarboxylicAcid.get(atom).intValue() + "</td>");
+//        outfile.println("<td>" +  twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.SASA2D.get(atom)) + "</td>");
+//        outfile.println("</tr>");
+//    }
 
 
-    // Generates 2D coordinates of molecules
-    public MoleculeKU generate2Dcoordinates(MoleculeKU iAtomContainer){
-
-        //		boolean isConnected = ConnectivityChecker.isConnected(iAtomContainer);
-        //		System.out.println("isConnected " + isConnected);
-
-        final StructureDiagramGenerator structureDiagramGenerator = new StructureDiagramGenerator();
-
-        // Generate 2D coordinates?
-        if (GeometryTools.has2DCoordinates(iAtomContainer))
-        {
-            // System.out.println(iAtomContainer.toString() + " already had 2D coordinates");
-            return iAtomContainer; // already has 2D coordinates.
-        }
-        else
-        {
-            // Generate 2D structure diagram (for each connected component).
-            final AtomContainer iAtomContainer2d = new AtomContainer();
-
-            synchronized (structureDiagramGenerator)
-            {
-                structureDiagramGenerator.setMolecule(iAtomContainer, true);
-                structureDiagramGenerator.setUseTemplates(true);
-                try
-                {
-                    // Generate 2D coords for this molecule.
-                    structureDiagramGenerator.generateCoordinates();
-                    iAtomContainer = (MoleculeKU) structureDiagramGenerator.getMolecule();
-                }
-                catch (final Exception e)
-                {
-                    // Use projection instead.
-                    Projector.project2D(iAtomContainer);
-                    System.out.println("Exception in generating 2D coordinates");
-                    e.printStackTrace();
-                }
-            }
-
-            if(GeometryTools.has2DCoordinates(iAtomContainer)) return  iAtomContainer;
-            else {
-                System.out.println("Generating 2D coordinates for " + iAtomContainer2d + " failed.");
-                return null;
-            }
-        }
-    }
+//    // Generates 2D coordinates of molecules
+//    public MoleculeKU generate2Dcoordinates(MoleculeKU iAtomContainer){
+//
+//        //		boolean isConnected = ConnectivityChecker.isConnected(iAtomContainer);
+//        //		System.out.println("isConnected " + isConnected);
+//
+//        final StructureDiagramGenerator structureDiagramGenerator = new StructureDiagramGenerator();
+//
+//        // Generate 2D coordinates?
+//        if (GeometryTools.has2DCoordinates(iAtomContainer))
+//        {
+//            // System.out.println(iAtomContainer.toString() + " already had 2D coordinates");
+//            return iAtomContainer; // already has 2D coordinates.
+//        }
+//        else
+//        {
+//            // Generate 2D structure diagram (for each connected component).
+//            final AtomContainer iAtomContainer2d = new AtomContainer();
+//
+//            synchronized (structureDiagramGenerator)
+//            {
+//                structureDiagramGenerator.setMolecule(iAtomContainer, true);
+//                structureDiagramGenerator.setUseTemplates(true);
+//                try
+//                {
+//                    // Generate 2D coords for this molecule.
+//                    structureDiagramGenerator.generateCoordinates();
+//                    iAtomContainer = (MoleculeKU) structureDiagramGenerator.getMolecule();
+//                }
+//                catch (final Exception e)
+//                {
+//                    // Use projection instead.
+//                    Projector.project2D(iAtomContainer);
+//                    System.out.println("Exception in generating 2D coordinates");
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            if(GeometryTools.has2DCoordinates(iAtomContainer)) return  iAtomContainer;
+//            else {
+//                System.out.println("Generating 2D coordinates for " + iAtomContainer2d + " failed.");
+//                return null;
+//            }
+//        }
+//    }
 }

@@ -7,6 +7,7 @@ import descriptors.circular.NeighborhoodIterator;
 import globals.Globals;
 import modelling.Encoder;
 import modelling.Modeller;
+import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -22,10 +23,13 @@ import org.openscience.cdk.qsar.descriptors.atomic.*;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import utils.DepictorSMARTCyp;
 import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 //import utils.SoMInfo;
@@ -319,6 +323,17 @@ public class WorkerThread implements Runnable {
 						, false
 				);
 			}
+
+			// write the HTML output
+			System.out.println("\n ************** Writing Results as ChemDoodle HTML **************");
+			String[] filenames = new String[1];
+			filenames[0] = globals.input_sdf;
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+			Date date = new Date();
+			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html");
+			MoleculeSet moleculeSet = new MoleculeSet();
+			moleculeSet.addAtomContainer(molecule);
+			depictor_sc.writeHTML(moleculeSet);
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {

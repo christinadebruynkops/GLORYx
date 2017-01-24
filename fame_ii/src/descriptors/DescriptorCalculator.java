@@ -5,6 +5,8 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import smartcyp.SMARTSnEnergiesTable;
+import utils.MoleculeKUFAME;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,7 +32,13 @@ public class DescriptorCalculator {
 		while (reader.hasNext()) {
 			IMolecule molecule = (IMolecule) reader.next();
 			System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
-			molecules.add(molecule);
+			try {
+				MoleculeKUFAME mol_ku = new MoleculeKUFAME(molecule, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
+				mol_ku.setProperties(molecule.getProperties());
+				molecules.add(mol_ku);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 //			counter--;
 //			if (counter == 0) {
 //				break;
