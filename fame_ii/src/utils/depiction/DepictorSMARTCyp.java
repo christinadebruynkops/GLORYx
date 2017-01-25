@@ -113,8 +113,8 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("canvas.ChemDoodleWebComponent {border: none;}");
         outfile.println("-->");
         outfile.println("</style>");
-        outfile.println("<script type=\"text/javascript\" src=\"http://www.farma.ku.dk/smartcyp/chemdoodle/ChemDoodleWeb-libs.js\"></script>");
-        outfile.println("<script type=\"text/javascript\" src=\"http://www.farma.ku.dk/smartcyp/chemdoodle/ChemDoodleWeb.js\"></script>");
+        outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb-libs.js\"></script>");
+        outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb.js\"></script>");
         outfile.println("<script type=\"text/javascript\">");
         outfile.println("function roll_over(img_name, img_src)");
         outfile.println("   {");

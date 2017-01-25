@@ -7,10 +7,8 @@ import utils.Sanitize;
 import utils.Utils;
 import utils.depiction.Depictor;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * A simple class holding some useful global constants that are used
@@ -33,9 +31,11 @@ public class Globals {
     public Depictor som_depictor;
     public Encoder at_encoder;
     public CircImputer circ_imputer;
+    public List<File> js_code_paths = new ArrayList<>();
 
     public static final int circ_depth = 6;
     public static final int fing_depth = 6;
+    public static final String CHEMDOODLE_ROOT = "/utils/depiction/js/";
     public static final String MODELS_ROOT = "/modelling/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
 
@@ -75,6 +75,19 @@ public class Globals {
         if (!outdir.exists()) {
             outdir.mkdir();
         }
+        File outdir_js = new File(this.output_dir, "ui");
+        if (!outdir_js.exists()) {
+            outdir_js.mkdir();
+        }
+
+        // write the necessary JavaScript code
+        js_code_paths.add(new File(outdir_js, "ChemDoodleWeb.js"));
+        js_code_paths.add(new File(outdir_js, "ChemDoodleWeb-libs.js"));
+        for (File item : js_code_paths) {
+            InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
+            OutputStream js_ostram = new FileOutputStream(item);
+            copyStreams(js_istream, js_ostram);
+        }
 
         // sanitize the data if requested and save the path to the modified file
         if (this.sanitize) {
@@ -82,5 +95,16 @@ public class Globals {
         }
     }
 
-
+    private static void copyStreams(InputStream is, OutputStream os) throws IOException {
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        //read from is to buffer
+        while((bytesRead = is.read(buffer)) !=-1){
+            os.write(buffer, 0, bytesRead);
+        }
+        is.close();
+        //flush OutputStream to write any buffered data to file
+        os.flush();
+        os.close();
+    }
 }
