@@ -14,7 +14,7 @@ public class Main {
         // TODO: this stuff will be the parameters of the program
         String input_sdf = "test_files/compounds/tamoxifen.sdf";
         String out_dir = "test_files/results";
-        String model_code = "cdk"; // can be 'cdk', 'cdk_ccdk', 'cdk_fing' or 'cdk_fing_ccdk'
+        String model_code = "cdk_ccdk"; // can be 'cdk', 'cdk_ccdk', 'cdk_fing' or 'cdk_fing_ccdk'
         String target_var = "HLM";
         boolean santize = true;
 

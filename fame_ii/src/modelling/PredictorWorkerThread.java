@@ -56,6 +56,7 @@ public class PredictorWorkerThread implements Runnable {
 		CircularCollector circ_collector = new CircularCollector(desc_names, aggregator);
 		NeighborhoodIterator circ_iterator = new NeighborhoodIterator(molecule, circ_depth);
 		circ_iterator.iterate(circ_collector);
+		circ_collector.writeData(molecule, new HashMap<>());
 		return circ_collector.getSignatures();
 	}
 
@@ -257,6 +258,9 @@ public class PredictorWorkerThread implements Runnable {
 			Set<String> ccdk_signatures = new HashSet<>();
 			if (globals.desc_groups.contains("ccdk")) {
 				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), Globals.circ_depth);
+
+				// impute missing values for circular descriptors
+				globals.circ_imputer.impute(molecule, ccdk_signatures);
 			}
 
 			// calculate the atom type circular fingerprints
@@ -269,11 +273,7 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			// encode atom types
-            Encoder at_encoder = new Encoder("AtomType", globals.encoders_json);
-            at_encoder.encode(molecule);
-
-            // impute missing values for circular descriptors
-            // TODO: implement
+            globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
 			globals.modeller.predict(molecule);

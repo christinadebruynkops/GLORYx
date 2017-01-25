@@ -1,6 +1,8 @@
 package globals;
 
+import modelling.Encoder;
 import modelling.Modeller;
+import modelling.descriptors.circular.CircImputer;
 import utils.Sanitize;
 import utils.Utils;
 import utils.depiction.Depictor;
@@ -29,6 +31,8 @@ public class Globals {
     public boolean sanitize;
     public Depictor depictor;
     public Depictor som_depictor;
+    public Encoder at_encoder;
+    public CircImputer circ_imputer;
 
     public static final int circ_depth = 6;
     public static final int fing_depth = 6;
@@ -59,7 +63,9 @@ public class Globals {
         pmml_path = model_dir + "final_model.pmml";
         modeller = new Modeller(pmml_path, this.target_var);
         encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
+        at_encoder = new Encoder("AtomType", encoders_json);
         imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
+        circ_imputer = new CircImputer(imputation_json);
 
         // check files and create directories
         if (!new File(this.input_sdf).exists()) {
