@@ -1,10 +1,8 @@
 //Span descriptor calculation taken from SmartCyp
 
-package modelling.descriptors;
+package modelling;
 
 import globals.Globals;
-import modelling.Encoder;
-import modelling.Modeller;
 import modelling.descriptors.circular.CircularCollector;
 import modelling.descriptors.circular.NeighborhoodIterator;
 import org.openscience.cdk.MoleculeSet;
@@ -34,7 +32,7 @@ import java.util.*;
 
 //import utils.SoMInfo;
 
-public class WorkerThread implements Runnable {
+public class PredictorWorkerThread implements Runnable {
 
 	private IMolecule molecule;
 	private String mol_name;
@@ -61,7 +59,7 @@ public class WorkerThread implements Runnable {
 		return circ_collector.getSignatures();
 	}
 
-	public WorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
+	public PredictorWorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
 		this.globals = globals;
 		this.molecule = molecule;
 		mol_name = molecule.getProperty(Globals.ID_PROP).toString();

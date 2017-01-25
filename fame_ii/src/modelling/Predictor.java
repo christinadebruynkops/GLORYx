@@ -1,4 +1,4 @@
-package modelling.descriptors;
+package modelling;
 
 import globals.Globals;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -16,10 +16,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-public class DescriptorCalculator {
+public class Predictor {
     private Globals globals;
 
-	public DescriptorCalculator(Globals globals) {
+	public Predictor(Globals globals) {
         this.globals = globals;
 	}
 
@@ -47,7 +47,7 @@ public class DescriptorCalculator {
 
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		for (int i = 0; i < molecules.size(); i++) {
-			Runnable worker = new WorkerThread(
+			Runnable worker = new PredictorWorkerThread(
 					molecules.get(i)
 					, this.globals
 			);

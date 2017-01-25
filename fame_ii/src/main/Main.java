@@ -1,7 +1,7 @@
 package main;
 
 import globals.Globals;
-import modelling.descriptors.DescriptorCalculator;
+import modelling.Predictor;
 
 /**
  * The main method of FAME II.
@@ -27,7 +27,7 @@ public class Main {
         );
 
         // calculate the descriptors
-        DescriptorCalculator desc_calc = new DescriptorCalculator(params);
+        Predictor desc_calc = new Predictor(params);
         desc_calc.calculate();
     }
 }
