@@ -36,7 +36,7 @@ public class Globals {
 
     public static final int circ_depth = 6;
     public static final int fing_depth = 6;
-    public static final String MODELS_ROOT = "/modelling/models/"; // FIXME: the contents of this directory should be inside the jar file
+    public static final String MODELS_ROOT = "/modelling/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
 
     public Globals(
