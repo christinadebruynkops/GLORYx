@@ -30,6 +30,7 @@ public class Modeller {
 
     public Modeller(String pmml_path, String target_var) throws Exception {
         this.target_var = target_var;
+        System.out.println("Loading model...");
         PMML pmml = loadModel(pmml_path);
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);

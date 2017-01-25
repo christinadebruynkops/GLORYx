@@ -79,7 +79,7 @@ public class PredictorWorkerThread implements Runnable {
 				throw new Exception("Error: salt: " + mol_name);
 			}
 
-			System.out.println("************** Molecule " + mol_name + " **************");
+			System.out.println("************** Processing molecule: " + mol_name + " **************");
 			globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
 
 			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
@@ -180,10 +180,13 @@ public class PredictorWorkerThread implements Runnable {
 				throw new Exception("Error: molecule is too large: " + mol_name);
 			}
 
+			// create the output directory
 			File data_dir = new File(out_dir);
 			if (!data_dir.exists()) {
 				data_dir.mkdir();
 			}
+
+			System.out.println("Calculating basic CDK descriptors...");
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
@@ -257,6 +260,7 @@ public class PredictorWorkerThread implements Runnable {
 			// calculate circular descriptors (CDK)
 			Set<String> ccdk_signatures = new HashSet<>();
 			if (globals.desc_groups.contains("ccdk")) {
+				System.out.println("Calculating circular descriptors...");
 				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), Globals.circ_depth);
 
 				// impute missing values for circular descriptors
@@ -266,6 +270,7 @@ public class PredictorWorkerThread implements Runnable {
 			// calculate the atom type circular fingerprints
 			Set<String> fing_signatures = new HashSet<>();
 			if (globals.desc_groups.contains("fing")) {
+				System.out.println("Calculating circular fingerprints...");
 				CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
 				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, Globals.fing_depth);
 				fg_iterator.iterate(fg_collector);
@@ -276,9 +281,11 @@ public class PredictorWorkerThread implements Runnable {
             globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
+			System.out.println("Predicting...");
 			globals.modeller.predict(molecule);
 			globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 
+			System.out.println("Writing results...");
 			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
@@ -323,7 +330,6 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			// write the HTML output
-			System.out.println("\n ************** Writing Results as ChemDoodle HTML **************");
 			String[] filenames = new String[1];
 			filenames[0] = globals.input_sdf;
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
@@ -332,6 +338,8 @@ public class PredictorWorkerThread implements Runnable {
 			MoleculeSet moleculeSet = new MoleculeSet();
 			moleculeSet.addAtomContainer(molecule);
 			depictor_sc.writeHTML(moleculeSet);
+
+			System.out.println("************** Done **************");
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {

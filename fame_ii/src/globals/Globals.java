@@ -91,6 +91,7 @@ public class Globals {
 
         // sanitize the data if requested and save the path to the modified file
         if (this.sanitize) {
+            System.out.println("Sanitizing structures with babel...");
             this.input_sdf = Sanitize.sanitize(this);
         }
     }

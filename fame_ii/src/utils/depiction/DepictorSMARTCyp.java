@@ -53,7 +53,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("");
         outfile.println("<head>");
         outfile.println("");
-        outfile.println("<title>Results from FAME II</title>");
+        outfile.println("<title>FAME II Output</title>");
         outfile.println("<style type=\"text/css\">");
         outfile.println("<!--");
         outfile.println("body {");
@@ -191,10 +191,11 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         }
         else {
             //no error message, print normal output
-            outfile.println("<h1>Results from FAME II</h1>");
-            outfile.println("\n These results were produced: " + this.dateAndTime + ".");
-            outfile.println("\n The infiles were: " + Arrays.toString(namesOfInfiles) + ".");
-            outfile.println("\n <br /><br /><i>To alternate between heteroatoms and atom numbers, move the mouse cursor over the figure.</i>");
+            outfile.println("<h1>FAME II Output</h1>");
+            outfile.println("\n Produced: " + this.dateAndTime + ".");
+            outfile.println("\n Input files: " + Arrays.toString(namesOfInfiles) + ".");
+            outfile.println("\n Visualization: " + Arrays.toString(namesOfInfiles) + ".");
+            outfile.println("\n <br /><br /><i>To alternate between atoms and atom numbers, move the mouse cursor over the figure.</i>");
 
 
             // Iterate MoleculKUs
@@ -799,7 +800,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 //        outfile.println("</table>");
 //        outfile.println("</div>");
 //        //end of 3A4 output
-        outfile.println("<hr />");
+//        outfile.println("<hr />");
     }
 
     public void writeAtomRowinMoleculeKUTableHLM(IAtom atom){
