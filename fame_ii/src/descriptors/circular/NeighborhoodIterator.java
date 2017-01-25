@@ -6,7 +6,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import utils.Depictor;
+import utils.depiction.Depictor;
 
 import java.util.*;
 

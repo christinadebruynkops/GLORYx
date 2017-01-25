@@ -1,4 +1,4 @@
-package utils;
+package utils.depiction;
 
 import modelling.Modeller;
 import org.openscience.cdk.interfaces.IAtom;

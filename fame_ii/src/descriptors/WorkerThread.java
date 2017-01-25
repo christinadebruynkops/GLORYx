@@ -23,8 +23,8 @@ import org.openscience.cdk.qsar.descriptors.atomic.*;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import utils.DepictorSMARTCyp;
 import utils.Utils;
+import utils.depiction.DepictorSMARTCyp;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package utils;
+package utils.depiction;
 
 import globals.Globals;
 import modelling.Modeller;
@@ -10,6 +10,7 @@ import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import smartcyp.MoleculeKU;
 import smartcyp.WriteResultsAsChemDoodleHTML;
+import utils.MoleculeKUFAME;
 
 import java.io.*;
 import java.util.Arrays;

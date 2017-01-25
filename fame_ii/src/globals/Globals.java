@@ -1,9 +1,9 @@
 package globals;
 
 import modelling.Modeller;
-import utils.Depictor;
 import utils.Sanitize;
 import utils.Utils;
+import utils.depiction.Depictor;
 
 import java.io.File;
 import java.util.Arrays;
