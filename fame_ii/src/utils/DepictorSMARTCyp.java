@@ -212,7 +212,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     public void writeMoleculeKUTable(MoleculeKU moleculeKU) {
 
-        moleculeID = "MyMolecule";
+        moleculeID = moleculeKU.getProperty(Globals.ID_PROP).toString();
 
         outfile.println("");
         outfile.println("<!-- Molecule " + moleculeID + " -->");	// Invisible code marker for molecule
@@ -275,6 +275,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         }
         outfile.print("'; \n");
         outfile.println("var " + MolNameHLM + "Mol = ChemDoodle.readMOL(" + MolNameHLM + "MolFile); ");
+        outfile.println("new ChemDoodle.informatics.HydrogenDeducer().removeHydrogens(" + MolNameHLM + "Mol, false);");
         outfile.println("// get the dimension of the molecule");
         outfile.println("var size = " + MolNameHLM + "Mol.getDimension();");
         outfile.println("// find the scale by taking the minimum of the canvas/size ratios");
