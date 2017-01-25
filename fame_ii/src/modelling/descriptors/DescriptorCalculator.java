@@ -1,4 +1,4 @@
-package descriptors;
+package modelling.descriptors;
 
 import globals.Globals;
 import org.openscience.cdk.DefaultChemObjectBuilder;

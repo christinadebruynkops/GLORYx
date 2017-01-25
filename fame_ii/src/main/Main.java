@@ -1,7 +1,7 @@
 package main;
 
-import descriptors.DescriptorCalculator;
 import globals.Globals;
+import modelling.descriptors.DescriptorCalculator;
 
 /**
  * The main method of FAME II.

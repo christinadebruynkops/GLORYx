@@ -1,12 +1,12 @@
 //Span descriptor calculation taken from SmartCyp
 
-package descriptors;
+package modelling.descriptors;
 
-import descriptors.circular.CircularCollector;
-import descriptors.circular.NeighborhoodIterator;
 import globals.Globals;
 import modelling.Encoder;
 import modelling.Modeller;
+import modelling.descriptors.circular.CircularCollector;
+import modelling.descriptors.circular.NeighborhoodIterator;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;

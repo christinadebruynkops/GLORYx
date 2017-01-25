@@ -1,4 +1,4 @@
-package descriptors.circular;
+package modelling.descriptors.circular;
 
 import globals.Globals;
 import org.openscience.cdk.Molecule;
