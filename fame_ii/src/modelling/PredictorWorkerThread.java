@@ -334,7 +334,7 @@ public class PredictorWorkerThread implements Runnable {
 			filenames[0] = globals.input_sdf;
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 			Date date = new Date();
-			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html");
+			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
 			MoleculeSet moleculeSet = new MoleculeSet();
 			moleculeSet.addAtomContainer(molecule);
 			depictor_sc.writeHTML(moleculeSet);

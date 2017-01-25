@@ -23,8 +23,11 @@ import java.util.TreeSet;
  */
 public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
-    public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile) {
+    private Globals globals;
+
+    public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile, Globals globals) {
         super(dateTime, infileNames, outputdir, outputfile);
+        this.globals = globals;
     }
 
     public void writeHTML(MoleculeSet moleculeSet) {
@@ -85,8 +88,8 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("border-top-left-radius: 3px;");
         outfile.println("border-top-right-radius: 3px; }");
         outfile.println("ul#navlist li#cypHLM {");
-        outfile.println("border-bottom: 1px solid rgb(242,238,234);");
-        outfile.println("background-color: rgb(242,238,234); }");
+        outfile.println("border-bottom: 1px solid rgb(255,235,235);");
+        outfile.println("background-color: rgb(255,235,235); }");
         outfile.println("li#cypHLM a { color:  rgb(80,80,100); }");
 //        outfile.println("ul#navlist li#cyp3A4 {");
 //        outfile.println("border-bottom: 1px solid rgb(242,238,234);");
@@ -192,10 +195,10 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         else {
             //no error message, print normal output
             outfile.println("<h1>FAME II Output</h1>");
-            outfile.println("\n Produced: " + this.dateAndTime + ".");
-            outfile.println("\n Input files: " + Arrays.toString(namesOfInfiles) + ".");
-            outfile.println("\n Visualization: " + Arrays.toString(namesOfInfiles) + ".");
-            outfile.println("\n <br /><br /><i>To alternate between atoms and atom numbers, move the mouse cursor over the figure.</i>");
+            outfile.println("\n <b>Produced:</b> " + this.dateAndTime + ".<br />");
+            outfile.println("\n <b>Input file:</b> " + Arrays.toString(namesOfInfiles) + ".<br />");
+            outfile.println("\n <br /><br /><b>Visualization:</b><br />");
+            outfile.println("\n <i>To alternate between atoms and atom numbers, move the mouse cursor over the figure.</i>");
 
 
             // Iterate MoleculKUs
@@ -365,7 +368,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("</td>");
         outfile.println("<td style='vertical-align:top;'>");
         outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cypHLM'><a href=\"javascript:Switch2D6and3A4('HLM')\" title=\"Click to show HLM predictions\">HLM</a></li>");
+        outfile.println("<li id='cypHLM' style=\"padding: 2px;\">Model: " + globals.model_code + "</li>");
 //        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
 //        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
 //        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");

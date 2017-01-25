@@ -18,6 +18,7 @@ import java.util.*;
  */
 public class Globals {
     public String pmml_path;
+    public String model_code;
     public Modeller modeller;
     public String input_sdf;
     public String output_dir;
@@ -57,6 +58,7 @@ public class Globals {
                         model_code.split("_")
                 )
         );
+        this.model_code = model_code;
         this.target_var = target_var;
         this.sanitize = sanitize;
         model_dir = MODELS_ROOT + this.target_var + "_" + model_code + "/";
