@@ -8,6 +8,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import utils.Sanitize;
+import utils.Utils;
 
 import java.io.File;
 import java.util.List;
@@ -24,8 +25,9 @@ public class Main {
                 .defaultHelp(true)
                 .description("This is FAME II. It can predict sites of " +
                         "metabolism for compounds. It includes models " +
-                        "for regioselectivity prediction of cytochromes P450."
-                );
+                        "for regioselectivity prediction of cytochromes P450.")
+                .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
+        parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
         parser.addArgument("-m", "--model")
                 .choices("cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk").setDefault("cdk_ccdk")
                 .help("The model to use according to the set of descriptors computed. Can be one of: 'cdk', 'cdk_ccdk', 'cdk_fing' and 'cdk_fing_ccdk'.");
