@@ -320,7 +320,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("	ctx.scale(this.specs.scale, this.specs.scale);");
         outfile.println("	ctx.translate(-this.width/2, -this.height/2);");
         outfile.println("	//draw atom numbers and draw circles on ranked atoms");
-        outfile.println("	ctx.lineWidth = 2 + 4/this.specs.scale;");
+        outfile.println("	ctx.lineWidth = 1 + 2/this.specs.scale;");
         outfile.println("	radius = 6 + 6/this.specs.scale;");
         outfile.println("	for (var i = 0, ii=" + MolNameHLM + "Mol.atoms.length; i<ii; i++) {");
         outfile.println("		var atom = " + MolNameHLM + "Mol.atoms[i];");
