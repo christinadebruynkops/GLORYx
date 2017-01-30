@@ -118,8 +118,8 @@ public class PredictorWorkerThread implements Runnable {
 
 				// add convert implicit hydrogens to explicit ones
 				System.err.println("Making all hydrogens explicit...");
-				System.err.println("Explicit Hydrogens: " + Integer.toString(hydrogens_total));
-				System.err.println("Added Implicit Hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
+				System.err.println("Explicit hydrogens in the original structure: " + Integer.toString(hydrogens_total));
+				System.err.println("Added hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
 				System.err.println("Generating depiction for: " + mol_name);
