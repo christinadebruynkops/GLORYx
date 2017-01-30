@@ -3,7 +3,6 @@ package globals;
 import modelling.Encoder;
 import modelling.Modeller;
 import modelling.descriptors.circular.CircImputer;
-import utils.Sanitize;
 import utils.Utils;
 import utils.depiction.Depictor;
 
@@ -27,7 +26,6 @@ public class Globals {
     public String imputation_json;
     public String target_var;
     public Set<String> desc_groups;
-    public boolean sanitize;
     public boolean generate_pngs = false;
     public Depictor depictor;
     public Depictor som_depictor;
@@ -46,7 +44,6 @@ public class Globals {
             , String output_dir
             , String model_code
             , String target_var
-            , boolean sanitize
             ) throws Exception
     {
         this.depictor = new Depictor();
@@ -61,7 +58,6 @@ public class Globals {
         );
         this.model_code = model_code;
         this.target_var = target_var;
-        this.sanitize = sanitize;
         model_dir = MODELS_ROOT + this.target_var + "_" + model_code + "/";
         pmml_path = model_dir + "final_model.pmml";
         modeller = new Modeller(pmml_path, this.target_var);
@@ -71,9 +67,6 @@ public class Globals {
         circ_imputer = new CircImputer(imputation_json);
 
         // check files and create directories
-        if (!new File(this.input_sdf).exists()) {
-            throw new Exception("File not found: " + this.input_sdf);
-        }
         File outdir = new File(this.output_dir);
         if (!outdir.exists()) {
             outdir.mkdir();
@@ -90,12 +83,6 @@ public class Globals {
             InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
             OutputStream js_ostram = new FileOutputStream(item);
             copyStreams(js_istream, js_ostram);
-        }
-
-        // sanitize the data if requested and save the path to the modified file
-        if (this.sanitize) {
-            System.out.println("Sanitizing structures with babel...");
-            this.input_sdf = Sanitize.sanitize(this);
         }
     }
 

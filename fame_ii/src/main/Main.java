@@ -7,6 +7,10 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+import utils.Sanitize;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * The main method of FAME II.
@@ -19,8 +23,8 @@ public class Main {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("FAME II")
                 .defaultHelp(true)
                 .description("This is FAME II. It can predict sites of " +
-                        "metabolism for compounds. It includes multiple models " +
-                        "which can predict the regioselectivity of cytochromes P450."
+                        "metabolism for compounds. It includes models " +
+                        "for regioselectivity prediction of cytochromes P450."
                 );
         parser.addArgument("-m", "--model")
                 .choices("cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk").setDefault("cdk_ccdk")
@@ -30,7 +34,7 @@ public class Main {
         parser.addArgument("-s", "--sanitize")
                 .action(Arguments.storeTrue())
                 .setDefault(true)
-                .help("Use Open Babel to sanitize the structures before processing (recommended). Turned on by default.");
+                .help("Use Open Babel (executable needs to be available) to sanitize the structures before processing (recommended). Turned on by default.");
         parser.addArgument("-o", "--output-directory")
                 .setDefault("fame_results")
                 .help("The path to the output directory. If it doesn't exist, it will be created. Uses './fame_results' by default.");
@@ -47,16 +51,32 @@ public class Main {
             System.exit(1);
         }
 
-        for (String input_file : args_ns.<String>getList("FILE")) {
-            // initialize global settings
-            Globals params = new Globals(
-                    input_file
-                    , args_ns.getString("output_directory")
-                    , args_ns.getString("model")
-                    , "HLM"
-                    , args_ns.getBoolean("sanitize")
-            );
-            params.generate_pngs = args_ns.getBoolean("depict_png");
+        // initialize global settings
+        List<String> inputs = args_ns.<String>getList("FILE");
+        Globals params = new Globals(
+                inputs.get(0)
+                , args_ns.getString("output_directory")
+                , args_ns.getString("model")
+                , "HLM"
+        );
+        params.generate_pngs = args_ns.getBoolean("depict_png");
+
+        // process files
+        for (String input_file : inputs) {
+            System.out.println("Processing: " + input_file);
+
+            // check if input file exists and change the path in settings
+            if (!new File(input_file).exists()) {
+                System.err.println("File not found: " + input_file);
+                System.err.println("Skipping...");
+            }
+            params.input_sdf = input_file;
+
+            // sanitize the data if requested and save the path to the modified file
+            if (args_ns.getBoolean("sanitize")) {
+                System.out.println("Sanitizing structures with babel...");
+                params.input_sdf = Sanitize.sanitize(params);
+            }
 
             // calculate the descriptors
             Predictor desc_calc = new Predictor(params);
