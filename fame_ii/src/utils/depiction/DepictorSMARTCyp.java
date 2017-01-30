@@ -381,7 +381,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>SoM Probability (yes)</th><th>SoM Probability (no)</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
@@ -813,12 +813,9 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 //        else if(MoleculeKU.SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 3) outfile.println("<tr class=\"highlight3\">");
         else outfile.println("<tr>");
 
-        double proba_yes = (Double) atom.getProperty(Modeller.proba_yes_fld);
-        double proba_no = (Double) atom.getProperty(Modeller.proba_no_fld);
-
         outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
+        double proba_yes = (Double) atom.getProperty(Modeller.proba_yes_fld);
         outfile.println("<td>" + Double.toString(proba_yes) + "</td>");
-        outfile.println("<td>" + Double.toString(proba_no) + "</td>");
 
 //        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
 //        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");
