@@ -99,7 +99,7 @@ public class Depictor {
 //		model.set(BasicAtomGenerator.CompactAtom.class, true);
 //		model.set(BasicAtomGenerator.CompactShape.class, BasicAtomGenerator.Shape.OVAL);
         model.set(BasicAtomGenerator.KekuleStructure.class, true);
-        model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, false);
+        model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, true);
 //        model.set(AtomNumberGenerator.WillDrawAtomNumbers.class, true);
 //        model.set(AtomNumberGenerator.ColorByType.class, true);
         if (colorer != null) {
