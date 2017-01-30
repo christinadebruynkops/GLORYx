@@ -12,5 +12,6 @@
     <orderEntry type="library" name="org.jpmml:pmml-evaluator:1.3.3" level="project" />
     <orderEntry type="library" name="org.json:json:20080701" level="project" />
     <orderEntry type="module" module-name="smartcyp" />
+    <orderEntry type="library" name="net.sourceforge.argparse4j:argparse4j:0.7.0" level="project" />
   </component>
 </module>

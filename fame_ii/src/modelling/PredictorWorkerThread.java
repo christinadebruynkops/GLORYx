@@ -80,7 +80,9 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			System.out.println("************** Processing molecule: " + mol_name + " **************");
-			globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
+			if (globals.generate_pngs) {
+				globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
+			}
 
 			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
@@ -123,11 +125,8 @@ public class PredictorWorkerThread implements Runnable {
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
 				System.err.println("Generating depiction for: " + mol_name);
-				try {
+				if (globals.generate_pngs) {
 					globals.depictor.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
-				} catch (Exception exp) {
-					System.err.println("Failed to generate depiction for: " + mol_name);
-					exp.printStackTrace();
 				}
 			}
 
@@ -283,7 +282,9 @@ public class PredictorWorkerThread implements Runnable {
 			// do the modelling and process the results
 			System.out.println("Predicting...");
 			globals.modeller.predict(molecule);
-			globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
+			if (globals.generate_pngs) {
+				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
+			}
 
 			System.out.println("Writing results...");
 			// write the basic CDK descriptors
