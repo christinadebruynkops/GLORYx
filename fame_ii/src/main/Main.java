@@ -35,15 +35,15 @@ public class Main {
                 .help("One or more SDF files with compounds to predict.");
         parser.addArgument("-s", "--sanitize")
                 .action(Arguments.storeTrue())
-                .setDefault(true)
-                .help("Use Open Babel (executable needs to be available) to sanitize the structures before processing (recommended). Turned on by default.");
+                .setDefault(false)
+                .help("Use Open Babel (executable needs to be available) to sanitize the structures before processing (recommended).");
         parser.addArgument("-o", "--output-directory")
                 .setDefault("fame_results")
-                .help("The path to the output directory. If it doesn't exist, it will be created. Uses './fame_results' by default.");
+                .help("The path to the output directory. If it doesn't exist, it will be created.");
         parser.addArgument("-p", "--depict-png")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
-                .help("Generates depictions of molecules with the predicted sites highlighted as PNG files as well. Turned off by default.");
+                .help("Generates depictions of molecules with the predicted sites highlighted as PNG files as well.");
 
         Namespace args_ns = null;
         try {
