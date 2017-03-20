@@ -815,6 +815,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
         double proba_yes = (Double) atom.getProperty(Modeller.proba_yes_fld);
+        proba_yes = (double) Math.round(proba_yes * 100000d) / 100000d;
         outfile.println("<td>" + Double.toString(proba_yes) + "</td>");
 
 //        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
