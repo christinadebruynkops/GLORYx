@@ -57,6 +57,9 @@ public class Modeller {
 
                 // The raw (ie. user-supplied) value could be any Java primitive value
                 Object rawValue = atom.getProperty(inputFieldName.toString());
+                if (rawValue == null && inputFieldName.toString().startsWith("AtomType_")) {
+                    rawValue = 0;
+                }
 
                 // The raw value is passed through: 1) outlier treatment, 2) missing value treatment, 3) invalid value treatment and 4) type conversion
                 FieldValue inputFieldValue = inputField.prepare(rawValue);
