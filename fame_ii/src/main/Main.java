@@ -7,7 +7,6 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import utils.Sanitize;
 import utils.Utils;
 
 import java.io.File;
@@ -43,10 +42,10 @@ public class Main {
                 .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("+")
                 .help("One or more SDF files with compounds to predict.");
-        parser.addArgument("-s", "--sanitize")
-                .action(Arguments.storeTrue())
-                .setDefault(false)
-                .help("Use Open Babel (executable needs to be available) to sanitize the structures before processing.");
+//        parser.addArgument("-s", "--sanitize")
+//                .action(Arguments.storeTrue())
+//                .setDefault(false)
+//                .help("Use Open Babel (executable needs to be available) to sanitize the structures before processing.");
         parser.addArgument("-o", "--output-directory")
                 .setDefault("fame_results")
                 .help("The path to the output directory. If it doesn't exist, it will be created.");
@@ -86,10 +85,10 @@ public class Main {
             params.input_sdf = input_file;
 
             // sanitize the data if requested and save the path to the modified file
-            if (args_ns.getBoolean("sanitize")) {
-                System.out.println("Sanitizing structures with babel...");
-                params.input_sdf = Sanitize.sanitize(params);
-            }
+//            if (args_ns.getBoolean("sanitize")) {
+//                System.out.println("Sanitizing structures with babel...");
+//                params.input_sdf = Sanitize.sanitize(params);
+//            }
 
             // calculate the descriptors
             Predictor desc_calc = new Predictor(params);
