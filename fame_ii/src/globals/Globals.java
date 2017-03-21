@@ -33,8 +33,8 @@ public class Globals {
     public CircImputer circ_imputer;
     public List<File> js_code_paths = new ArrayList<>();
 
-    public static final int circ_depth = 6;
-    public static final int fing_depth = 6;
+    public int circ_depth;
+    public int fing_depth;
     public static final String CHEMDOODLE_ROOT = "/utils/depiction/js/";
     public static final String MODELS_ROOT = "/modelling/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
@@ -43,11 +43,14 @@ public class Globals {
             String input_sdf
             , String output_dir
             , String model_code
+            , int depth
             , String target_var
             ) throws Exception
     {
         this.depictor = new Depictor();
         this.som_depictor = new Depictor(new Depictor.SoMColorer());
+        this.circ_depth = depth;
+        this.fing_depth = depth;
 
         this.input_sdf = input_sdf;
         this.output_dir = output_dir;
@@ -56,9 +59,13 @@ public class Globals {
                         model_code.split("_")
                 )
         );
-        this.model_code = model_code;
+        if (!model_code.equals("cdk")) {
+            this.model_code = model_code + "_" + Integer.toString(depth);
+        } else {
+            this.model_code = model_code;
+        }
         this.target_var = target_var;
-        model_dir = MODELS_ROOT + this.target_var + "_" + model_code + "/";
+        model_dir = MODELS_ROOT + this.target_var + "_" + this.model_code + "/";
         pmml_path = model_dir + "final_model.pmml";
         modeller = new Modeller(pmml_path, this.target_var);
         encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));

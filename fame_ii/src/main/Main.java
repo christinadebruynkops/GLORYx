@@ -11,9 +11,7 @@ import utils.Sanitize;
 import utils.Utils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,22 +32,15 @@ public class Main {
         List<String> options = Arrays.asList(
                 "cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk"
         );
-        List<String> circular_options = new ArrayList<>();
-        for (String option : options) {
-            if (option.contains("_")) {
-                for (int i = 1; i <= 6; i++) {
-                    String thing = option + "_" + Integer.toString(i);
-                    circular_options.add(thing);
-                }
-            }
-        }
-        circular_options.add(options.get(0));
-        Collections.reverse(circular_options);
+
         parser.addArgument("-m", "--model")
-                .choices(circular_options.toArray()).setDefault("cdk_fing_ccdk_4")
-                .help("Model specification in terms of used descriptors." +
-                        "It is possible to specify only models that use circular descriptors of up to certain depth by appending a number to the name (such as 'cdk_fing_ccdk_4'). " +
-                        "Models of up to depth 6 are available in the package. If the depth is not specified, 4 is used as default.");
+                .choices("cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk").setDefault("cdk_fing_ccdk")
+                .help("Model specification in terms of used descriptors.");
+        parser.addArgument("-d", "--depth")
+                .type(Integer.class)
+                .choices(1,2,3,4,5,6)
+                .setDefault(4)
+                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("+")
                 .help("One or more SDF files with compounds to predict.");
         parser.addArgument("-s", "--sanitize")
@@ -78,6 +69,7 @@ public class Main {
                 inputs.get(0)
                 , args_ns.getString("output_directory")
                 , args_ns.getString("model")
+                , args_ns.getInt("depth")
                 , "HLM"
         );
         params.generate_pngs = args_ns.getBoolean("depict_png");
