@@ -113,7 +113,7 @@ public class CircularCollector implements NeighborhoodCollector {
         return joiners.keySet();
     }
 
-    public void writeData(IMolecule mol, Map<String, Integer> stats) throws Exception {
+    public void writeData(IMolecule mol) throws Exception {
         int starting_depth = 0;
         if (ignore_zero_depth) {
             starting_depth = 1;
@@ -135,9 +135,6 @@ public class CircularCollector implements NeighborhoodCollector {
             }
             for (String signature : joiners.keySet()) {
                 atm.setProperty(signature, null);
-                if (!stats.containsKey(signature)) {
-                    stats.put(signature, 0);
-                }
             }
             Map<String, List<Object>> sig_val_map = new HashMap<>();
             for (NeighborData data : molecule_map.get(atm)) {
@@ -153,7 +150,6 @@ public class CircularCollector implements NeighborhoodCollector {
             }
 
             for (String signature : sig_val_map.keySet()) {
-                stats.put(signature, stats.get(signature) + 1);
                 atm.setProperty(signature, joiners.get(signature).combine(sig_val_map.get(signature)));
             }
         }

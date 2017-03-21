@@ -56,7 +56,7 @@ public class PredictorWorkerThread implements Runnable {
 		CircularCollector circ_collector = new CircularCollector(desc_names, aggregator);
 		NeighborhoodIterator circ_iterator = new NeighborhoodIterator(molecule, circ_depth);
 		circ_iterator.iterate(circ_collector);
-		circ_collector.writeData(molecule, new HashMap<>());
+		circ_collector.writeData(molecule);
 		return circ_collector.getSignatures();
 	}
 
@@ -259,21 +259,20 @@ public class PredictorWorkerThread implements Runnable {
 			// calculate circular descriptors (CDK)
 			Set<String> ccdk_signatures = new HashSet<>();
 			if (globals.desc_groups.contains("ccdk")) {
-				System.out.println("Calculating circular descriptors...");
-				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), Globals.circ_depth);
+				System.out.printf("Calculating circular descriptors (depth %1$s)...\n", Integer.toString(globals.circ_depth));
+				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), globals.circ_depth);
 
 				// impute missing values for circular descriptors
 				globals.circ_imputer.impute(molecule, ccdk_signatures);
 			}
 
 			// calculate the atom type circular fingerprints
-			Set<String> fing_signatures = new HashSet<>();
+			CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
 			if (globals.desc_groups.contains("fing")) {
-				System.out.println("Calculating circular fingerprints...");
-				CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
-				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, Globals.fing_depth);
+				System.out.printf("Calculating circular fingerprints (depth %1$s)...\n", Integer.toString(globals.fing_depth));
+				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, globals.fing_depth);
 				fg_iterator.iterate(fg_collector);
-                fing_signatures = fg_collector.getSignatures();
+				fg_collector.writeData(molecule);
 			}
 
 			// encode atom types
@@ -308,10 +307,10 @@ public class PredictorWorkerThread implements Runnable {
 			if (globals.desc_groups.contains("fing")) {
 				List<String> fingerprints = new ArrayList<>();
 				fingerprints.addAll(basic_descs);
-				fingerprints.addAll(fing_signatures);
+				fingerprints.addAll(fg_collector.getSignatures());
 				Utils.writeAtomData(
 						molecule
-						, out_dir + mol_name + "_fing_level" + Integer.toString(Globals.fing_depth) + ".csv"
+						, out_dir + mol_name + "_fing_level" + Integer.toString(globals.fing_depth) + ".csv"
 						, fingerprints
 						, true
 				);
@@ -324,7 +323,7 @@ public class PredictorWorkerThread implements Runnable {
 				circ_descs.addAll(ccdk_signatures);
 				Utils.writeAtomData(
 						molecule
-						, out_dir + mol_name + "_circ_level" + Integer.toString(Globals.circ_depth) + ".csv"
+						, out_dir + mol_name + "_circ_level" + Integer.toString(globals.circ_depth) + ".csv"
 						, circ_descs
 						, false
 				);

@@ -56,6 +56,5 @@ public class Predictor {
 		molecules = null; // this is to save memory, GC should take care of the rest when a worker finishes processing a molecule -> we want molecules out of memory as soon as the descriptors are in the file
 		executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
-		System.out.println("Descriptor calculator finished. All threads completed.");
 	}
 }
