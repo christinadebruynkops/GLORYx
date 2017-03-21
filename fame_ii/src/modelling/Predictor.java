@@ -31,6 +31,10 @@ public class Predictor {
 //        int counter = 5;
 		while (reader.hasNext()) {
 			IMolecule molecule = (IMolecule) reader.next();
+			if (molecule.getProperty(Globals.ID_PROP) == null) {
+				System.err.println("WARNING: Failed to find SDF name field. Skipping...");
+				continue;
+			}
 			System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
 			try {
 				MoleculeKUFAME mol_ku = new MoleculeKUFAME(molecule, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
