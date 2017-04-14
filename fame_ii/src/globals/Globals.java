@@ -3,6 +3,7 @@ package globals;
 import modelling.Encoder;
 import modelling.Modeller;
 import modelling.descriptors.circular.CircImputer;
+import org.json.JSONObject;
 import utils.Utils;
 import utils.depiction.Depictor;
 
@@ -24,6 +25,7 @@ public class Globals {
     public String model_dir;
     public String encoders_json;
     public String imputation_json;
+    public Map<String, String> misc_params = new HashMap<>();
     public String target_var;
     public Set<String> desc_groups;
     public boolean generate_pngs = false;
@@ -72,6 +74,14 @@ public class Globals {
         at_encoder = new Encoder("AtomType", encoders_json);
         imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
         circ_imputer = new CircImputer(imputation_json);
+
+        String misc_params_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
+        JSONObject json = new JSONObject(misc_params_json);
+        Iterator iterator = json.keys();
+        while (iterator.hasNext()) {
+            String param_name = iterator.next().toString();
+            misc_params.put(param_name, json.getString(param_name));
+        }
 
         // check files and create directories
         File outdir = new File(this.output_dir);

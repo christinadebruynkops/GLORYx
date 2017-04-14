@@ -280,7 +280,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// do the modelling and process the results
 			System.out.println("Predicting...");
-			globals.modeller.predict(molecule);
+			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
 			if (globals.generate_pngs) {
 				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 			}

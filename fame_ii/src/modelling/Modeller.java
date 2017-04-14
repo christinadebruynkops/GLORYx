@@ -43,7 +43,7 @@ public class Modeller {
         return pmml;
     }
 
-    public Map<IAtom, Result> predict(IMolecule molecule) {
+    public Map<IAtom, Result> predict(IMolecule molecule, double decision_threshold) {
         Map<IAtom, Result> results = new HashMap<>();
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equals("H")) {
@@ -89,8 +89,7 @@ public class Modeller {
             Result res = new Result();
             res.probability_yes = outfields.get(proba_yes_fld);
             res.probability_no = outfields.get(proba_no_fld);
-            int prediction = (Integer) targetfields.get(target_var).getResult();
-            if (prediction == yes_val) {
+            if (res.probability_yes >= decision_threshold) {
                 res.is_som = true;
             } else {
                 res.is_som = false;
