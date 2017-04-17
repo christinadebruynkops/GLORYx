@@ -64,11 +64,6 @@ public class PredictorWorkerThread implements Runnable {
 		this.globals = globals;
 		this.molecule = molecule;
 		mol_name = molecule.getProperty(Globals.ID_PROP).toString();
-		File out_dir = new File(globals.output_dir, mol_name);
-		if (!out_dir.exists()) {
-			out_dir.mkdir();
-		}
-		this.out_dir = out_dir.toPath().toString() + '/';
 	}
 
 	@Override
@@ -78,6 +73,13 @@ public class PredictorWorkerThread implements Runnable {
 			if (!ConnectivityChecker.isConnected(molecule)) {
 				throw new Exception("Error: salt: " + mol_name);
 			}
+
+			// make output directory
+			File out_dir_file = new File(globals.output_dir, mol_name);
+			if (!out_dir_file.exists()) {
+				out_dir_file.mkdir();
+			}
+			this.out_dir = out_dir_file.toPath().toString() + '/';
 
 			System.out.println("************** Processing molecule: " + mol_name + " **************");
 			if (globals.generate_pngs) {
