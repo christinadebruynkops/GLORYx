@@ -86,6 +86,9 @@ public class PredictorWorkerThread implements Runnable {
 				globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
 			}
 
+			// start stop watch
+			long startTime = System.nanoTime();
+
 			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
 			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
 			CDKHydrogenAdder adder;
@@ -126,8 +129,8 @@ public class PredictorWorkerThread implements Runnable {
 				System.err.println("Added hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
-				System.err.println("Generating depiction for: " + mol_name);
 				if (globals.generate_pngs) {
+					System.err.println("Generating depiction for: " + mol_name);
 					globals.depictor.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
 				}
 			}
@@ -187,7 +190,7 @@ public class PredictorWorkerThread implements Runnable {
 				data_dir.mkdir();
 			}
 
-			System.out.println("Calculating basic CDK descriptors...");
+//			System.out.println("Calculating basic CDK descriptors...");
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
@@ -261,7 +264,7 @@ public class PredictorWorkerThread implements Runnable {
 			// calculate circular descriptors (CDK)
 			Set<String> ccdk_signatures = new HashSet<>();
 			if (globals.desc_groups.contains("ccdk")) {
-				System.out.printf("Calculating circular descriptors (depth %1$s)...\n", Integer.toString(globals.circ_depth));
+//				System.out.printf("Calculating circular descriptors (depth %1$s)...\n", Integer.toString(globals.circ_depth));
 				ccdk_signatures = computeCircDescriptors(base_descriptors, new CircularCollector.MeanAggregator(), globals.circ_depth);
 
 				// impute missing values for circular descriptors
@@ -271,7 +274,7 @@ public class PredictorWorkerThread implements Runnable {
 			// calculate the atom type circular fingerprints
 			CircularCollector fg_collector = new CircularCollector(Arrays.asList("AtomType"), new CircularCollector.CountJoiner());
 			if (globals.desc_groups.contains("fing")) {
-				System.out.printf("Calculating circular fingerprints (depth %1$s)...\n", Integer.toString(globals.fing_depth));
+//				System.out.printf("Calculating circular fingerprints (depth %1$s)...\n", Integer.toString(globals.fing_depth));
 				NeighborhoodIterator fg_iterator = new NeighborhoodIterator(molecule, globals.fing_depth);
 				fg_iterator.iterate(fg_collector);
 				fg_collector.writeData(molecule);
@@ -281,13 +284,19 @@ public class PredictorWorkerThread implements Runnable {
             globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
-			System.out.println("Predicting...");
+//			System.out.println("Predicting...");
 			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
+
+			// stop the stop watch and print result
+			long stopTime = System.nanoTime();
+			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
+			System.out.println("Prediction and descriptor calculation finished (" + mol_name + "). Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
+
 			if (globals.generate_pngs) {
 				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 			}
 
-			System.out.println("Writing results...");
+//			System.out.println("Writing results...");
 			// write the basic CDK descriptors
 			List<String> basic_descs = new ArrayList<>(Arrays.asList(
 					"Molecule"
@@ -341,7 +350,7 @@ public class PredictorWorkerThread implements Runnable {
 			moleculeSet.addAtomContainer(molecule);
 			depictor_sc.writeHTML(moleculeSet);
 
-			System.out.println("************** Done **************");
+			System.out.println("************** Done (" + mol_name + ") **************");
 		}
 
 		catch (ArrayIndexOutOfBoundsException e) {

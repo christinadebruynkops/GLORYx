@@ -25,7 +25,7 @@ public class Main {
                 .defaultHelp(true)
                 .description("This is FAME II. It can predict sites of " +
                         "metabolism for compounds. It includes models " +
-                        "for regioselectivity prediction of cytochromes P450.")
+                        "for regioselectivity prediction of some cytochrome P450 isoforms.")
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
         List<String> options = Arrays.asList(
@@ -38,10 +38,10 @@ public class Main {
         parser.addArgument("-d", "--depth")
                 .type(Integer.class)
                 .choices(1,2,3,4,5,6)
-                .setDefault(4)
+                .setDefault(6)
                 .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("+")
-                .help("One or more SDF files with compounds to predict.");
+                .help("One or more SDF files with compounds to predict. One SDF can contain multiple compounds.");
 //        parser.addArgument("-s", "--sanitize")
 //                .action(Arguments.storeTrue())
 //                .setDefault(false)
