@@ -29,6 +29,7 @@ public class Globals {
     public String target_var;
     public Set<String> desc_groups;
     public boolean generate_pngs = false;
+    public boolean generate_csvs = false;
     public Depictor depictor;
     public Depictor som_depictor;
     public Encoder at_encoder;

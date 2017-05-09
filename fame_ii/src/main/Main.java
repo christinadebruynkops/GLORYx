@@ -53,6 +53,10 @@ public class Main {
                 .action(Arguments.storeTrue())
                 .setDefault(false)
                 .help("Generates depictions of molecules with the predicted sites highlighted as PNG files as well.");
+        parser.addArgument("-c", "--output-csv")
+                .action(Arguments.storeTrue())
+                .setDefault(false)
+                .help("Saves calculated descriptors and predictions to CSV files.");
 
         Namespace args_ns = null;
         try {
@@ -72,6 +76,7 @@ public class Main {
                 , "HLM"
         );
         params.generate_pngs = args_ns.getBoolean("depict_png");
+        params.generate_csvs = args_ns.getBoolean("output_csv");
 
         // process files
         for (String input_file : inputs) {

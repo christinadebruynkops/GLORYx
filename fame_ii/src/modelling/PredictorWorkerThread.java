@@ -292,52 +292,56 @@ public class PredictorWorkerThread implements Runnable {
 			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
 			System.out.println("Prediction and descriptor calculation finished (" + mol_name + "). Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
 
+			// generate PNG depictions if requested
 			if (globals.generate_pngs) {
 				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 			}
 
-//			System.out.println("Writing results...");
-			// write the basic CDK descriptors
-			List<String> basic_descs = new ArrayList<>(Arrays.asList(
-					"Molecule"
-					, "Atom"
-					, Modeller.is_som_fld
-					, Modeller.proba_yes_fld
-					, Modeller.proba_no_fld
-					, "AtomType"
-			));
-			basic_descs.addAll(Arrays.asList(desc_names));
-			Utils.writeAtomData(
-					molecule
-					, out_dir + mol_name + "_basic" + ".csv"
-					, basic_descs
-					, false
-			);
-
-			// write the atom type fingerprints
-			if (globals.desc_groups.contains("fing")) {
-				List<String> fingerprints = new ArrayList<>();
-				fingerprints.addAll(basic_descs);
-				fingerprints.addAll(fg_collector.getSignatures());
+			// write CSV files if requested
+			if (globals.generate_csvs) {
+				System.out.println("Writing CSV files...");
+				// write the basic CDK descriptors
+				List<String> basic_descs = new ArrayList<>(Arrays.asList(
+						"Molecule"
+						, "Atom"
+						, Modeller.is_som_fld
+						, Modeller.proba_yes_fld
+						, Modeller.proba_no_fld
+						, "AtomType"
+				));
+				basic_descs.addAll(Arrays.asList(desc_names));
 				Utils.writeAtomData(
 						molecule
-						, out_dir + mol_name + "_fing_level" + Integer.toString(globals.fing_depth) + ".csv"
-						, fingerprints
-						, true
-				);
-			}
-
-			// write the circular descriptors
-			if (globals.desc_groups.contains("ccdk")) {
-				List<String> circ_descs = new ArrayList<>();
-				circ_descs.addAll(basic_descs);
-				circ_descs.addAll(ccdk_signatures);
-				Utils.writeAtomData(
-						molecule
-						, out_dir + mol_name + "_circ_level" + Integer.toString(globals.circ_depth) + ".csv"
-						, circ_descs
+						, out_dir + mol_name + "_basic" + ".csv"
+						, basic_descs
 						, false
 				);
+
+				// write the atom type fingerprints
+				if (globals.desc_groups.contains("fing")) {
+					List<String> fingerprints = new ArrayList<>();
+					fingerprints.addAll(basic_descs);
+					fingerprints.addAll(fg_collector.getSignatures());
+					Utils.writeAtomData(
+							molecule
+							, out_dir + mol_name + "_fing_level" + Integer.toString(globals.fing_depth) + ".csv"
+							, fingerprints
+							, true
+					);
+				}
+
+				// write the circular descriptors
+				if (globals.desc_groups.contains("ccdk")) {
+					List<String> circ_descs = new ArrayList<>();
+					circ_descs.addAll(basic_descs);
+					circ_descs.addAll(ccdk_signatures);
+					Utils.writeAtomData(
+							molecule
+							, out_dir + mol_name + "_circ_level" + Integer.toString(globals.circ_depth) + ".csv"
+							, circ_descs
+							, false
+					);
+				}
 			}
 
 			// write the HTML output
