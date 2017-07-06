@@ -1,6 +1,7 @@
 package main;
 
 import globals.Globals;
+import javafx.util.Pair;
 import modelling.Predictor;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -10,8 +11,9 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import utils.Utils;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main method of FAME II.
@@ -23,23 +25,27 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("FAME II")
                 .defaultHelp(true)
-                .description("This is FAME II. It can predict sites of " +
-                        "metabolism for compounds. It includes models " +
-                        "for regioselectivity prediction of some cytochrome P450 isoforms.")
+                .description("This is FAME II. It attempts to predict sites of " +
+                        "metabolism for supplied chemical compounds. It includes extra trees models " +
+                        "for regioselectivity prediction of some cytochrome P450 isoforms.") // TODO: add paper citation
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
-        List<String> options = Arrays.asList(
-                "cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk"
-        );
 
         parser.addArgument("-m", "--model")
-                .choices("cdk", "cdk_ccdk", "cdk_fing", "cdk_fing_ccdk").setDefault("cdk_fing_ccdk")
-                .help("Model specification in terms of used descriptors.");
-        parser.addArgument("-d", "--depth")
-                .type(Integer.class)
-                .choices(1,2,3,4,5,6)
-                .setDefault(6)
-                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
+                .choices("circCDK_ATF_1", "circCDK_4", "circCDK_ATF_6").setDefault("circCDK_ATF_1")
+                .help("Model to use to generate predictions. \n\n Either the model with the best " +
+                        "average performance ('circCDK_ATF_6') " +
+                        "during the independent test set validation " +
+                        "as performed in the original paper " +
+                        "or one of the simpler models that were found to have" +
+                        " comparable performance (" +
+                        "'circCDK_ATF_1' and 'circCDK_4'). The 'circCDK_ATF_1' model is selected by default " +
+                        "as it is expected to offer the best trade-off between generalization and accuracy.");
+//        parser.addArgument("-d", "--depth")
+//                .type(Integer.class)
+//                .choices(1,2,3,4,5,6)
+//                .setDefault(6)
+//                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("+")
                 .help("One or more SDF files with compounds to predict. One SDF can contain multiple compounds.");
 //        parser.addArgument("-s", "--sanitize")
@@ -52,7 +58,7 @@ public class Main {
         parser.addArgument("-p", "--depict-png")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
-                .help("Generates depictions of molecules with the predicted sites highlighted as PNG files as well.");
+                .help("Generates depictions of molecules with the predicted sites highlighted as PNG files in addition to the HTML output.");
         parser.addArgument("-c", "--output-csv")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
@@ -66,13 +72,19 @@ public class Main {
             System.exit(1);
         }
 
+        Map<String, Pair<String, Integer>> model_to_specs = new HashMap<>();
+        model_to_specs.put("circCDK_ATF_1", new Pair("cdk_fing_ccdk", 1));
+        model_to_specs.put("circCDK_ATF_6", new Pair("cdk_fing_ccdk", 6));
+        model_to_specs.put("circCDK_4", new Pair("cdk_ccdk", 4));
+
         // initialize global settings
+        System.out.println("Chosen model: " + args_ns.getString("model"));
         List<String> inputs = args_ns.<String>getList("FILE");
         Globals params = new Globals(
                 inputs.get(0)
                 , args_ns.getString("output_directory")
-                , args_ns.getString("model")
-                , args_ns.getInt("depth")
+                , model_to_specs.get(args_ns.getString("model")).getKey()
+                , model_to_specs.get(args_ns.getString("model")).getValue()
                 , "HLM"
         );
         params.generate_pngs = args_ns.getBoolean("depict_png");
