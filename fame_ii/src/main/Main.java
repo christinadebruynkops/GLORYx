@@ -1,13 +1,13 @@
 package main;
 
 import globals.Globals;
-import javafx.util.Pair;
 import modelling.Predictor;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+import org.apache.commons.math3.util.Pair;
 import utils.Utils;
 
 import java.io.File;
@@ -23,9 +23,9 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("FAME II")
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("fame2")
                 .defaultHelp(true)
-                .description("This is FAME II. It attempts to predict sites of " +
+                .description("This is fame2. It attempts to predict sites of " +
                         "metabolism for supplied chemical compounds. It includes extra trees models " +
                         "for regioselectivity prediction of some cytochrome P450 isoforms.") // TODO: add paper citation
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
@@ -33,21 +33,31 @@ public class Main {
 
         parser.addArgument("-m", "--model")
                 .choices("circCDK_ATF_1", "circCDK_4", "circCDK_ATF_6").setDefault("circCDK_ATF_1")
-                .help("Model to use to generate predictions. \n\n Either the model with the best " +
+                .help("Model to use to generate predictions. \n Either the model with the best " +
                         "average performance ('circCDK_ATF_6') " +
                         "during the independent test set validation " +
                         "as performed in the original paper " +
                         "or one of the simpler models that were found to have" +
                         " comparable performance (" +
                         "'circCDK_ATF_1' and 'circCDK_4'). The 'circCDK_ATF_1' model is selected by default " +
-                        "as it is expected to offer the best trade-off between generalization and accuracy.");
+                        "as it is expected to offer the best trade-off between generalization and accuracy." +
+                        "\n The number after the model code indicates how wide the encoded" +
+                        "environment of an atom is. For example, the default 'circCDK_ATF_1' " +
+                        "is a model based on the atom itself and his immediate neighbors" +
+                        " (atoms at most one bond away)."
+                );
 //        parser.addArgument("-d", "--depth")
 //                .type(Integer.class)
 //                .choices(1,2,3,4,5,6)
 //                .setDefault(6)
 //                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("+")
-                .help("One or more SDF files with compounds to predict. One SDF can contain multiple compounds.");
+                .help("One or more SDF files with compounds to predict. " +
+                        "One SDF can contain multiple compounds."+
+                        "\nAll molecules should be neutral " +
+                        "and have explicit hydrogens added prior to modelling. " +
+                        "Calculating spatial coordinates of atoms is not necessary.")
+                ;
 //        parser.addArgument("-s", "--sanitize")
 //                .action(Arguments.storeTrue())
 //                .setDefault(false)
@@ -69,6 +79,9 @@ public class Main {
             args_ns = parser.parseArgs(args);
         } catch (ArgumentParserException e) {
             parser.handleError(e);
+            if (e.getMessage().equals("too few arguments")) {
+                System.err.println("Run the program with the '-h' or '--help' option to see detailed usage description.");
+            }
             System.exit(1);
         }
 
