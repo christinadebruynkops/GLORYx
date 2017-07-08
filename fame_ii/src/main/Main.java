@@ -91,7 +91,7 @@ public class Main {
         model_to_specs.put("circCDK_4", new Pair("cdk_ccdk", 4));
 
         // initialize global settings
-        System.out.println("Chosen model: " + args_ns.getString("model"));
+        System.out.println("Selected model: " + args_ns.getString("model"));
         List<String> inputs = args_ns.<String>getList("FILE");
         Globals params = new Globals(
                 inputs.get(0)

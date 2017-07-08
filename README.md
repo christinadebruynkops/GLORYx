@@ -43,4 +43,7 @@ flags are often necessary to override some default java options.
 
 ## Contact
 
-Add contact information and affiliations as required.
+ - Martin Šícho -- martin.sicho@vscht.cz
+   - CZ-OPENSCREEN: National Infrastructure for Chemical Biology, Laboratory of Informatics and Chemistry, Faculty of Chemical Technology, University of Chemistry and Technology Prague, 166 28 Prague 6, Czech Republic
+ - Johannes Kirchmair -- kirchmair@zbh.uni-hamburg.de
+   - Universität Hamburg, Faculty of Mathematics, Informatics and Natural Sciences, Department of Computer Science, Center for Bioinformatics, Hamburg, 20146, Germany
