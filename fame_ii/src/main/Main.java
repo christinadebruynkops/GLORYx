@@ -106,6 +106,7 @@ public class Main {
         // process files
         for (String input_file : inputs) {
             System.out.println("Processing: " + input_file);
+            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
 
             // check if input file exists and change the path in settings
             if (!new File(input_file).exists()) {
