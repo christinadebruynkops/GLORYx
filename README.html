@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h1 id="fame2">Fame2</h1>
+<p>This is <em>fame2</em>, a program which attempts to predict sites of metabolism for supplied chemical compounds. It includes extra trees models for regioselectivity prediction of some cytochrome P450 isoforms.</p>
+<h2 id="usage">Usage</h2>
+<p>On the Linux platform, running the program is easy since you can use the shell script provided in the installation directory:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">${YOUR_INSTALL_DIR}</span>/fame2
+<span class="kw">./fame2</span></code></pre></div>
+<p>You can also add <code>${YOUR_INSTALL_DIR}</code> to the <code>$PATH</code> environment variable to have universal access:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">export</span> <span class="ot">PATH=</span><span class="st">&quot;</span><span class="ot">$PATH</span><span class="st">:</span><span class="ot">$YOUR_INSTALL_DIR</span><span class="st">&quot;</span></code></pre></div>
+<p>There is an example SDF file in the installation folder that you can use to test the program:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/example_compounds/tamoxifen.sdf&quot;</span></code></pre></div>
+<p>This creates the <code>test_predictions</code> folder in the current directory which contains the predictions and other output files for each analyzed compound.</p>
+<p>On other platforms, you will have to run the java package explicitly. For example:</p>
+<pre><code>java -Xms1024m -Xmx2048m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf&quot;</code></pre>
+<p>Since the unpacked model takes quite a bit of memory the <code>-Xms1024m -Xmx2048m</code> flags are often necessary to override some default java options.</p>
+<p>You can find more instructions and tips on how to use the package by running:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -h</code></pre></div>
+<h2 id="contact-information">Contact Information</h2>
+<ul>
+<li>Martin Šícho - <script type="text/javascript">
+<!--
+h='&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;';a='&#64;';n='&#58;&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#64;&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#64;&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;&#32;&#40;&#58;&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#32;&#x61;&#116;&#32;&#118;&#x73;&#x63;&#104;&#116;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#122;&#x29;</noscript>
+<ul>
+<li>CZ-OPENSCREEN: National Infrastructure for Chemical Biology, Laboratory of Informatics and Chemistry, Faculty of Chemical Technology, University of Chemistry and Technology Prague, 166 28 Prague 6, Czech Republic</li>
+</ul></li>
+<li>Johannes Kirchmair - <script type="text/javascript">
+<!--
+h='&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;';a='&#64;';n='&#58;&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#64;&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#64;&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;&#32;&#40;&#58;&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#32;&#x61;&#116;&#32;&#122;&#98;&#104;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#32;&#100;&#x6f;&#116;&#32;&#100;&#x65;&#x29;</noscript>
+<ul>
+<li>Universität Hamburg, Faculty of Mathematics, Informatics and Natural Sciences, Department of Computer Science, Center for Bioinformatics, Hamburg, 20146, Germany</li>
+</ul></li>
+</ul>
+<h2 id="acknowledgement-funding">Acknowledgement &amp; Funding</h2>
+<p>We would like to express our thank you to Jed Zaretzki and his collaborators for compiling the freely available dataset which was used to develop the models in this software. We also highly appreciate the help of Patrik Rydberg and his collaborators who made their visualization code from the <a href="http://www.farma.ku.dk/smartcyp/background.php">SMARTCyp program</a> freely available as open source software.</p>
+<p>This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1 and by the Ministry of Education of the Czech Republic - project numbers MSMT No 20-SVV/2017, NPU I - LO1220 and LM2015063. MS was supported by the Erasmus+ Programme of the European Commission.</p>
+</body>
+</html>
