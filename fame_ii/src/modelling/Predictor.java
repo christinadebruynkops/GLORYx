@@ -5,6 +5,7 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.smiles.SmilesGenerator;
 import smartcyp.SMARTSnEnergiesTable;
 import utils.MoleculeKUFAME;
 
@@ -28,15 +29,17 @@ public class Predictor {
 		DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(globals.input_sdf), DefaultChemObjectBuilder.getInstance());
 		ArrayList<IMolecule> molecules = new ArrayList<>();
 
-//        int counter = 5;
+        int counter = 1;
 		while (reader.hasNext()) {
 			IMolecule molecule = (IMolecule) reader.next();
+			SmilesGenerator smi_gen = new SmilesGenerator();
 			if (molecule.getProperty(Globals.ID_PROP) == null) {
-				System.err.println("WARNING: Failed to find SDF name field. Skipping...");
-				continue;
+				molecule.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_sdf_number) + "_" + Integer.toString(counter));
+				System.err.println("WARNING: No SDF name field found for molecule: " + smi_gen.createSMILES(molecule) + ". Using a generic name: " + molecule.getProperty(Globals.ID_PROP));
+			} else {
+//				System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
+				molecule.setProperty(Globals.ID_PROP, molecule.getProperty(Globals.ID_PROP).toString().replaceAll("[^A-Za-z0-9]", "_"));
 			}
-//			System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
-			molecule.setProperty(Globals.ID_PROP, molecule.getProperty(Globals.ID_PROP).toString().replaceAll("[^A-Za-z0-9]", "_"));
 			try {
 				MoleculeKUFAME mol_ku = new MoleculeKUFAME(molecule, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
 				mol_ku.setProperties(molecule.getProperties());
@@ -44,10 +47,7 @@ public class Predictor {
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-//			counter--;
-//			if (counter == 0) {
-//				break;
-//			}
+			counter++;
 		}
 
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());

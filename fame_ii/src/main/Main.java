@@ -7,13 +7,10 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import org.apache.commons.math3.util.Pair;
 import utils.Utils;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The main method of FAME II.
@@ -43,7 +40,7 @@ public class Main {
                         "as it is expected to offer the best trade-off between generalization and accuracy." +
                         "\n The number after the model code indicates how wide the encoded" +
                         "environment of an atom is. For example, the default 'circCDK_ATF_1' " +
-                        "is a model based on the atom itself and his immediate neighbors" +
+                        "is a model based on the atom itself and its immediate neighbors" +
                         " (atoms at most one bond away)."
                 );
 //        parser.addArgument("-d", "--depth")
@@ -85,25 +82,21 @@ public class Main {
             System.exit(1);
         }
 
-        Map<String, Pair<String, Integer>> model_to_specs = new HashMap<>();
-        model_to_specs.put("circCDK_ATF_1", new Pair("cdk_fing_ccdk", 1));
-        model_to_specs.put("circCDK_ATF_6", new Pair("cdk_fing_ccdk", 6));
-        model_to_specs.put("circCDK_4", new Pair("cdk_ccdk", 4));
-
         // initialize global settings
         System.out.println("Selected model: " + args_ns.getString("model"));
+        System.out.println("Output Directory: " + args_ns.getString("output_directory"));
         List<String> inputs = args_ns.<String>getList("FILE");
         Globals params = new Globals(
                 inputs.get(0)
                 , args_ns.getString("output_directory")
-                , model_to_specs.get(args_ns.getString("model")).getKey()
-                , model_to_specs.get(args_ns.getString("model")).getValue()
+                , args_ns.getString("model")
                 , "HLM"
         );
         params.generate_pngs = args_ns.getBoolean("depict_png");
         params.generate_csvs = args_ns.getBoolean("output_csv");
 
         // process files
+        int counter = 1;
         for (String input_file : inputs) {
             System.out.println("Processing: " + input_file);
             System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
@@ -114,6 +107,7 @@ public class Main {
                 System.err.println("Skipping...");
             }
             params.input_sdf = input_file;
+            params.input_sdf_number = counter;
 
             // sanitize the data if requested and save the path to the modified file
 //            if (args_ns.getBoolean("sanitize")) {
@@ -124,6 +118,7 @@ public class Main {
             // calculate the descriptors
             Predictor desc_calc = new Predictor(params);
             desc_calc.calculate();
+            counter++;
         }
     }
 }
