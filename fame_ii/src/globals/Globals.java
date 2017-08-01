@@ -64,6 +64,10 @@ public class Globals {
         this.fing_depth = model_to_specs.get(this.model_name).getValue();
 
         this.input_sdf = input_sdf;
+        File sdf_file = new File(input_sdf);
+        if (!sdf_file.exists()) {
+            throw new FileNotFoundException("Input SDF '" + sdf_file.getAbsolutePath() + "' not found.");
+        }
         this.output_dir = output_dir;
         model_code = model_to_specs.get(this.model_name).getKey() + "_" + Integer.toString(this.circ_depth);
         desc_groups = new HashSet<>(
