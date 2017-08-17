@@ -23,7 +23,8 @@ public class Globals {
     public String model_name;
     public Modeller modeller;
     public String input_sdf;
-    public int input_sdf_number;
+    public List<String> input_smiles = new ArrayList<>();
+    public int input_number;
     public String output_dir;
     public String model_dir;
     public String encoders_json;
@@ -46,8 +47,7 @@ public class Globals {
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
 
     public Globals(
-            String input_sdf
-            , String output_dir
+            String output_dir
             , String model_name
             , String target_var
             ) throws Exception
@@ -63,11 +63,6 @@ public class Globals {
         this.circ_depth = model_to_specs.get(this.model_name).getValue();
         this.fing_depth = model_to_specs.get(this.model_name).getValue();
 
-        this.input_sdf = input_sdf;
-        File sdf_file = new File(input_sdf);
-        if (!sdf_file.exists()) {
-            throw new FileNotFoundException("Input SDF '" + sdf_file.getAbsolutePath() + "' not found.");
-        }
         this.output_dir = output_dir;
         model_code = model_to_specs.get(this.model_name).getKey() + "_" + Integer.toString(this.circ_depth);
         desc_groups = new HashSet<>(
@@ -123,5 +118,19 @@ public class Globals {
         //flush OutputStream to write any buffered data to file
         os.flush();
         os.close();
+    }
+
+    public void setInputSDF(String sdf_path) throws FileNotFoundException {
+        input_sdf = sdf_path;
+        File sdf_file = new File(input_sdf);
+        if (!sdf_file.exists()) {
+            throw new FileNotFoundException("Input SDF '" + sdf_file.getAbsolutePath() + "' not found.");
+        }
+        input_smiles = new ArrayList<>();
+    }
+
+    public void setInputSmiles(List<String> smiles_input) {
+        input_smiles = smiles_input;
+        input_sdf = "";
     }
 }

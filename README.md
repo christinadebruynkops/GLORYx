@@ -27,18 +27,24 @@ that you can use to test the program:
 fame2 -o "test_predictions" "${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf"
 ```
 
+The program also accept SMILES strings:
+
+```bash
+fame2 -o "test_predictions" -s CCO c1ccccc1C
+```
+
 This creates the `test_predictions` folder in the current directory
-which contains the predictions 
-and other output files for each analyzed compound.
+which contains the predictions and other output files (if required)
+for each analyzed compound.
 
 On other platforms, you will have to run the java package explicitly. 
 For example:
 
 ```
-java -Xms1024m -Xmx2048m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o 'test_predictions' "${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf"
+java -Xms1024m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o 'test_predictions' "${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf"
 ```
 
-Since the unpacked model takes quite a bit of memory the `-Xms1024m -Xmx2048m`
+Since the unpacked model takes quite a bit of memory the `-Xms1024m`
 flags are often necessary to override some default java options.
 
 You can find more instructions and tips on how to use the package by running: 

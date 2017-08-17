@@ -55,10 +55,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">export</span> <span class="ot">PATH=</span><span class="st">&quot;</span><span class="ot">$PATH</span><span class="st">:</span><span class="ot">$YOUR_INSTALL_DIR</span><span class="st">&quot;</span></code></pre></div>
 <p>There is an example SDF file in the installation folder that you can use to test the program:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/example_compounds/tamoxifen.sdf&quot;</span></code></pre></div>
-<p>This creates the <code>test_predictions</code> folder in the current directory which contains the predictions and other output files for each analyzed compound.</p>
+<p>The program also accept SMILES strings:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -o <span class="st">&quot;test_predictions&quot;</span> -s CCO c1ccccc1C</code></pre></div>
+<p>This creates the <code>test_predictions</code> folder in the current directory which contains the predictions and other output files (if required) for each analyzed compound.</p>
 <p>On other platforms, you will have to run the java package explicitly. For example:</p>
-<pre><code>java -Xms1024m -Xmx2048m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf&quot;</code></pre>
-<p>Since the unpacked model takes quite a bit of memory the <code>-Xms1024m -Xmx2048m</code> flags are often necessary to override some default java options.</p>
+<pre><code>java -Xms1024m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf&quot;</code></pre>
+<p>Since the unpacked model takes quite a bit of memory the <code>-Xms1024m</code> flags are often necessary to override some default java options.</p>
 <p>You can find more instructions and tips on how to use the package by running:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -h</code></pre></div>
 <h2 id="contact-information">Contact Information</h2>
