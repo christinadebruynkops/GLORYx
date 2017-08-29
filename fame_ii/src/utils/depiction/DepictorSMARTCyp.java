@@ -327,15 +327,17 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         //iterate through the atoms and add circles to top 3 rank
         // Iterate over the Atoms in this molecule
         IAtom rankAtom;
+        int hydrogens = 0;
         for (int atomIndex=0; atomIndex < moleculeKU.getAtomCount(); atomIndex++) {
             rankAtom = moleculeKU.getAtom(atomIndex);
             if (rankAtom.getSymbol().equals("H")) {
+                hydrogens++;
                 continue;
             }
-            String AtomNr = rankAtom.getID();
+            int AtomNr = Integer.parseInt(rankAtom.getID()) - hydrogens;
             boolean is_som = (Boolean) rankAtom.getProperty(Modeller.is_som_fld);
             if(is_som){
-                outfile.println("		if((i + 1) == " + AtomNr + "){");
+                outfile.println("		if((i + 1) == " + Integer.toString(AtomNr) + "){");
                 outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
                 outfile.println("			ctx.beginPath();");
                 outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
