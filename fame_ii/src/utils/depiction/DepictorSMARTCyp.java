@@ -335,9 +335,10 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
                 continue;
             }
             int AtomNr = Integer.parseInt(rankAtom.getID()) - hydrogens;
+            rankAtom.setID(Integer.toString(AtomNr));
             boolean is_som = (Boolean) rankAtom.getProperty(Modeller.is_som_fld);
             if(is_som){
-                outfile.println("		if((i + 1) == " + Integer.toString(AtomNr) + "){");
+                outfile.println("		if((i + 1) == " + rankAtom.getID() + "){");
                 outfile.println("			ctx.strokeStyle = 'rgb(255,204,102)';");
                 outfile.println("			ctx.beginPath();");
                 outfile.println("			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);");
