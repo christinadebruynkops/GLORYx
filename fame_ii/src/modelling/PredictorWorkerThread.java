@@ -297,6 +297,16 @@ public class PredictorWorkerThread implements Runnable {
 				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
 			}
 
+			// write the HTML output
+			String[] filenames = new String[1];
+			filenames[0] = globals.input_sdf;
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+			Date date = new Date();
+			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
+			MoleculeSet moleculeSet = new MoleculeSet();
+			moleculeSet.addAtomContainer(molecule);
+			depictor_sc.writeHTML(moleculeSet);
+
 			// write CSV files if requested
 			if (globals.generate_csvs) {
 				System.out.println("Writing CSV files...");
@@ -343,16 +353,6 @@ public class PredictorWorkerThread implements Runnable {
 					);
 				}
 			}
-
-			// write the HTML output
-			String[] filenames = new String[1];
-			filenames[0] = globals.input_sdf;
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-			Date date = new Date();
-			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
-			MoleculeSet moleculeSet = new MoleculeSet();
-			moleculeSet.addAtomContainer(molecule);
-			depictor_sc.writeHTML(moleculeSet);
 
 			System.out.println("************** Done (" + mol_name + ") **************");
 		}
