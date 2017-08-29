@@ -56,11 +56,14 @@ public class Predictor {
 			int counter = 1;
 			for (String smiles : globals.input_smiles) {
 				IMolecule mol = null;
+//				smiles = smiles.replaceAll("[^\\-=#.$:()%+A-Za-z0-9\\\\/@\\]\\[]", "");
+				smiles = smiles.replaceAll("[\"']", "");
 				try {
 					SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 					mol = sp.parseSmiles(smiles);
 				} catch (InvalidSmilesException ise) {
 					System.err.println("WARNING: SMILES parsing failed for: " + smiles);
+					System.exit(1);
 				}
 
 				mol.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
