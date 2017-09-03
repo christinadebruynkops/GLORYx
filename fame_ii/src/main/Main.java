@@ -10,6 +10,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import utils.Utils;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,6 +94,9 @@ public class Main {
         // fetch inputs
         List<String> sdf_inputs = args_ns.<String>getList("FILE");
         List<String> smile_inputs = args_ns.<String>getList("smiles");
+        if (smile_inputs == null) {
+            smile_inputs = new ArrayList<>();
+        }
 
         // initialize global settings
         System.out.println("Selected model: " + args_ns.getString("model"));
@@ -134,12 +138,14 @@ public class Main {
         }
 
         // process smiles
-        System.out.println("Processing: " + smile_inputs.toString());
-        params.setInputSmiles(smile_inputs);
-        params.input_number = counter;
+        if (!smile_inputs.isEmpty()) {
+            System.out.println("Processing: " + smile_inputs.toString());
+            params.setInputSmiles(smile_inputs);
+            params.input_number = counter;
 
-        // make predictions
-        Predictor desc_calc = new Predictor(params);
-        desc_calc.calculate();
+            // make predictions
+            Predictor desc_calc = new Predictor(params);
+            desc_calc.calculate();
+        }
     }
 }

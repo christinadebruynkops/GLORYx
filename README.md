@@ -5,7 +5,7 @@ It includes extra trees models for regioselectivity prediction of some cytochrom
 
 ## Usage
 
-On the Linux platform, running the program is easy since
+On the Linux platform and Mac, running the program is easy since
 you can use the shell script provided in the installation directory:
 
 ```bash
