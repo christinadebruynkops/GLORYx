@@ -6,20 +6,21 @@ import globals.Globals;
 import modelling.descriptors.circular.CircularCollector;
 import modelling.descriptors.circular.NeighborhoodIterator;
 import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.PathTools;
 import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.normalize.SMSDNormalizer;
+import org.openscience.cdk.interfaces.*;
 import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.*;
+import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.smiles.FixBondOrdersTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.Utils;
 import utils.depiction.DepictorSMARTCyp;
@@ -89,8 +90,13 @@ public class PredictorWorkerThread implements Runnable {
 			// start stop watch
 			long startTime = System.nanoTime();
 
-			// add implicit hydrogens (this is here to test for some internal CDK errors that can affect the descriptor calculations)
-			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
+			// prepare the structure
+			AllRingsFinder finder = new AllRingsFinder();
+			IRingSet rings = finder.findAllRings(molecule);
+			for (IAtomContainer ring: rings.atomContainers()) {
+				DeAromatizationTool.deAromatize((IRing) ring);
+			}
+			AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
 			CDKHydrogenAdder adder;
 			adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
 			try {
@@ -99,6 +105,9 @@ public class PredictorWorkerThread implements Runnable {
 				System.err.println("CDK internal error for: " + mol_name);
 				throw exp;
 			}
+			FixBondOrdersTool botool = new FixBondOrdersTool();
+			botool.kekuliseAromaticRings(molecule);
+			CDKHueckelAromaticityDetector.detectAromaticity(molecule);
 
 			// check atom types and count the number of added hydrogens
 			int hydrogens_total = 0;
@@ -158,7 +167,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// deprotonate the carboxyl groups (this needs to be done or the Sybyl atom type checker won't recognize it as a carboxyl)
 			// aromatize; required for Sybyl atom type determination
-			SMSDNormalizer.aromatizeMolecule(molecule);
+//			SMSDNormalizer.aromatizeMolecule(molecule);
 			IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
 //			Utils.deprotonateCarboxyls(molecule);
 //			Depictor.generateDepiction(molecule, "deprot.png");
