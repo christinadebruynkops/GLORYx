@@ -384,7 +384,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>Probability</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th><th>AD_mean</th><th>AD_sum</th><th>AD_min</th><th>AD_max</th><th>AD_count</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
@@ -809,6 +809,10 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 //        outfile.println("<hr />");
     }
 
+    public String roundProp(Object prop) {
+        return Double.toString(((Math.round((Double) prop * 1000d)) / 1000d));
+    }
+
     public void writeAtomRowinMoleculeKUTableHLM(IAtom atom){
 
         if((Boolean) atom.getProperty(Modeller.is_som_fld)) outfile.println("<tr class=\"highlight1\">");
@@ -817,9 +821,12 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         else outfile.println("<tr>");
 
         outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
-        double proba_yes = (Double) atom.getProperty(Modeller.proba_yes_fld);
-        proba_yes = (double) Math.round(proba_yes * 100000d) / 100000d;
-        outfile.println("<td>" + Double.toString(proba_yes) + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty(Modeller.proba_yes_fld)) + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty("AD_mean")) + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty("AD_sum")) + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty("AD_min")) + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty("AD_max")) + "</td>");
+        outfile.println("<td>" + atom.getProperty("AD_count") + "</td>");
 
 //        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
 //        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");

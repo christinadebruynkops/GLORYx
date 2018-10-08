@@ -24,9 +24,12 @@ import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.Utils;
 import utils.depiction.DepictorSMARTCyp;
+import weka.core.neighboursearch.NearestNeighbourSearch;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -295,6 +298,9 @@ public class PredictorWorkerThread implements Runnable {
 			// do the modelling and process the results
 //			System.out.println("Predicting...");
 			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
+
+			// add applicability domain info
+			globals.modeller.predictAppDomain(molecule);
 
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();

@@ -1,19 +1,26 @@
 package modelling;
 
 import com.google.common.collect.RangeSet;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.jpmml.evaluator.*;
 import org.jpmml.model.PMMLUtil;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.similarity.Tanimoto;
+import weka.core.*;
+import weka.core.neighboursearch.NearestNeighbourSearch;
+import weka.core.neighboursearch.PerformanceStats;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Created by sicho on 1/18/17.
@@ -21,6 +28,9 @@ import java.util.Map;
 public class Modeller {
 
     private Evaluator evaluator;
+    private NearestNeighbourSearch nns;
+    private List<String> nns_attributes;
+    int bits_per_layer = 32;
     private String target_var;
     public static final int yes_val = 0;
     public static final int no_val = 1;
@@ -35,12 +45,93 @@ public class Modeller {
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
         evaluator = modelEvaluator;
+
+        System.out.println("Loading applicability domain model...");
+        FileInputStream file_in = new FileInputStream("nns.ser");
+        FileInputStream file2_in = new FileInputStream("nns_attributes.ser");
+        ObjectInputStream in = new ObjectInputStream(file_in);
+        ObjectInputStream in2 = new ObjectInputStream(file2_in);
+        nns = (NearestNeighbourSearch) in.readObject();
+        nns_attributes = (List<String>) in2.readObject();
+        in.close();
+        in2.close();
+        file_in.close();
+        file2_in.close();
     }
 
     private static PMML loadModel(String pmml_path) throws Exception {
         InputStream res = Modeller.class.getResourceAsStream(pmml_path);
         PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;
+    }
+
+    private Instances encodeMol(Instances at_fingeprints) {
+        Enumeration<Attribute> attr_enum = at_fingeprints.enumerateAttributes();
+        while (attr_enum.hasMoreElements()) {
+            Attribute attr = attr_enum.nextElement();
+            if (!attr.name().startsWith("AtomType_")) {
+                at_fingeprints.deleteAttributeAt(attr.index());
+            }
+        }
+
+        ArrayList<Attribute> new_atts = new ArrayList<>();
+        int num_bits = bits_per_layer * at_fingeprints.numAttributes();
+        for (int i = 1; i <= num_bits ; i++) {
+            new_atts.add(new Attribute(Integer.toString(i)));
+        }
+        Instances insts_bits = new Instances("insts_bits", new_atts, 50000);
+        Enumeration<Instance> insts_enum = at_fingeprints.enumerateInstances();
+        while (insts_enum.hasMoreElements()) {
+            Instance old_inst = insts_enum.nextElement();
+            Instance new_inst = new DenseInstance(num_bits);
+            for (int i = 0; i < old_inst.numValues(); i++) {
+                double val = old_inst.value(i);
+                for (int j = i * bits_per_layer; j < (i+1) * bits_per_layer; j++) {
+                    if (val > 0) {
+                        new_inst.setValue(j, 1);
+                        val--;
+                    } else {
+                        new_inst.setValue(j, 0);
+                    }
+                }
+            }
+
+            insts_bits.add(new_inst);
+        }
+
+        return insts_bits;
+    }
+
+    public void predictAppDomain(IMolecule molecule) {
+        ArrayList<Attribute> new_atts = new ArrayList<>();
+        for (String nns_attribute : nns_attributes) {
+            new_atts.add(new Attribute(nns_attribute));
+        }
+
+        for (IAtom atm : molecule.atoms()) {
+            Instances insts_numeric = new Instances("insts_numeric", new_atts, molecule.getAtomCount());
+            Instance inst = new DenseInstance(new_atts.size());
+            for (String att_name : nns_attributes) {
+                if (atm.getProperty(att_name) != null) {
+                    inst.setValue(insts_numeric.attribute(att_name), ((Integer) atm.getProperty(att_name)).doubleValue());
+                } else {
+                    inst.setValue(insts_numeric.attribute(att_name), 0.0);
+                }
+            }
+            insts_numeric.add(inst);
+            Instances insts_fings = encodeMol(insts_numeric);
+            try {
+                Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), 3);
+                double[] dists = nns.getDistances();
+                atm.setProperty("AD_mean", StatUtils.mean(dists));
+                atm.setProperty("AD_sum", StatUtils.sum(dists));
+                atm.setProperty("AD_min", StatUtils.min(dists));
+                atm.setProperty("AD_max", StatUtils.max(dists));
+                atm.setProperty("AD_count", nbrs.size());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Map<IAtom, Result> predict(IMolecule molecule, double decision_threshold) {
