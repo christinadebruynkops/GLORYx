@@ -96,7 +96,7 @@ public class NeighborhoodIterator {
                     }
                     depictNeighborhood(mol, fragment_atoms, String.format("%s_%d.png", mol.getProperty(Globals.ID_PROP), idx + 1));
                 } catch (Exception exp) {
-                    System.err.println("WARNING: failed to generate neigborhood depiction");
+                    System.err.println("WARNING: failed to generate neighborhood depiction");
                     exp.printStackTrace();
                 }
             }
