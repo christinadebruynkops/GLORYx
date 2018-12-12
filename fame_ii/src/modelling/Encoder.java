@@ -31,6 +31,9 @@ public class Encoder {
 
     public void encode(IMolecule molecule) {
         for (IAtom atom : molecule.atoms()) {
+            if (atom.getSymbol().equalsIgnoreCase("H")) {
+                continue;
+            }
             String current_val = atom.getProperty(descriptor).toString();
             atom.setProperty(descriptor, encoder_map.get(current_val));
         }
