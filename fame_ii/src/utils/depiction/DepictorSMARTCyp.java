@@ -384,7 +384,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>Probability</th><th>AD_mean</th><th>AD_sum</th><th>AD_min</th><th>AD_max</th><th>AD_count</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th><th>AD Score</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
@@ -822,11 +822,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
         outfile.println("<td>" + roundProp(atom.getProperty(Modeller.proba_yes_fld)) + "</td>");
-        outfile.println("<td>" + roundProp(atom.getProperty("AD_mean")) + "</td>");
-        outfile.println("<td>" + roundProp(atom.getProperty("AD_sum")) + "</td>");
-        outfile.println("<td>" + roundProp(atom.getProperty("AD_min")) + "</td>");
-        outfile.println("<td>" + roundProp(atom.getProperty("AD_max")) + "</td>");
-        outfile.println("<td>" + atom.getProperty("AD_count") + "</td>");
+        outfile.println("<td>" + roundProp(atom.getProperty("AD_score")) + "</td>");
 
 //        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
 //        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");

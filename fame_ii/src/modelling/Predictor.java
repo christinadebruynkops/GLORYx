@@ -37,7 +37,7 @@ public class Predictor {
 				SmilesGenerator smi_gen = new SmilesGenerator();
 				if (molecule.getProperty(Globals.ID_PROP) == null) {
 					molecule.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
-					System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generic name: " + molecule.getProperty(Globals.ID_PROP));
+					System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
 				} else {
 //				System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
 					molecule.setProperty(Globals.ID_PROP, molecule.getProperty(Globals.ID_PROP).toString().replaceAll("[^A-Za-z0-9]", "_"));

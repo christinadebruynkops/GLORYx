@@ -6,30 +6,26 @@ import globals.Globals;
 import modelling.descriptors.circular.CircularCollector;
 import modelling.descriptors.circular.NeighborhoodIterator;
 import org.openscience.cdk.MoleculeSet;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.PathTools;
 import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
-import org.openscience.cdk.interfaces.*;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.normalize.SMSDNormalizer;
 import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.*;
-import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
-import org.openscience.cdk.smiles.FixBondOrdersTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
-import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.Utils;
 import utils.depiction.DepictorSMARTCyp;
-import weka.core.neighboursearch.NearestNeighbourSearch;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -94,12 +90,14 @@ public class PredictorWorkerThread implements Runnable {
 			long startTime = System.nanoTime();
 
 			// prepare the structure
-			AllRingsFinder finder = new AllRingsFinder();
-			IRingSet rings = finder.findAllRings(molecule);
-			for (IAtomContainer ring: rings.atomContainers()) {
-				DeAromatizationTool.deAromatize((IRing) ring);
-			}
+//			AllRingsFinder finder = new AllRingsFinder();
+//			IRingSet rings = finder.findAllRings(molecule);
+//			for (IAtomContainer ring: rings.atomContainers()) {
+//				DeAromatizationTool.deAromatize((IRing) ring);
+//			}
 			AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
+			// aromatize; required for correct Sybyl atom type determination
+			SMSDNormalizer.aromatizeMolecule(molecule);
 			CDKHydrogenAdder adder;
 			adder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
 			try {
@@ -108,9 +106,9 @@ public class PredictorWorkerThread implements Runnable {
 				System.err.println("CDK internal error for: " + mol_name);
 				throw exp;
 			}
-			FixBondOrdersTool botool = new FixBondOrdersTool();
-			botool.kekuliseAromaticRings(molecule);
-			CDKHueckelAromaticityDetector.detectAromaticity(molecule);
+//			FixBondOrdersTool botool = new FixBondOrdersTool();
+//			botool.kekuliseAromaticRings(molecule);
+//			CDKHueckelAromaticityDetector.detectAromaticity(molecule);
 
 			// check atom types and count the number of added hydrogens
 			int hydrogens_total = 0;
@@ -169,32 +167,32 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			// deprotonate the carboxyl groups (this needs to be done or the Sybyl atom type checker won't recognize it as a carboxyl)
-			// aromatize; required for Sybyl atom type determination
-//			SMSDNormalizer.aromatizeMolecule(molecule);
-			IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
 //			Utils.deprotonateCarboxyls(molecule);
 //			Depictor.generateDepiction(molecule, "deprot.png");
-			int heavyAtomCount = 0;
+
+			IAtomTypeMatcher atm = SybylAtomTypeMatcher.getInstance(SilentChemObjectBuilder.getInstance());
 			for(int atomNr = 0; atomNr < molecule.getAtomCount(); atomNr++){
 				IAtom iAtom = molecule.getAtom(atomNr);
+
+//				String symbol = iAtom.getSymbol();
+//				if (!allowed_atoms.contains(symbol)) {
+//					throw new Exception("Atypical atom detected: " + symbol);
+//				}
+
+				if (iAtom.getSymbol().equals("H")) continue;
 				//determine Sybyl atom types
 				IAtomType iAtomType = atm.findMatchingAtomType(molecule,molecule.getAtom(atomNr));
 				if (iAtomType != null) {
-					iAtom.setProperty("AtomType", iAtomType.getAtomTypeName());
-//		            	System.out.println(iAtom.getProperty("SybylAtomType"));
-					if (!iAtom.getSymbol().equals("H")) {
-						heavyAtomCount++;
-					}
+					String atype_name = iAtomType.getAtomTypeName();
+					iAtom.setProperty("AtomType", atype_name);
+				} else {
+					String id = iAtom.getSymbol() + "." + Integer.toString(atomNr + 1);
+					throw new Exception("Failed to determine Sybyl atom type for atom: " + id);
 				}
 			}
 //			Utils.fixSybylCarboxyl(molecule);
 //			Utils.protonateCarboxyls(molecule); // protonate the molecule back
 //			Depictor.generateDepiction(molecule, "prot.png");
-
-			//check if molecule too large
-			if (heavyAtomCount > 100) {
-				throw new Exception("Error: molecule is too large: " + mol_name);
-			}
 
 			// create the output directory
 			File data_dir = new File(out_dir);
@@ -206,13 +204,13 @@ public class PredictorWorkerThread implements Runnable {
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
+			calculators.add(new PartialSigmaChargeDescriptor());
 			calculators.add(new AtomDegreeDescriptor());
 			calculators.add(new AtomHybridizationDescriptor());
 			calculators.add(new AtomHybridizationVSEPRDescriptor());
 			calculators.add(new AtomValenceDescriptor());
 			calculators.add(new EffectiveAtomPolarizabilityDescriptor());
 			calculators.add(new IPAtomicHOSEDescriptor());
-			calculators.add(new PartialSigmaChargeDescriptor());
 			calculators.add(new PartialTChargeMMFF94Descriptor());
 			calculators.add(new PiElectronegativityDescriptor());
 			calculators.add(new ProtonAffinityHOSEDescriptor());
@@ -224,8 +222,8 @@ public class PredictorWorkerThread implements Runnable {
 //				PartialPiChargeDescriptor partialPiChargeDescriptor = new PartialPiChargeDescriptor();
 //				PartialTChargePEOEDescriptor partialTChargePEOEDescriptor = new PartialTChargePEOEDescriptor();
 
-			String[] desc_names = ("atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
-					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
+			String[] desc_names = ("partialSigmaCharge,atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
+					"iPAtomicHOSE,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
 					"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule").split(",");
 			for(int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom iAtom = molecule.getAtom(atomNr);
@@ -291,6 +289,11 @@ public class PredictorWorkerThread implements Runnable {
 				fg_iterator.iterate(fg_collector);
 				fg_collector.writeData(molecule);
 			}
+			System.out.println("Descriptor calculation finished for: " + mol_name);
+
+			// add applicability domain info
+			System.out.println("Calculating applicability domain for atoms in: " + mol_name);
+			globals.modeller.getADScore(molecule);
 
 			// encode atom types
             globals.at_encoder.encode(molecule);
@@ -299,13 +302,10 @@ public class PredictorWorkerThread implements Runnable {
 //			System.out.println("Predicting...");
 			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
 
-			// add applicability domain info
-			globals.modeller.predictAppDomain(molecule);
-
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
 			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
-			System.out.println("Prediction and descriptor calculation finished (" + mol_name + "). Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
+			System.out.println("Prediction finished for " + mol_name + ". Total elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
 
 			// generate PNG depictions if requested
 			if (globals.generate_pngs) {
@@ -332,6 +332,7 @@ public class PredictorWorkerThread implements Runnable {
 						, Modeller.is_som_fld
 						, Modeller.proba_yes_fld
 						, Modeller.proba_no_fld
+						, "AD_score"
 						, "AtomType"
 				));
 				basic_descs.addAll(Arrays.asList(desc_names));

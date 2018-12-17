@@ -3,7 +3,6 @@ package globals;
 import modelling.Encoder;
 import modelling.Modeller;
 import modelling.descriptors.circular.CircImputer;
-import org.apache.commons.math3.util.Pair;
 import org.json.JSONObject;
 import utils.Utils;
 import utils.depiction.Depictor;
@@ -18,6 +17,8 @@ import java.util.*;
  * Created by sicho on 10/5/16.
  */
 public class Globals {
+    public final String AD_model_path;
+    public final String AD_model_attrs_path;
     public String pmml_path;
     public String model_code;
     public String model_name;
@@ -52,28 +53,24 @@ public class Globals {
             , String target_var
             ) throws Exception
     {
-        Map<String, Pair<String, Integer>> model_to_specs = new HashMap<>();
-        model_to_specs.put("circCDK_ATF_1", new Pair("cdk_fing_ccdk", 1));
-        model_to_specs.put("circCDK_ATF_6", new Pair("cdk_fing_ccdk", 6));
-        model_to_specs.put("circCDK_4", new Pair("cdk_ccdk", 4));
-
         this.depictor = new Depictor();
         this.som_depictor = new Depictor(new Depictor.SoMColorer());
         this.model_name = model_name;
-        this.circ_depth = model_to_specs.get(this.model_name).getValue();
-        this.fing_depth = model_to_specs.get(this.model_name).getValue();
+        this.circ_depth = Integer.parseInt(this.model_name.split("_")[1]);
+        this.fing_depth = 10; // is always 10 because of the AD score
 
         this.output_dir = output_dir;
-        model_code = model_to_specs.get(this.model_name).getKey() + "_" + Integer.toString(this.circ_depth);
+        model_code = this.model_name.split("_")[0] + "_cdk_fing_ccdk" + "_" + this.model_name.split("_")[1];
         desc_groups = new HashSet<>(
                 Arrays.asList(
                         model_code.split("_")
                 )
         );
         this.target_var = target_var;
-        model_dir = MODELS_ROOT + this.target_var + "_" + this.model_code + "/";
+        model_dir = MODELS_ROOT + this.model_code + "/";
+        AD_model_path = MODELS_ROOT + "AD/" + "nns.ser";
+        AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes.ser";
         pmml_path = model_dir + "final_model.pmml";
-        modeller = new Modeller(pmml_path, this.target_var);
         encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
         at_encoder = new Encoder("AtomType", encoders_json);
         imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
@@ -105,6 +102,9 @@ public class Globals {
             OutputStream js_ostram = new FileOutputStream(item);
             copyStreams(js_istream, js_ostram);
         }
+
+        // init modeller
+        this.modeller = new Modeller(this);
     }
 
     private static void copyStreams(InputStream is, OutputStream os) throws IOException {

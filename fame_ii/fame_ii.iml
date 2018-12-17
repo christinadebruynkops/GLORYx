@@ -14,5 +14,6 @@
     <orderEntry type="module" module-name="smartcyp" />
     <orderEntry type="library" name="net.sourceforge.argparse4j:argparse4j:0.7.0" level="project" />
     <orderEntry type="library" name="weka" level="project" />
+    <orderEntry type="library" name="javax.xml.bind:jaxb-api:2.2.2" level="project" />
   </component>
 </module>

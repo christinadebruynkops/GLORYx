@@ -7,8 +7,6 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.similarity.Tanimoto;
 import utils.Utils;
 import weka.core.DistanceFunction;
 import weka.core.Instance;
@@ -80,14 +78,24 @@ public class Main {
 
         @Override
         public double distance(Instance instance, Instance instance1) {
-            BitSet instance_bs = this.convert(instance);
-            BitSet instance1_bs = this.convert(instance1);
-            try {
-                return 1 - Tanimoto.calculate(instance_bs, instance1_bs);
-            } catch (CDKException e) {
-                e.printStackTrace();
-                return -1;
-            }
+            BitSet a = this.convert(instance);
+            BitSet b = this.convert(instance1);
+//            try {
+//                return 1 - Tanimoto.calculate(a, b);
+//            } catch (CDKException e) {
+//                e.printStackTrace();
+//                return -1;
+//            }
+            final int size = Math.max(a.length(), b.length());
+            final BitSet and = new BitSet(size);
+            and.or(a);
+            and.and(b);
+            final BitSet or = new BitSet(size);
+            or.or(a);
+            or.or(b);
+            final double union = or.cardinality();
+            final double intersection = and.cardinality();
+            return (union - intersection) / union;
         }
 
         @Override
@@ -137,34 +145,24 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("fame2")
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("fame3")
                 .defaultHelp(true)
-                .description("This is fame2. It attempts to predict sites of " +
-                        "metabolism for supplied chemical compounds. It includes extra trees models " +
-                        "for regioselectivity prediction of some cytochrome P450 isoforms.") // TODO: add paper citation
+                .description("This is fame3. It attempts to predict sites of " +
+                        "metabolism for supplied chemical compounds. It is based on extra trees models " +
+                        "that are trained for regioselectivity prediction on a selection of phase I and phase II enzymatic reactions" +
+                        "annotated in the MetaQSAR database.") // TODO: add paper citation
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
         parser.addArgument("-m", "--model")
-                .choices("circCDK_ATF_1", "circCDK_4", "circCDK_ATF_6").setDefault("circCDK_ATF_1")
-                .help("Model to use to generate predictions. \n Either the model with the best " +
-                        "average performance ('circCDK_ATF_6') " +
-                        "during the independent test set validation " +
-                        "as performed in the original paper " +
-                        "or one of the simpler models that were found to have" +
-                        " comparable performance (" +
-                        "'circCDK_ATF_1' and 'circCDK_4'). The 'circCDK_ATF_1' model is selected by default " +
-                        "as it is expected to offer the best trade-off between generalization and accuracy." +
-                        "\n The number after the model code indicates how wide the encoded" +
-                        "environment of an atom is. For example, the default 'circCDK_ATF_1' " +
-                        "is a model based on the atom itself and its immediate neighbors" +
-                        " (atoms at most one bond away)."
+                .choices("global", "phaseI", "phaseII").setDefault("global_10")
+                .help("Model to use to generate predictions. " // TODO: expand this section
                 );
-//        parser.addArgument("-d", "--depth")
-//                .type(Integer.class)
-//                .choices(1,2,3,4,5,6)
-//                .setDefault(6)
-//                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
+        parser.addArgument("-d", "--depth")
+                .type(Integer.class)
+                .choices(1,5,10)
+                .setDefault(5)
+                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("*")
                 .help("One or more SDF files with compounds to predict. " +
                         "One SDF can contain multiple compounds."+
@@ -215,12 +213,13 @@ public class Main {
         }
 
         // initialize global settings
-        System.out.println("Selected model: " + args_ns.getString("model"));
+        String model_name = args_ns.getString("model") + "_" + args_ns.getString("depth");
+        System.out.println("Selected model: " + model_name);
         System.out.println("Output Directory: " + args_ns.getString("output_directory"));
         Globals params = new Globals(
                 args_ns.getString("output_directory")
+                , model_name
                 , args_ns.getString("model")
-                , "HLM"
         );
         params.generate_pngs = args_ns.getBoolean("depict_png");
         params.generate_csvs = args_ns.getBoolean("output_csv");
@@ -229,7 +228,7 @@ public class Main {
         int counter = 1;
         for (String input_file : sdf_inputs) {
             System.out.println("Processing: " + input_file);
-            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
+//            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
 
             // check if input file exists and change the path in settings
             try {

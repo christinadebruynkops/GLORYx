@@ -1,25 +1,23 @@
 package modelling;
 
 import com.google.common.collect.RangeSet;
+import globals.Globals;
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.jpmml.evaluator.*;
 import org.jpmml.model.PMMLUtil;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.similarity.Tanimoto;
-import weka.core.*;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.neighboursearch.NearestNeighbourSearch;
-import weka.core.neighboursearch.PerformanceStats;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -34,21 +32,21 @@ public class Modeller {
     private String target_var;
     public static final int yes_val = 0;
     public static final int no_val = 1;
-    public static final String proba_yes_fld = "probability_" + Integer.toString(yes_val);
-    public static final String proba_no_fld = "probability_" + Integer.toString(no_val);
+    public static final String proba_yes_fld = "probability(" + Integer.toString(yes_val) + ")";
+    public static final String proba_no_fld = "probability(" + Integer.toString(no_val)+ ")";
     public static final String is_som_fld = "isSoM";
 
-    public Modeller(String pmml_path, String target_var) throws Exception {
-        this.target_var = target_var;
+    public Modeller(Globals globals) throws Exception {
+        this.target_var = globals.target_var;
         System.out.println("Loading model...");
-        PMML pmml = loadModel(pmml_path);
+        PMML pmml = loadModel(globals.pmml_path);
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
         evaluator = modelEvaluator;
 
         System.out.println("Loading applicability domain model...");
-        FileInputStream file_in = new FileInputStream("nns.ser");
-        FileInputStream file2_in = new FileInputStream("nns_attributes.ser");
+        InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
+        InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
         ObjectInputStream in = new ObjectInputStream(file_in);
         ObjectInputStream in2 = new ObjectInputStream(file2_in);
         nns = (NearestNeighbourSearch) in.readObject();
@@ -66,20 +64,12 @@ public class Modeller {
     }
 
     private Instances encodeMol(Instances at_fingeprints) {
-        Enumeration<Attribute> attr_enum = at_fingeprints.enumerateAttributes();
-        while (attr_enum.hasMoreElements()) {
-            Attribute attr = attr_enum.nextElement();
-            if (!attr.name().startsWith("AtomType_")) {
-                at_fingeprints.deleteAttributeAt(attr.index());
-            }
-        }
-
         ArrayList<Attribute> new_atts = new ArrayList<>();
         int num_bits = bits_per_layer * at_fingeprints.numAttributes();
         for (int i = 1; i <= num_bits ; i++) {
             new_atts.add(new Attribute(Integer.toString(i)));
         }
-        Instances insts_bits = new Instances("insts_bits", new_atts, 50000);
+        Instances insts_bits = new Instances("insts_bits", new_atts, at_fingeprints.size());
         Enumeration<Instance> insts_enum = at_fingeprints.enumerateInstances();
         while (insts_enum.hasMoreElements()) {
             Instance old_inst = insts_enum.nextElement();
@@ -102,32 +92,42 @@ public class Modeller {
         return insts_bits;
     }
 
-    public void predictAppDomain(IMolecule molecule) {
-        ArrayList<Attribute> new_atts = new ArrayList<>();
+    private double calculateADScoreValue(double[] dists, int k) {
+        double[] dists_k = Arrays.copyOfRange(dists, 0, k);
+        return 1 - (StatUtils.mean(dists_k));
+    }
+
+    public void getADScore(IMolecule molecule) {
+        ArrayList<Attribute> mol_attrs = new ArrayList<>();
         for (String nns_attribute : nns_attributes) {
-            new_atts.add(new Attribute(nns_attribute));
+            mol_attrs.add(new Attribute(nns_attribute));
         }
 
         for (IAtom atm : molecule.atoms()) {
-            Instances insts_numeric = new Instances("insts_numeric", new_atts, molecule.getAtomCount());
-            Instance inst = new DenseInstance(new_atts.size());
+            if (atm.getSymbol().equalsIgnoreCase("H")) {
+                continue;
+            }
+            Instances insts_numeric = new Instances("insts_numeric", mol_attrs, 1);
+            Instance inst = new DenseInstance(mol_attrs.size());
             for (String att_name : nns_attributes) {
                 if (atm.getProperty(att_name) != null) {
                     inst.setValue(insts_numeric.attribute(att_name), ((Integer) atm.getProperty(att_name)).doubleValue());
                 } else {
                     inst.setValue(insts_numeric.attribute(att_name), 0.0);
+                    if (att_name.contains("_" + atm.getProperty("AtomType").toString() + "_0")) {
+                        inst.setValue(insts_numeric.attribute(att_name), 1.0);
+                    }
                 }
             }
+
             insts_numeric.add(inst);
             Instances insts_fings = encodeMol(insts_numeric);
             try {
-                Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), 3);
+                int k = 3;
+                Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), k);
                 double[] dists = nns.getDistances();
-                atm.setProperty("AD_mean", StatUtils.mean(dists));
-                atm.setProperty("AD_sum", StatUtils.sum(dists));
-                atm.setProperty("AD_min", StatUtils.min(dists));
-                atm.setProperty("AD_max", StatUtils.max(dists));
-                atm.setProperty("AD_count", nbrs.size());
+
+                atm.setProperty("AD_score", calculateADScoreValue(dists, k));
             } catch (Exception e) {
                 e.printStackTrace();
             }
