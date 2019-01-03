@@ -3,6 +3,7 @@
 package modelling;
 
 import globals.Globals;
+import modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import modelling.descriptors.circular.CircularCollector;
 import modelling.descriptors.circular.NeighborhoodIterator;
 import org.openscience.cdk.MoleculeSet;
@@ -12,14 +13,14 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.PathTools;
 import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.*;
 import org.openscience.cdk.normalize.SMSDNormalizer;
 import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.*;
+import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.Utils;
 import utils.depiction.DepictorSMARTCyp;
@@ -90,11 +91,11 @@ public class PredictorWorkerThread implements Runnable {
 			long startTime = System.nanoTime();
 
 			// prepare the structure
-//			AllRingsFinder finder = new AllRingsFinder();
-//			IRingSet rings = finder.findAllRings(molecule);
-//			for (IAtomContainer ring: rings.atomContainers()) {
-//				DeAromatizationTool.deAromatize((IRing) ring);
-//			}
+			AllRingsFinder finder = new AllRingsFinder();
+			IRingSet rings = finder.findAllRings(molecule);
+			for (IAtomContainer ring: rings.atomContainers()) {
+				DeAromatizationTool.deAromatize((IRing) ring);
+			}
 			AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
 			// aromatize; required for correct Sybyl atom type determination
 			SMSDNormalizer.aromatizeMolecule(molecule);
@@ -204,13 +205,13 @@ public class PredictorWorkerThread implements Runnable {
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
-			calculators.add(new PartialSigmaChargeDescriptor());
 			calculators.add(new AtomDegreeDescriptor());
 			calculators.add(new AtomHybridizationDescriptor());
 			calculators.add(new AtomHybridizationVSEPRDescriptor());
 			calculators.add(new AtomValenceDescriptor());
 			calculators.add(new EffectiveAtomPolarizabilityDescriptor());
 			calculators.add(new IPAtomicHOSEDescriptor());
+			calculators.add(new PartialSigmaChargeDescriptorPatched());
 			calculators.add(new PartialTChargeMMFF94Descriptor());
 			calculators.add(new PiElectronegativityDescriptor());
 			calculators.add(new ProtonAffinityHOSEDescriptor());
@@ -222,8 +223,8 @@ public class PredictorWorkerThread implements Runnable {
 //				PartialPiChargeDescriptor partialPiChargeDescriptor = new PartialPiChargeDescriptor();
 //				PartialTChargePEOEDescriptor partialTChargePEOEDescriptor = new PartialTChargePEOEDescriptor();
 
-			String[] desc_names = ("partialSigmaCharge,atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
-					"iPAtomicHOSE,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
+			String[] desc_names = ("atomDegree,atomHybridization,atomHybridizationVSEPR,atomValence,effectiveAtomPolarizability," +
+					"iPAtomicHOSE,partialSigmaCharge,partialTChargeMMFF94,piElectronegativity,protonAffinityHOSE,sigmaElectronegativity," +
 					"stabilizationPlusCharge,relSPAN,diffSPAN,highestMaxTopDistInMatrixRow,longestMaxTopDistInMolecule").split(",");
 			for(int atomNr = 0; atomNr < molecule.getAtomCount()  ; atomNr++ ) {
 				IAtom iAtom = molecule.getAtom(atomNr);
