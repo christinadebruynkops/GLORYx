@@ -810,7 +810,11 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
     }
 
     public String roundProp(Object prop) {
-        return Double.toString(((Math.round((Double) prop * 1000d)) / 1000d));
+        if (prop != null) {
+            return Double.toString(((Math.round((Double) prop * 1000d)) / 1000d));
+        } else {
+            return "--";
+        }
     }
 
     public void writeAtomRowinMoleculeKUTableHLM(IAtom atom){

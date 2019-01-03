@@ -3,6 +3,7 @@ package globals;
 import modelling.Encoder;
 import modelling.Modeller;
 import modelling.descriptors.circular.CircImputer;
+import net.sourceforge.argparse4j.inf.Namespace;
 import org.json.JSONObject;
 import utils.Utils;
 import utils.depiction.Depictor;
@@ -33,8 +34,9 @@ public class Globals {
     public Map<String, String> misc_params = new HashMap<>();
     public String target_var;
     public Set<String> desc_groups;
-    public boolean generate_pngs = false;
-    public boolean generate_csvs = false;
+    public boolean generate_pngs;
+    public boolean generate_csvs;
+    public boolean use_AD;
     public Depictor depictor;
     public Depictor som_depictor;
     public Encoder at_encoder;
@@ -47,26 +49,28 @@ public class Globals {
     public static final String MODELS_ROOT = "/modelling/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
 
-    public Globals(
-            String output_dir
-            , String model_name
-            , String target_var
-            ) throws Exception
+    public Globals(Namespace args_ns) throws Exception
     {
+        String model_name = args_ns.getString("model") + "_" + args_ns.getString("depth");
+        System.out.println("Selected model: " + model_name);
+        System.out.println("Output Directory: " + args_ns.getString("output_directory"));
+        this.output_dir = args_ns.getString("output_directory");
+        this.model_name = model_name;
+        this.generate_pngs = args_ns.getBoolean("depict_png");
+        this.generate_csvs = args_ns.getBoolean("output_csv");
+        this.use_AD = !args_ns.getBoolean("no_app_domain");
+        this.target_var = args_ns.getString("model");
         this.depictor = new Depictor();
         this.som_depictor = new Depictor(new Depictor.SoMColorer());
-        this.model_name = model_name;
         this.circ_depth = Integer.parseInt(this.model_name.split("_")[1]);
         this.fing_depth = 10; // is always 10 because of the AD score
 
-        this.output_dir = output_dir;
         model_code = this.model_name.split("_")[0] + "_cdk_fing_ccdk" + "_" + this.model_name.split("_")[1];
         desc_groups = new HashSet<>(
                 Arrays.asList(
                         model_code.split("_")
                 )
         );
-        this.target_var = target_var;
         model_dir = MODELS_ROOT + this.model_code + "/";
         AD_model_path = MODELS_ROOT + "AD/" + "nns.ser";
         AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes.ser";

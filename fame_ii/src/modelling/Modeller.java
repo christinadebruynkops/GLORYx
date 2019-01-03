@@ -44,17 +44,19 @@ public class Modeller {
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
         evaluator = modelEvaluator;
 
-        System.out.println("Loading applicability domain model...");
-        InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
-        InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
-        ObjectInputStream in = new ObjectInputStream(file_in);
-        ObjectInputStream in2 = new ObjectInputStream(file2_in);
-        nns = (NearestNeighbourSearch) in.readObject();
-        nns_attributes = (List<String>) in2.readObject();
-        in.close();
-        in2.close();
-        file_in.close();
-        file2_in.close();
+        if (globals.use_AD) {
+            System.out.println("Loading applicability domain model...");
+            InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
+            InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
+            ObjectInputStream in = new ObjectInputStream(file_in);
+            ObjectInputStream in2 = new ObjectInputStream(file2_in);
+            nns = (NearestNeighbourSearch) in.readObject();
+            nns_attributes = (List<String>) in2.readObject();
+            in.close();
+            in2.close();
+            file_in.close();
+            file2_in.close();
+        }
     }
 
     private static PMML loadModel(String pmml_path) throws Exception {

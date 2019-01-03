@@ -188,6 +188,10 @@ public class Main {
                 .action(Arguments.storeTrue())
                 .setDefault(false)
                 .help("Saves calculated descriptors and predictions to CSV files.");
+        parser.addArgument("-a", "--no-app-domain")
+                .action(Arguments.storeTrue())
+                .setDefault(false)
+                .help("Do not use the applicability domain model.");
 
         Namespace args_ns = null;
         try {
@@ -213,16 +217,9 @@ public class Main {
         }
 
         // initialize global settings
-        String model_name = args_ns.getString("model") + "_" + args_ns.getString("depth");
-        System.out.println("Selected model: " + model_name);
-        System.out.println("Output Directory: " + args_ns.getString("output_directory"));
         Globals params = new Globals(
-                args_ns.getString("output_directory")
-                , model_name
-                , args_ns.getString("model")
+                args_ns
         );
-        params.generate_pngs = args_ns.getBoolean("depict_png");
-        params.generate_csvs = args_ns.getBoolean("output_csv");
 
         // process files
         int counter = 1;

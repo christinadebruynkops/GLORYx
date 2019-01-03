@@ -293,8 +293,10 @@ public class PredictorWorkerThread implements Runnable {
 			System.out.println("Descriptor calculation finished for: " + mol_name);
 
 			// add applicability domain info
-			System.out.println("Calculating applicability domain for atoms in: " + mol_name);
-			globals.modeller.getADScore(molecule);
+			if (globals.use_AD) {
+				System.out.println("Calculating applicability domain for atoms in: " + mol_name);
+				globals.modeller.getADScore(molecule);
+			}
 
 			// encode atom types
             globals.at_encoder.encode(molecule);
@@ -372,8 +374,9 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			System.out.println("************** Done (" + mol_name + ") **************");
+			molecule = null; // clears memory since we are done with this one
+			System.gc();
 		}
-
 		catch (ArrayIndexOutOfBoundsException e) {
 			//catches some massive molecules
 			System.out.println("Error: ArrayIndexOutOfBoundsException: " + mol_name);
