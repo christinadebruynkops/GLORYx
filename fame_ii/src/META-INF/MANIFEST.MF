@@ -9,6 +9,6 @@ Class-Path: lib/cdk-1.4.19.jar lib/argparse4j-0.7.0.jar lib/pmml-evalu
  ib/validation-api-1.1.0.Final.jar lib/jaxb-runtime-2.2.11.jar lib/jax
  b-core-2.2.11.jar lib/jaxb-api-2.2.12-b140109.1041.jar lib/txw2-2.2.1
  1.jar lib/istack-commons-runtime-2.21.jar lib/stax-ex-1.7.7.jar lib/F
- astInfoset-1.2.13.jar
+ astInfoset-1.2.13.jar lib/weka.jar
 Main-Class: main.Main
 
