@@ -72,8 +72,8 @@ public class Globals {
                 )
         );
         model_dir = MODELS_ROOT + this.model_code + "/";
-        AD_model_path = MODELS_ROOT + "AD/" + "nns.ser";
-        AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes.ser";
+        AD_model_path = MODELS_ROOT + "AD/" + "nns_" + target_var + ".ser";
+        AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes_" + target_var + ".ser";
         pmml_path = model_dir + "final_model.pmml";
         encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
         at_encoder = new Encoder("AtomType", encoders_json);
