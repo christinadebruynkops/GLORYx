@@ -194,7 +194,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         }
         else {
             //no error message, print normal output
-            outfile.println("<h1>FAME II Output</h1>");
+            outfile.println("<h1>FAME 3 Output</h1>");
             outfile.println("\n <b>Produced:</b> " + this.dateAndTime + ".<br />");
             outfile.println("\n <b>Input file:</b> " + Arrays.toString(namesOfInfiles) + ".<br />");
             outfile.println("\n <br /><br /><b>Visualization:</b><br />");
@@ -384,7 +384,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>Probability</th><th>AD Score</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th><th>ADscore</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
