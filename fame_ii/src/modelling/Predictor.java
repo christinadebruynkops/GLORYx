@@ -36,8 +36,11 @@ public class Predictor {
 				IMolecule molecule = (IMolecule) reader.next();
 				SmilesGenerator smi_gen = new SmilesGenerator();
 				if (molecule.getProperty(Globals.ID_PROP) == null) {
-					molecule.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
-					System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
+					molecule.setProperty(Globals.ID_PROP, molecule.getProperty("Identifier"));
+					if (molecule.getProperty(Globals.ID_PROP) == null) {
+						molecule.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
+						System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
+					}
 				} else {
 //				System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
 					molecule.setProperty(Globals.ID_PROP, molecule.getProperty(Globals.ID_PROP).toString().replaceAll("[^A-Za-z0-9]", "_"));
@@ -49,6 +52,7 @@ public class Predictor {
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
+				System.out.println("Successfully parsed structure for: " + molecule.getProperty(Globals.ID_PROP));
 				counter++;
 			}
 		}

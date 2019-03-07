@@ -42,6 +42,7 @@ public class Globals {
     public Encoder at_encoder;
     public CircImputer circ_imputer;
     public List<File> js_code_paths = new ArrayList<>();
+    public Map<String, String> model_map = new HashMap<>();
 
     public int circ_depth;
     public int fing_depth;
@@ -51,7 +52,10 @@ public class Globals {
 
     public Globals(Namespace args_ns) throws Exception
     {
-        String model_name = args_ns.getString("model") + "_" + args_ns.getString("depth");
+        model_map.put("P1+P2", "global");
+        model_map.put("P1", "phaseI");
+        model_map.put("P2", "phaseII");
+        String model_name = model_map.get(args_ns.getString("model")) + "_" + args_ns.getString("depth");
         System.out.println("Selected model: " + model_name);
         System.out.println("Output Directory: " + args_ns.getString("output_directory"));
         this.output_dir = args_ns.getString("output_directory");
@@ -59,7 +63,7 @@ public class Globals {
         this.generate_pngs = args_ns.getBoolean("depict_png");
         this.generate_csvs = args_ns.getBoolean("output_csv");
         this.use_AD = !args_ns.getBoolean("no_app_domain");
-        this.target_var = args_ns.getString("model");
+        this.target_var = model_map.get(args_ns.getString("model"));
         this.depictor = new Depictor();
         this.som_depictor = new Depictor(new Depictor.SoMColorer());
         this.circ_depth = Integer.parseInt(this.model_name.split("_")[1]);

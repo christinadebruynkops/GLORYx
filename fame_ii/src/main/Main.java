@@ -155,12 +155,12 @@ public class Main {
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
         parser.addArgument("-m", "--model")
-                .choices("global", "phaseI", "phaseII").setDefault("global_10")
-                .help("Model to use to generate predictions. " // TODO: expand this section
+                .choices("P1+P2", "P1", "P2").setDefault("P1+P2")
+                .help("Model to use to generate predictions." // TODO: expand this section
                 );
         parser.addArgument("-d", "--depth")
                 .type(Integer.class)
-                .choices(1,5,10)
+                .choices(1,2,5,10)
                 .setDefault(5)
                 .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
         parser.addArgument("FILE").nargs("*")
@@ -172,7 +172,7 @@ public class Main {
                         "Calculating spatial coordinates of atoms is not necessary.")
                 ;
         parser.addArgument("-s", "--smiles").nargs("*")
-                .help("One or more SMILES strings of compounds to predict. " +
+                .help ("One or more SMILES strings of compounds to predict. " +
                         "\nAll molecules should be neutral " +
                         "and have explicit hydrogens added prior to modelling. " +
                         "If there are still missing hydrogens, the software will try to add them automatically.")

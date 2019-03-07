@@ -13,10 +13,7 @@ import smartcyp.WriteResultsAsChemDoodleHTML;
 import utils.MoleculeKUFAME;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by sicho on 1/24/17.
@@ -24,9 +21,13 @@ import java.util.TreeSet;
 public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     private Globals globals;
+    private Map<String, String> model_map = new HashMap<>();
 
     public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile, Globals globals) {
         super(dateTime, infileNames, outputdir, outputfile);
+        model_map.put("global", "P1+P2");
+        model_map.put("phaseI", "P1");
+        model_map.put("phaseII", "P2");
         this.globals = globals;
     }
 
@@ -371,7 +372,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("</td>");
         outfile.println("<td style='vertical-align:top;'>");
         outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cypHLM' style=\"padding: 2px;\">Model: " + globals.model_name + "</li>");
+        outfile.println("<li id='cypHLM' style=\"padding: 2px;\">Model: " + this.model_map.get(globals.model_name.split("_")[0]) + " (depth: " + Integer.toString(globals.circ_depth) + ")</li>");
 //        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
 //        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
 //        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");
