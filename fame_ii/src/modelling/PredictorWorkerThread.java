@@ -82,7 +82,7 @@ public class PredictorWorkerThread implements Runnable {
 			}
 			this.out_dir = out_dir_file.toPath().toString() + '/';
 
-			System.out.println("************** Processing molecule: " + mol_name + " **************");
+			System.out.println("Processing molecule: " + mol_name);
 			if (globals.generate_pngs) {
 				globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
 			}
@@ -201,7 +201,7 @@ public class PredictorWorkerThread implements Runnable {
 				data_dir.mkdir();
 			}
 
-//			System.out.println("Calculating basic CDK descriptors...");
+			System.out.println("Calculating descriptors for: " + mol_name);
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
@@ -302,13 +302,13 @@ public class PredictorWorkerThread implements Runnable {
             globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
-//			System.out.println("Predicting...");
+			System.out.println("Predicting: " + mol_name);
 			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
 
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
 			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
-			System.out.println("Prediction finished for " + mol_name + ". Total elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
+			System.out.println("Prediction finished for " + mol_name + ". Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
 
 			// generate PNG depictions if requested
 			if (globals.generate_pngs) {
@@ -327,7 +327,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// write CSV files if requested
 			if (globals.generate_csvs) {
-				System.out.println("Writing CSV files...");
+				System.out.println("Writing CSV files for: " + mol_name);
 				// write the basic CDK descriptors
 				List<String> basic_descs = new ArrayList<>(Arrays.asList(
 						"Molecule"
