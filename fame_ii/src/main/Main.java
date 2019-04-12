@@ -147,39 +147,57 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("fame3")
                 .defaultHelp(true)
-                .description("This is fame3. It attempts to predict sites of " +
-                        "metabolism for supplied chemical compounds. It is based on extra trees models " +
-                        "that are trained for regioselectivity prediction on a selection of phase I and phase II enzymatic reactions" +
-                        "annotated in the MetaQSAR database.") // TODO: add paper citation
+                .description("This is FAME 3 [1]. It is a collection of machine learning models to predict sites of " +
+                        "metabolism (SOMs) for supplied chemical compounds (supplied as SMILES or in an SDF file).\n " +
+                        "FAME 3 includes a combined model (\"P1+P2\") " +
+                        "for phase I and phase II SOMs" +
+                        " and also separate phase I and phase II models (\"P1\" and \"P2\"). It is based on extra trees classifiers " +
+                        "trained for regioselectivity prediction on data from the MetaQSAR database [2]." +
+                        "Feel free to take a look at the README.html file for usage examples." +
+                        "\n1. TODO: FAME 3 paper reference" +
+                        "\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
+                        "Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa\n" +
+                        "Journal of Medicinal Chemistry 2018 61 (3), 1019-1030\n" +
+                        "DOI: 10.1021/acs.jmedchem.7b01473") // TODO: add FAME3 paper reference
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
         parser.addArgument("-m", "--model")
                 .choices("P1+P2", "P1", "P2").setDefault("P1+P2")
-                .help("Model to use to generate predictions." // TODO: expand this section
+                .help("Model to use to generate predictions. " +
+                        "Select P1+P2 to predict both phase I and phase II SOMs. " +
+                        "Select P1 to predict phase I only. " +
+                        "Select P2 to predict phase II only."
                 );
         parser.addArgument("-d", "--depth")
                 .type(Integer.class)
-                .choices(1,2,5,10)
+                .choices(2,5)
                 .setDefault(5)
-                .help("The maximum number of layers to consider in atom type fingerprints and circular descriptors.");
+                .help("The circular descriptor bond depth. " +
+                        "It is the maximum number of layers to consider in atom type " +
+                        "fingerprints and circular descriptors. Optimal results should be achieved " +
+                        "with the default bond depth of 5. However, in some cases the lower " +
+                        "complexity model could be more successful, especially if FAMEscores are low.");
         parser.addArgument("FILE").nargs("*")
-                .help("One or more SDF files with compounds to predict. " +
-                        "One SDF can contain multiple compounds."+
-                        "\nAll molecules should be neutral " +
+                .help("One or more SDF files with the compounds to predict. " +
+                        "One SDF can contain multiple compounds. "+
+                        "\nAll molecules should be neutral (with the exception of tertiary ammonium) " +
                         "and have explicit hydrogens added prior to modelling. " +
-                        "If there are still missing hydrogens, the software will try to add them automatically." +
+                        "However, if there are missing hydrogens, " +
+                        "the software will try to add them automatically. " +
                         "Calculating spatial coordinates of atoms is not necessary.")
                 ;
         parser.addArgument("-s", "--smiles").nargs("*")
-                .help ("One or more SMILES strings of compounds to predict. " +
-                        "\nAll molecules should be neutral " +
+                .help ("One or more SMILES strings of the compounds to predict. " +
+                        "\nAll molecules should be neutral (with the exception of tertiary ammonium) " +
                         "and have explicit hydrogens added prior to modelling. " +
-                        "If there are still missing hydrogens, the software will try to add them automatically.")
+                        "However, if there are missing hydrogens, " +
+                        "the software will try to add them automatically. " +
+                        "Calculating spatial coordinates of atoms is not necessary.")
         ;
         parser.addArgument("-o", "--output-directory")
-                .setDefault("fame_results")
-                .help("The path to the output directory. If it doesn't exist, it will be created.");
+                .setDefault("fame3_results")
+                .help("Path to the output directory. If it doesn't exist, it will be created.");
         parser.addArgument("-p", "--depict-png")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
@@ -191,7 +209,8 @@ public class Main {
         parser.addArgument("-a", "--no-app-domain")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
-                .help("Do not use the applicability domain model.");
+                .help("Do not use the applicability domain model. FAMEscore values" +
+                        " will not be calculated, but the predictions will be faster.");
 
         Namespace args_ns = null;
         try {
@@ -224,7 +243,7 @@ public class Main {
         // process files
         int counter = 1;
         for (String input_file : sdf_inputs) {
-            System.out.println("Processing: " + input_file);
+            System.out.println("Processing SDF file: " + input_file);
 //            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
 
             // check if input file exists and change the path in settings
@@ -251,7 +270,7 @@ public class Main {
 
         // process smiles
         if (!smile_inputs.isEmpty()) {
-            System.out.println("Processing: " + smile_inputs.toString());
+            System.out.println("Processing SMILES: " + smile_inputs.toString());
             params.setInputSmiles(smile_inputs);
             params.input_number = counter;
 

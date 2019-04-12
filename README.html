@@ -45,24 +45,35 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   </style>
 </head>
 <body>
-<h1 id="fame2">Fame2</h1>
-<p>This is <em>fame2</em>, a program which attempts to predict sites of metabolism for supplied chemical compounds. It includes extra trees models for regioselectivity prediction of some cytochrome P450 isoforms.</p>
-<h2 id="usage">Usage</h2>
-<p>On the Linux platform and Mac, running the program is easy since you can use the shell script provided in the installation directory:</p>
+<h1 id="fame-3">FAME 3</h1>
+<p>This is the <em>fame3</em> program. It attempts to predict sites of metabolism (SOMs) for the supplied chemical compounds. It is based on extra trees classifier trained for prediction of both phase I and phase II SOMs from the MetaQSAR database [1]. It contains a combined phase I and phase II (P1+P2) model and separate phase I (P1) and phase II (P2) models. For more details on the FAME 3 method, see the FAME 3 publication [2].</p>
+<ol style="list-style-type: decimal">
+<li><p>MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa Journal of Medicinal Chemistry 2018 61 (3), 1019-1030 DOI: 10.1021/acs.jmedchem.7b01473</p></li>
+<li><p>TODO: add reference</p></li>
+</ol>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="linux-and-mac">Linux and Mac</h3>
+<p>On Linux and Mac, running the program is easy since you can use the shell script provided in the installation directory:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">${YOUR_INSTALL_DIR}</span>/fame2
-<span class="kw">./fame2</span></code></pre></div>
+<span class="kw">./fame3</span></code></pre></div>
 <p>You can also add <code>${YOUR_INSTALL_DIR}</code> to the <code>$PATH</code> environment variable to have universal access:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">export</span> <span class="ot">PATH=</span><span class="st">&quot;</span><span class="ot">$PATH</span><span class="st">:</span><span class="ot">$YOUR_INSTALL_DIR</span><span class="st">&quot;</span></code></pre></div>
-<p>There is an example SDF file in the installation folder that you can use to test the program:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/example_compounds/tamoxifen.sdf&quot;</span></code></pre></div>
+<p>There is a folder with example SDF files in the installation folder that you can use to test the program:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span></code></pre></div>
 <p>The program also accept SMILES strings:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -o <span class="st">&quot;test_predictions&quot;</span> -s CCO c1ccccc1C</code></pre></div>
-<p>This creates the <code>test_predictions</code> folder in the current directory which contains the predictions and other output files (if required) for each analyzed compound.</p>
-<p>On other platforms, you will have to run the java package explicitly. For example:</p>
-<pre><code>java -Xms1024m -jar ${YOUR_INSTALL_DIR}/fame2.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/example_compounds/tamoxifen.sdf&quot;</code></pre>
-<p>Since the unpacked model takes quite a bit of memory the <code>-Xms1024m</code> flags are often necessary to override some default java options.</p>
-<p>You can find more instructions and tips on how to use the package by running:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame2</span> -h</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s O=C3OC4OC1(OOC42C(CC1)<span class="kw">C</span>(C)<span class="kw">CCC2C3C</span>)<span class="kw">C</span></code></pre></div>
+<p>Multiple SMILES can also be specified:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
+<p>And SDF input can be combined with SMILES input as well:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
+<p>All of the inputs above will generate the <code>test_predictions</code> folder in the current directory. This folder will contain subfolders named after the input molecules (molecules specified as SMILES will have a name generated for them). The FAME 3 output files for each compound will then located in the respective subdirectory.</p>
+<p>More information on running the program is available in the help menu:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -h</code></pre></div>
+<h3 id="windows">Windows</h3>
+<p>On Windows, there is no batch script at the moment. You will have to replace the <code>fame3</code> call and run the java package explicitly:</p>
+<pre><code>java -Xmx16g -jar ${YOUR_INSTALL_DIR}/fame3.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/examples/tamoxifen.sdf&quot;</code></pre>
+<p>Since the unpacked FAME 3 model and the FAMEscore models can take quite a bit of memory the <code>-Xmx16g</code> flag is necessary.</p>
+<p>Otherwise, <em>fame3</em> functions as outlined above for Linux and Mac.</p>
 <h2 id="contact-information">Contact Information</h2>
 <ul>
 <li>Martin Šícho - <script type="text/javascript">
@@ -85,7 +96,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6
 </ul></li>
 </ul>
 <h2 id="acknowledgement-funding">Acknowledgement &amp; Funding</h2>
-<p>We would like to express our thank you to Jed Zaretzki and his collaborators for compiling the freely available dataset which was used to develop the models in this software. We also highly appreciate the help of Patrik Rydberg and his collaborators who made their visualization code from the <a href="http://www.farma.ku.dk/smartcyp/background.php">SMARTCyp program</a> freely available as open source software.</p>
-<p>This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1 and by the Ministry of Education of the Czech Republic - project numbers MSMT No 20-SVV/2017, NPU I - LO1220 and LM2015063. MS was supported by the Erasmus+ Programme of the European Commission.</p>
+<p>We highly appreciate the help of Patrik Rydberg and his collaborators who made their visualization code from the SMARTCyp program freely available as open source software.</p>
+<p>This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1 and by the Ministry of Education of the Czech Republic - project numbers MSMT No 20-SVV/2017, NPU I - LO1220 and LM2015063.</p>
 </body>
 </html>
