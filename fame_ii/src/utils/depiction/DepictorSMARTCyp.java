@@ -385,7 +385,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>Probability</th><th>ADscore</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th><th>FAMEscore</th></tr>");
 
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
