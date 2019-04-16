@@ -2,6 +2,8 @@
 
 package modelling;
 
+import ambit2.smarts.SMIRKSManager;
+import ambit2.smarts.SMIRKSReaction;
 import globals.Globals;
 import modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import modelling.descriptors.circular.CircularCollector;
@@ -30,8 +32,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-//import utils.SoMInfo;
 
 public class PredictorWorkerThread implements Runnable {
 
@@ -73,6 +73,29 @@ public class PredictorWorkerThread implements Runnable {
 			//check if salt
 			if (!ConnectivityChecker.isConnected(molecule)) {
 				throw new Exception("Error: salt: " + mol_name);
+			}
+
+			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
+			// Standardize structure:
+			// This is necessary because input SMILES may have used expanded valence representation of
+			// nitro groups or other nitrogen-containing functional groups, and this representation is not compatible with calculating descriptors.
+			String nitroGroupStandardizationSMIRKS = "[*:1][N:2](=[O:3])=[O:4]>>[*:1][N+:2](=[O:3])[O-:4]";  // can be found on Daylight SMIRKS website
+			String nitrogenStandardizationSMIRKS = "[*:1][N;v5:2](=[O:3])>>[*:1][N+:2][O-:3]";  // this SMIRKS covers the case of nitro groups as well (valence 5), but would result in two products
+
+			SMIRKSManager smirksManager = new SMIRKSManager(SilentChemObjectBuilder.getInstance());
+			SMIRKSReaction transformationNitroGroup = smirksManager.parse(nitroGroupStandardizationSMIRKS);
+			SMIRKSReaction transformationExpandedValenceNitrogen = smirksManager.parse(nitrogenStandardizationSMIRKS);
+			if (smirksManager.hasErrors()) {
+				System.out.println("Error parsing SMIRKS " + nitroGroupStandardizationSMIRKS);
+			}
+			smirksManager.applyTransformation(molecule, null, transformationNitroGroup);  // apply this first because otherwise the other SMIRKS may result in two (same) products. Only want one.
+			smirksManager.applyTransformation(molecule, null, transformationExpandedValenceNitrogen);
+			// Note: There is still a chance that there will be multiple molecules inside the atom container. Hence there should be a salt checker after this code
+
+			//check if salt
+			if (!ConnectivityChecker.isConnected(molecule)) {
+				// FIXME: check the components after transformation and only select one (they should be the same)
+				throw new Exception("Error: Two components after standardization: " + mol_name);
 			}
 
 			// make output directory

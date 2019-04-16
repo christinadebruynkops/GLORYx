@@ -15,5 +15,10 @@
     <orderEntry type="library" name="net.sourceforge.argparse4j:argparse4j:0.7.0" level="project" />
     <orderEntry type="library" name="weka" level="project" />
     <orderEntry type="library" name="javax.xml.bind:jaxb-api:2.2.2" level="project" />
+    <orderEntry type="library" name="modbcum-e-1.0.9" level="project" />
+    <orderEntry type="library" name="modbcum-p-1.0.9" level="project" />
+    <orderEntry type="library" name="modbcum-i-1.0.9" level="project" />
+    <orderEntry type="library" name="ambit2-core-2.7.4" level="project" />
+    <orderEntry type="library" name="ambit2-smarts-2.7.4" level="project" />
   </component>
 </module>
