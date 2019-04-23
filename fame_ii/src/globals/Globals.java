@@ -92,6 +92,19 @@ public class Globals {
             misc_params.put(param_name, json.getString(param_name));
         }
 
+        String decision_threshold = args_ns.getString("decision_threshold");
+        if (!decision_threshold.equals("model")) {
+            try {
+                double df = Double.parseDouble(decision_threshold);
+                if (df < 0 || df > 1) throw new NumberFormatException("Bad decision threshold value.");
+            } catch (NumberFormatException exp) {
+                System.err.println("Bad decision threshold.");
+                exp.printStackTrace();
+                System.exit(1);
+            }
+            misc_params.put("decision_threshold", decision_threshold);
+        }
+
         // check files and create directories
         File outdir = new File(this.output_dir);
         if (!outdir.exists()) {

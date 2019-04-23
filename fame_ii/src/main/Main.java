@@ -206,6 +206,9 @@ public class Main {
                 .action(Arguments.storeTrue())
                 .setDefault(false)
                 .help("Saves calculated descriptors and predictions to CSV files.");
+        parser.addArgument("-t", "--decision-threshold")
+                .setDefault("model")
+                .help("Define the decision threshold for the model (0 to 1). Use \"model\" for the default model threshold.");
         parser.addArgument("-a", "--no-app-domain")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
