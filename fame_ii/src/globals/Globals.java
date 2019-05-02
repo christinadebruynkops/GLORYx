@@ -49,6 +49,7 @@ public class Globals {
     public static final String CHEMDOODLE_ROOT = "/utils/depiction/js/";
     public static final String MODELS_ROOT = "/modelling/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
+    public int cpus;
 
     public Globals(Namespace args_ns) throws Exception
     {
@@ -69,6 +70,7 @@ public class Globals {
         this.circ_depth = Integer.parseInt(this.model_name.split("_")[1]);
         this.fing_depth = 10; // is always 10 because of the AD score
 
+        cpus = args_ns.getInt("processors");
         model_code = this.model_name.split("_")[0] + "_cdk_fing_ccdk" + "_" + this.model_name.split("_")[1];
         desc_groups = new HashSet<>(
                 Arrays.asList(

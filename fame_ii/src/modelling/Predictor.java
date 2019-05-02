@@ -87,7 +87,12 @@ public class Predictor {
 		System.out.flush();
 		System.err.flush();
 
-		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		ExecutorService executor = null;
+		if (globals.cpus <= 0) {
+			executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		} else {
+			executor = Executors.newFixedThreadPool(globals.cpus);
+		}
 		for (int i = 0; i < molecules.size(); i++) {
 			Runnable worker = new PredictorWorkerThread(
 					molecules.get(i)
