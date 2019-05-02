@@ -56,11 +56,10 @@ public class Globals {
         model_map.put("P1+P2", "global");
         model_map.put("P1", "phaseI");
         model_map.put("P2", "phaseII");
-        String model_name = model_map.get(args_ns.getString("model")) + "_" + args_ns.getString("depth");
-        System.out.println("Selected model: " + model_name);
+        System.out.println("Selected model: " + args_ns.getString("model"));
         System.out.println("Output Directory: " + args_ns.getString("output_directory"));
         this.output_dir = args_ns.getString("output_directory");
-        this.model_name = model_name;
+        this.model_name = model_map.get(args_ns.getString("model")) + "_" + args_ns.getString("depth");;
         this.generate_pngs = args_ns.getBoolean("depict_png");
         this.generate_csvs = args_ns.getBoolean("output_csv");
         this.use_AD = !args_ns.getBoolean("no_app_domain");

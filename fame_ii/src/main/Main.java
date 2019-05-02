@@ -154,11 +154,11 @@ public class Main {
                         " and also separate phase I and phase II models (\"P1\" and \"P2\"). It is based on extra trees classifiers " +
                         "trained for regioselectivity prediction on data from the MetaQSAR database [2]." +
                         "Feel free to take a look at the README.html file for usage examples." +
-                        "\n\n1. TODO: FAME 3 paper reference" +
+                        "\n\n1. TODO: FAME 3 paper reference" + // TODO: add FAME3 paper reference
                         "\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
                         "Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa\n" +
                         "Journal of Medicinal Chemistry 2018 61 (3), 1019-1030\n" +
-                        "DOI: 10.1021/acs.jmedchem.7b01473") // TODO: add FAME3 paper reference
+                        "DOI: 10.1021/acs.jmedchem.7b01473")
                 .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/main/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
@@ -169,7 +169,7 @@ public class Main {
                         "Select P1 to predict phase I only. " +
                         "Select P2 to predict phase II only."
                 );
-        parser.addArgument("-p", "--processors")
+        parser.addArgument("-r", "--processors")
                 .type(Integer.class)
                 .setDefault(0)
                 .help("Maximum number of CPUs the program should use. Set to 0 to use all available CPUs.");
