@@ -60,13 +60,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">export</span> <span class="ot">PATH=</span><span class="st">&quot;</span><span class="ot">$PATH</span><span class="st">:</span><span class="ot">$YOUR_INSTALL_DIR</span><span class="st">&quot;</span></code></pre></div>
 <p>There is a folder with example SDF files in the installation folder that you can use to test the program:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span></code></pre></div>
-<p>The program also accept SMILES strings:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s O=C3OC4OC1(OOC42C(CC1)<span class="kw">C</span>(C)<span class="kw">CCC2C3C</span>)<span class="kw">C</span></code></pre></div>
+<p>The program also accepts SMILES strings:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span></code></pre></div>
 <p>Multiple SMILES can also be specified:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
 <p>And SDF input can be combined with SMILES input as well:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
-<p>All of the inputs above will generate the <code>test_predictions</code> folder in the current directory. This folder will contain subfolders named after the input molecules (molecules specified as SMILES will have a name generated for them). The FAME 3 output files for each compound will then located in the respective subdirectory.</p>
+<p>All the inputs above will generate the <code>test_predictions</code> folder in the current directory. This folder will contain subfolders named after the input molecules (molecules specified as SMILES will have a name generated for them). The FAME 3 output files for each compound will then be located in the respective subdirectory.</p>
 <p>More information on running the program is available in the help menu:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -h</code></pre></div>
 <h3 id="windows">Windows</h3>

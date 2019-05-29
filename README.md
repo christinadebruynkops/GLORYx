@@ -40,10 +40,10 @@ that you can use to test the program:
 fame3 -o "test_predictions" "${YOUR_INSTALL_DIR}/examples/tamoxifen.sdf"
 ```
 
-The program also accept SMILES strings:
+The program also accepts SMILES strings:
 
 ```bash
-fame3 -o "test_predictions" -s O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C
+fame3 -o "test_predictions" -s "O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C"
 ```
 
 Multiple SMILES can also be specified:
