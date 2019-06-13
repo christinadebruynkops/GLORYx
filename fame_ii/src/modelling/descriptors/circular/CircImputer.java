@@ -3,7 +3,7 @@ package modelling.descriptors.circular;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,7 +27,7 @@ public class CircImputer {
         }
     }
 
-    public void impute(IMolecule mol, Set<String> sigs) {
+    public void impute(IAtomContainer mol, Set<String> sigs) {
         for (IAtom atm : mol.atoms()) {
             for (String desc_name : desc_map.keySet()) {
                 if (!atm.getSymbol().equals("H") && atm.getProperty(desc_name) == null) {

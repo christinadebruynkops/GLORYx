@@ -3,9 +3,9 @@ package modelling;
 import globals.Globals;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.DefaultIteratingChemObjectReader;
-import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import smartcyp.SMARTSnEnergiesTable;
@@ -27,13 +27,13 @@ public class Predictor {
 	}
 
 	public void calculate() throws IOException, InterruptedException, ClassNotFoundException {
-		ArrayList<IMolecule> molecules = new ArrayList<>();
+		ArrayList<IAtomContainer> molecules = new ArrayList<>();
 		if (!globals.input_sdf.isEmpty()) {
-			DefaultIteratingChemObjectReader reader = (IteratingMDLReader) new IteratingMDLReader(new FileInputStream(globals.input_sdf), DefaultChemObjectBuilder.getInstance());
+			DefaultIteratingChemObjectReader reader = (IteratingSDFReader) new IteratingSDFReader(new FileInputStream(globals.input_sdf), DefaultChemObjectBuilder.getInstance());
 
 			int counter = 1;
 			while (reader.hasNext()) {
-				IMolecule molecule = (IMolecule) reader.next();
+				IAtomContainer molecule = (IAtomContainer) reader.next();
 				SmilesGenerator smi_gen = new SmilesGenerator();
 				if (molecule.getProperty(Globals.ID_PROP) == null) {
 					molecule.setProperty(Globals.ID_PROP, molecule.getProperty("Identifier"));
@@ -59,7 +59,7 @@ public class Predictor {
 		if (!globals.input_smiles.isEmpty()) {
 			int counter = 1;
 			for (String smiles : globals.input_smiles) {
-				IMolecule mol = null;
+				IAtomContainer mol = null;
 //				smiles = smiles.replaceAll("[^\\-=#.$:()%+A-Za-z0-9\\\\/@\\]\\[]", "");
 				smiles = smiles.replaceAll("[\"']", "");
 				try {

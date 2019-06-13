@@ -9,7 +9,7 @@ import org.dmg.pmml.Value;
 import org.jpmml.evaluator.*;
 import org.jpmml.model.PMMLUtil;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -99,7 +99,7 @@ public class Modeller {
         return 1 - (StatUtils.mean(dists_k));
     }
 
-    synchronized public void getADScore(IMolecule molecule) {
+    synchronized public void getADScore(IAtomContainer molecule) {
         ArrayList<Attribute> mol_attrs = new ArrayList<>();
         for (String nns_attribute : nns_attributes) {
             mol_attrs.add(new Attribute(nns_attribute));
@@ -136,7 +136,7 @@ public class Modeller {
         }
     }
 
-    public Map<IAtom, Result> predict(IMolecule molecule, double decision_threshold) {
+    public Map<IAtom, Result> predict(IAtomContainer molecule, double decision_threshold) {
         Map<IAtom, Result> results = new HashMap<>();
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equals("H")) {

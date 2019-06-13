@@ -2,7 +2,7 @@ package utils.depiction;
 
 import globals.Globals;
 import modelling.Modeller;
-import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
@@ -31,7 +31,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         this.globals = globals;
     }
 
-    public void writeHTML(MoleculeSet moleculeSet) {
+    public void writeHTML(IAtomContainerSet moleculeSet) {
 
         if (OutputFile=="") OutputFile = "FAME_2_Results_" + this.dateAndTime;
 
@@ -50,7 +50,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     }
 
-    public void writeHead(MoleculeSet moleculeSet){
+    public void writeHead(IAtomContainerSet moleculeSet){
         outfile.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
         outfile.println("");
         outfile.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
@@ -132,7 +132,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("	}");
         outfile.println("function Switch2D6and3A4(cyp2show) {");
         outfile.println("	var cypHLMlist = [];");
-        for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+        for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
             int iplusone = moleculeIndex + 1;
             outfile.println("	cypHLMlist[" + moleculeIndex + "] = \"molecule" + iplusone + "CYPHLMdiv\";");
         }
@@ -151,7 +151,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 //            int iplusone = moleculeIndex + 1;
 //            outfile.println("	cyp3a4list[" + moleculeIndex + "] = \"molecule" + iplusone + "standarddiv\";");
 //        }
-        outfile.println("	var maxmol = " + moleculeSet.getMoleculeCount() + ";");
+        outfile.println("	var maxmol = " + moleculeSet.getAtomContainerCount() + ";");
         outfile.println("	if(cyp2show=='HLM'){");
         outfile.println("		for(var i=0; i<maxmol; i++) {");
         outfile.println("			HideContent(cypHLMlist[i]);");
@@ -186,11 +186,11 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("");
     }
 
-    public void writeBody(MoleculeSet moleculeSet){
+    public void writeBody(IAtomContainerSet moleculeSet){
 
         outfile.println("<body>");
         //error message if problems
-        if (moleculeSet.getMoleculeCount()==0){
+        if (moleculeSet.getAtomContainerCount()==0){
             outfile.println("<h1>There were no molecules in the input</h1>");
         }
         else {
@@ -203,9 +203,9 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
 
             // Iterate MoleculKUs
-            for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+            for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 
-                MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getMolecule(moleculeIndex);
+                MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getAtomContainer(moleculeIndex);
 
                 this.writeMoleculeKUTable(moleculeKU);
             }

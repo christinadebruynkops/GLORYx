@@ -8,7 +8,7 @@ import globals.Globals;
 import modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import modelling.descriptors.circular.CircularCollector;
 import modelling.descriptors.circular.NeighborhoodIterator;
-import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -35,7 +35,7 @@ import java.util.*;
 
 public class PredictorWorkerThread implements Runnable {
 
-	private IMolecule molecule;
+	private IAtomContainer molecule;
 	private String mol_name;
 	private String out_dir;
 	private Globals globals;
@@ -61,7 +61,7 @@ public class PredictorWorkerThread implements Runnable {
 		return circ_collector.getSignatures();
 	}
 
-	public PredictorWorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
+	public PredictorWorkerThread(IAtomContainer molecule, Globals globals) throws IOException, ClassNotFoundException{
 		this.globals = globals;
 		this.molecule = molecule;
 		mol_name = molecule.getProperty(Globals.ID_PROP).toString();
@@ -344,7 +344,7 @@ public class PredictorWorkerThread implements Runnable {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 			Date date = new Date();
 			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
-			MoleculeSet moleculeSet = new MoleculeSet();
+			IAtomContainerSet moleculeSet = SilentChemObjectBuilder.getInstance().newInstance(IAtomContainerSet.class);
 			moleculeSet.addAtomContainer(molecule);
 			depictor_sc.writeHTML(moleculeSet);
 

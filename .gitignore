@@ -1,4 +1,46 @@
-.idea/
-build/
-test_files/
-/fame_ii/src/modelling/models/
+
+directories #
+/build/
+/bin/
+target/
+ 
+# OS Files #
+.DS_Store
+._DS_Store
+._.DS_Store
+ 
+*.class
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+*.db
+
+######################
+# Eclipse
+######################
+ 
+*.pydevproject
+.project
+.metadata
+fame_ii/bin/**
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/src/main/resources/rebel.xml
+# External tool builders
+.externalToolBuilders/
+ 
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+

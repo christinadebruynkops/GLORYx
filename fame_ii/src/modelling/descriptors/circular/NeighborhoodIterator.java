@@ -1,10 +1,10 @@
 package modelling.descriptors.circular;
 
 import globals.Globals;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import utils.depiction.Depictor;
 
@@ -18,33 +18,33 @@ import java.util.*;
 public class NeighborhoodIterator {
 
     private int depth;
-    private IMolecule mol;
+    private IAtomContainer mol;
     private boolean depict = false;
     private boolean ignore_hydrogens = true;
 
-    public NeighborhoodIterator(IMolecule mol, int depth) {
+    public NeighborhoodIterator(IAtomContainer mol, int depth) {
         this.mol = mol;
         this.depth = depth;
     }
 
-    public NeighborhoodIterator(IMolecule mol, int depth, boolean depict) {
+    public NeighborhoodIterator(IAtomContainer mol, int depth, boolean depict) {
         this(mol, depth);
         this.depict = depict;
     }
 
-    public NeighborhoodIterator(IMolecule mol, int depth, boolean depict, boolean ignore_hydrogens) {
+    public NeighborhoodIterator(IAtomContainer mol, int depth, boolean depict, boolean ignore_hydrogens) {
         this(mol, depth, depict);
         this.ignore_hydrogens = ignore_hydrogens;
     }
 
-    private static void depictNeighborhood(IMolecule mol, Set<IAtom> frag_atms, String outfile) throws Exception {
+    private static void depictNeighborhood(IAtomContainer mol, Set<IAtom> frag_atms, String outfile) throws Exception {
         Set<IBond> bonds_all = new HashSet<>();
         for (IBond bond : mol.bonds()) {
             if (frag_atms.contains(bond.getAtom(0)) && frag_atms.contains(bond.getAtom(1))) {
                 bonds_all.add(bond);
             }
         }
-        IMolecule mol_frag = new Molecule();
+        IAtomContainer mol_frag = SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class);
         IBond[] b_arr = new IBond[bonds_all.size()];
         IAtom[] a_arr = new IAtom[frag_atms.size()];
         mol_frag.setBonds(bonds_all.toArray(b_arr));

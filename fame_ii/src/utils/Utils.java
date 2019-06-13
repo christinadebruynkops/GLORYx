@@ -1,10 +1,11 @@
 package utils;
 
+import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.invariant.EquivalentClassPartitioner;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -47,7 +48,7 @@ public class Utils {
     }
 
     public static boolean matchesSMARTS(IAtomContainer mol, String smarts) throws Exception {
-        SMARTSQueryTool querytool = new SMARTSQueryTool(smarts);
+        SMARTSQueryTool querytool = new SMARTSQueryTool(smarts, DefaultChemObjectBuilder.getInstance());
         return querytool.matches(mol);
     }
 
@@ -59,7 +60,7 @@ public class Utils {
      */
     public  static void deprotonateCarboxyls(IAtomContainer mol) throws CDKException {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
-        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]", DefaultChemObjectBuilder.getInstance());
         boolean status = querytool.matches(mol);
         List<IAtom> to_remove = new ArrayList<>();
         if (status) {
@@ -80,7 +81,7 @@ public class Utils {
             mol.removeAtomAndConnectedElectronContainers(deleted);
         }
 
-        querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX1]");
+        querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX1]", DefaultChemObjectBuilder.getInstance());
         status = querytool.matches(mol);
 
         if (status) {
@@ -108,7 +109,7 @@ public class Utils {
      * @throws CDKException
      */
     public  static void protonateCarboxyls(IAtomContainer mol) throws CDKException {
-        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[O-]");
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[O-]", DefaultChemObjectBuilder.getInstance());
         boolean status = querytool.matches(mol);
         List<IAtom> to_remove = new ArrayList<>();
 
@@ -139,7 +140,7 @@ public class Utils {
      */
     public  static void fixSybylCarboxyl(IAtomContainer mol) throws CDKException {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
-        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]");
+        SMARTSQueryTool querytool = new SMARTSQueryTool("[OX1]=[CX3]-[OX2][H]", DefaultChemObjectBuilder.getInstance());
         boolean status = querytool.matches(mol);
 
         if (status) {
@@ -223,7 +224,7 @@ public class Utils {
 
     }
 
-    public static void writeAtomData(IMolecule mol, String path, List<String> properties, boolean null_as_zero) throws Exception {
+    public static void writeAtomData(IAtomContainer mol, String path, List<String> properties, boolean null_as_zero) throws Exception {
         PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(path)));
         outfile.println(String.join(",", properties));
         for (IAtom atom : mol.atoms()) {

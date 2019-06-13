@@ -3,7 +3,6 @@ package utils.depiction;
 import modelling.Modeller;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -79,7 +78,7 @@ public class Depictor {
      * @param path path to the output file
      * @throws Exception thrown if sth breaks
      */
-    public void generateDepiction(IMolecule molecule, String path) throws Exception {
+    public void generateDepiction(IAtomContainer molecule, String path) throws Exception {
         // layout the molecule
         StructureDiagramGenerator sdg = new StructureDiagramGenerator();
         sdg.setMolecule(molecule, false);
