@@ -145,7 +145,78 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("fame3")
+        ArgumentParser parser = getArgumentParser();
+
+        Namespace args_ns = null;
+        try {
+            args_ns = parser.parseArgs(args);
+
+            // check inputs
+            if (args_ns.<String>getList("FILE").isEmpty() && args_ns.<String>getList("smiles") == null) {
+                throw new ArgumentParserException("No input specified.", parser);
+            }
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            if (e.getMessage().equals("too few arguments")) {
+                System.err.println("Run the program with the '-h' or '--help' option to see detailed usage description.");
+            }
+            System.exit(1);
+        }
+
+        // fetch inputs
+        List<String> sdf_inputs = args_ns.<String>getList("FILE");
+        List<String> smile_inputs = args_ns.<String>getList("smiles");
+        if (smile_inputs == null) {
+            smile_inputs = new ArrayList<>();
+        }
+
+        // initialize global settings
+        Globals params = new Globals(
+                args_ns
+        );
+
+        // process files
+        int counter = 1;
+        for (String input_file : sdf_inputs) {
+            System.out.println("Processing SDF file: " + input_file);
+//            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
+
+            // check if input file exists and change the path in settings
+            try {
+                params.setInputSDF(input_file);
+            } catch (FileNotFoundException e) {
+                System.err.println("File not found: " + input_file);
+                System.err.println("Skipping...");
+            }
+
+            params.input_number = counter;
+
+            // sanitize the data if requested and save the path to the modified file
+//            if (args_ns.getBoolean("sanitize")) {
+//                System.out.println("Sanitizing structures with babel...");
+//                params.input_sdf = Sanitize.sanitize(params);
+//            }
+
+            // make predictions
+            Predictor desc_calc = new Predictor(params);
+            desc_calc.calculate();
+            counter++;
+        }
+
+        // process smiles
+        if (!smile_inputs.isEmpty()) {
+            System.out.println("Processing SMILES: " + smile_inputs.toString());
+            params.setInputSmiles(smile_inputs);
+            params.input_number = counter;
+
+            // make predictions
+            Predictor desc_calc = new Predictor(params);
+            desc_calc.calculate();
+        }
+    }
+
+	public static ArgumentParser getArgumentParser() {
+		ArgumentParser parser = ArgumentParsers.newArgumentParser("fame3")
                 .defaultHelp(true)
                 .description("This is FAME 3 [1]. It is a collection of machine learning models to predict sites of " +
                         "metabolism (SOMs) for supplied chemical compounds (supplied as SMILES or in an SDF file).\n " +
@@ -218,72 +289,6 @@ public class Main {
                 .setDefault(false)
                 .help("Do not use the applicability domain model. FAMEscore values" +
                         " will not be calculated, but the predictions will be faster.");
-
-        Namespace args_ns = null;
-        try {
-            args_ns = parser.parseArgs(args);
-
-            // check inputs
-            if (args_ns.<String>getList("FILE").isEmpty() && args_ns.<String>getList("smiles") == null) {
-                throw new ArgumentParserException("No input specified.", parser);
-            }
-        } catch (ArgumentParserException e) {
-            parser.handleError(e);
-            if (e.getMessage().equals("too few arguments")) {
-                System.err.println("Run the program with the '-h' or '--help' option to see detailed usage description.");
-            }
-            System.exit(1);
-        }
-
-        // fetch inputs
-        List<String> sdf_inputs = args_ns.<String>getList("FILE");
-        List<String> smile_inputs = args_ns.<String>getList("smiles");
-        if (smile_inputs == null) {
-            smile_inputs = new ArrayList<>();
-        }
-
-        // initialize global settings
-        Globals params = new Globals(
-                args_ns
-        );
-
-        // process files
-        int counter = 1;
-        for (String input_file : sdf_inputs) {
-            System.out.println("Processing SDF file: " + input_file);
-//            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
-
-            // check if input file exists and change the path in settings
-            try {
-                params.setInputSDF(input_file);
-            } catch (FileNotFoundException e) {
-                System.err.println("File not found: " + input_file);
-                System.err.println("Skipping...");
-            }
-
-            params.input_number = counter;
-
-            // sanitize the data if requested and save the path to the modified file
-//            if (args_ns.getBoolean("sanitize")) {
-//                System.out.println("Sanitizing structures with babel...");
-//                params.input_sdf = Sanitize.sanitize(params);
-//            }
-
-            // make predictions
-            Predictor desc_calc = new Predictor(params);
-            desc_calc.calculate();
-            counter++;
-        }
-
-        // process smiles
-        if (!smile_inputs.isEmpty()) {
-            System.out.println("Processing SMILES: " + smile_inputs.toString());
-            params.setInputSmiles(smile_inputs);
-            params.input_number = counter;
-
-            // make predictions
-            Predictor desc_calc = new Predictor(params);
-            desc_calc.calculate();
-        }
-    }
+		return parser;
+	}
 }

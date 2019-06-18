@@ -3,6 +3,7 @@ directories #
 /build/
 /bin/
 target/
+models/
  
 # OS Files #
 .DS_Store
