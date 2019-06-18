@@ -47,7 +47,7 @@ public class Globals {
     public int circ_depth;
     public int fing_depth;
     public static final String CHEMDOODLE_ROOT = "/utils/depiction/js/";
-    public static final String MODELS_ROOT = "/modelling/models/";
+    public static final String MODELS_ROOT= "resources/models/"; // use "src/resources/models/" if exporting as jar
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
     public int cpus;
 
@@ -80,12 +80,18 @@ public class Globals {
         AD_model_path = MODELS_ROOT + "AD/" + "nns_" + target_var + ".ser";
         AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes_" + target_var + ".ser";
         pmml_path = model_dir + "final_model.pmml";
-        encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
+        
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+    		encoders_json = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "encoders.json")); 
+//        encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
         at_encoder = new Encoder("AtomType", encoders_json);
-        imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
+        imputation_json = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "imputation.json"));
+//        imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
         circ_imputer = new CircImputer(imputation_json);
 
-        String misc_params_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
+        String misc_params_json = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "misc_params.json"));
+//        String misc_params_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
         JSONObject json = new JSONObject(misc_params_json);
         Iterator iterator = json.keys();
         while (iterator.hasNext()) {

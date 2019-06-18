@@ -46,8 +46,11 @@ public class Modeller {
 
         if (globals.use_AD) {
             System.out.println("Loading applicability domain model...");
-            InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
-            InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            InputStream file_in = classLoader.getResourceAsStream(globals.AD_model_path);
+            InputStream file2_in = classLoader.getResourceAsStream(globals.AD_model_attrs_path);
+//            InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
+//            InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
             ObjectInputStream in = new ObjectInputStream(file_in);
             ObjectInputStream in2 = new ObjectInputStream(file2_in);
             nns = (NearestNeighbourSearch) in.readObject();
@@ -60,7 +63,9 @@ public class Modeller {
     }
 
     private static PMML loadModel(String pmml_path) throws Exception {
-        InputStream res = Modeller.class.getResourceAsStream(pmml_path);
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        InputStream res = classLoader.getResourceAsStream(pmml_path);
+//        InputStream res = Modeller.class.getResourceAsStream(pmml_path);
         PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;
     }
