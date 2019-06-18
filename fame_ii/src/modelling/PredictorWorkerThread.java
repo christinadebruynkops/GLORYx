@@ -260,6 +260,13 @@ public class PredictorWorkerThread implements Runnable {
 
 					int desc_idx = 0;
 					for (IAtomicDescriptor calc : calculators) {
+//						
+//						if (molecule.getAtom(atomNr) == null) {
+//							System.out.println("atom is null");
+//						} else {
+//							System.out.println("atom is " + molecule.getAtom(atomNr).getSymbol());
+//						}
+						
 						iAtom.setProperty(desc_names[desc_idx], calc.calculate(molecule.getAtom(atomNr), molecule).getValue().toString());
 						desc_idx++;
 					}
@@ -290,6 +297,8 @@ public class PredictorWorkerThread implements Runnable {
 					iAtom.setProperty(desc_names[desc_idx], Double.toString(longestMaxTopDistInMolecule));
 				}
 			}
+			
+			System.exit(0);
 
 			// the base descriptors -> always calculated (see above)
 			List<String> base_descriptors = new ArrayList<>();

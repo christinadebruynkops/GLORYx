@@ -5,6 +5,10 @@ import modelling.Modeller;
 import modelling.descriptors.circular.CircImputer;
 import net.sourceforge.argparse4j.inf.Namespace;
 import org.json.JSONObject;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.qsar.AtomValenceTool;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
+
 import utils.Utils;
 import utils.depiction.Depictor;
 
@@ -133,7 +137,20 @@ public class Globals {
 
         // init modeller
         this.modeller = new Modeller(this);
+        
+		// hack to prevent NullPointerErrors when AtomValenceTool.getValence is called simultaneously from the workers in order to do AtomValenceDescriptor.calculate()
+		getValenceForDummyAtom();
     }
+    
+	private void getValenceForDummyAtom() {
+		
+		// define a dummy carbon atom
+		IAtom a = SilentChemObjectBuilder.getInstance().newInstance(IAtom.class);
+		a.setSymbol("C");
+		
+		// call getValence to fill the valence table (so that it will not be null for future calls to getValence)
+		AtomValenceTool.getValence(a);  
+	}
 
     private static void copyStreams(InputStream is, OutputStream os) throws IOException {
         byte[] buffer = new byte[1024];
