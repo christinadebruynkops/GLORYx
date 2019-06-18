@@ -298,8 +298,6 @@ public class PredictorWorkerThread implements Runnable {
 				}
 			}
 			
-			System.exit(0);
-
 			// the base descriptors -> always calculated (see above)
 			List<String> base_descriptors = new ArrayList<>();
 			base_descriptors.addAll(Arrays.asList(desc_names));
