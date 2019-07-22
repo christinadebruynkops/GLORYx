@@ -1,0 +1,10 @@
+package org.zbh.fame.fame3.modelling.descriptors.circular;
+
+import org.openscience.cdk.interfaces.IAtom;
+
+import java.util.Set;
+
+public interface NeighborhoodCollector {
+
+    void collect(IAtom atm, Set<IAtom> neighbors, int current_depth);
+}

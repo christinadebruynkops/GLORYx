@@ -1,4 +1,4 @@
 .idea/
-build/
+target/
 test_files/
-/fame_ii/src/modelling/models/
+src/main/resources/models/
