@@ -126,7 +126,7 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering><!-- filtering enabled for all resources by default, but .ser files and .pmml files are excluded (see below) -->
             </resource>
         </resources>
@@ -182,7 +182,7 @@
                             <outputDirectory>${project.build.directory}/bin/</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>bin</directory>
+                                    <directory>${basedir}/src/bin</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
