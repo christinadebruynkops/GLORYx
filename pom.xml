@@ -171,6 +171,24 @@
                         <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-bin-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/bin/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>bin</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -217,7 +235,7 @@
                     </descriptorRefs>-->
 
                     <descriptors>
-                        <descriptor>src/assembly/bin.xml</descriptor>
+                        <descriptor>${basedir}/src/assembly/bin.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

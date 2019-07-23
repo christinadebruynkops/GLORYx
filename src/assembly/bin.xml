@@ -13,7 +13,6 @@
             <include>README*</include>
             <include>LICENSE*</include>
             <include>NOTICE*</include>
-            <include>fame3</include>
           </includes>
         </fileSet>
         <fileSet>
@@ -33,6 +32,13 @@
         <fileSet>
           <directory>${project.basedir}/examples</directory>
           <outputDirectory>examples</outputDirectory>
+        </fileSet>
+        <fileSet>
+          <directory>${project.build.directory}/bin/</directory>
+          <outputDirectory>./</outputDirectory>
+          <includes>
+            <include>fame3*</include>
+          </includes>
         </fileSet>
       </fileSets>
     </assembly>

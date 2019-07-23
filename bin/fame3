@@ -26,4 +26,4 @@ cd $ORIG_DIR
 # Absolute path this script is in, thus /home/user/bin
 SCRIPTDIR=$(dirname "$SCRIPT")
 
-java --add-modules java.activation -Xmx16g -jar "$SCRIPTDIR/fame3.jar" "$@"
+java -Xmx16g -jar "$SCRIPTDIR/${project.artifactId}-${project.version}.jar" "$@"
