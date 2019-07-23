@@ -124,10 +124,10 @@
     </dependencies>
 
     <build>
-        <resources> <!-- This enables resource filtering -->
+        <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <filtering>true</filtering><!-- filtering enabled for all resources by default, but .ser files and .pmml files are excluded (see below) -->
             </resource>
         </resources>
 
@@ -166,7 +166,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <nonFilteredFileExtensions>
+                    <nonFilteredFileExtensions> <!-- exclude large files from filtering -->
                         <nonFilteredFileExtension>ser</nonFilteredFileExtension>
                         <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
