@@ -128,6 +128,9 @@ public class Globals {
             copyStreams(js_istream, js_ostram);
         }
 
+        // hack to prevent NullPointerErrors when AtomValenceTool.getValence is called simultaneously from the workers in order to do AtomValenceDescriptor.calculate()
+        getValenceForDummyAtom();
+
         // init modeller
         this.modeller = new Modeller(this);
     }
