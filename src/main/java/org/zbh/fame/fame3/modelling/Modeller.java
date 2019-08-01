@@ -1,6 +1,7 @@
 package org.zbh.fame.fame3.modelling;
 
 import com.google.common.collect.RangeSet;
+import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.globals.Globals;
 import org.apache.commons.math3.stat.StatUtils;
 import org.dmg.pmml.FieldName;
@@ -16,6 +17,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.NearestNeighbourSearch;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -32,11 +35,11 @@ public class Modeller {
     private String target_var;
     public static final int yes_val = 0;
     public static final int no_val = 1;
-    public static final String proba_yes_fld = "probability(" + Integer.toString(yes_val) + ")";
-    public static final String proba_no_fld = "probability(" + Integer.toString(no_val)+ ")";
+    public static final String proba_yes_fld = "probability(" + yes_val + ")";
+    public static final String proba_no_fld = "probability(" + no_val + ")";
     public static final String is_som_fld = "isSoM";
 
-    public Modeller(Globals globals) throws Exception {
+    public Modeller(Globals globals) throws JAXBException, SAXException, IOException, ClassNotFoundException {
         this.target_var = globals.target_var;
         System.out.println("Loading model...");
         PMML pmml = loadModel(globals.pmml_path);
@@ -59,7 +62,7 @@ public class Modeller {
         }
     }
 
-    private static PMML loadModel(String pmml_path) throws Exception {
+    private static PMML loadModel(String pmml_path) throws JAXBException, SAXException {
         InputStream res = Modeller.class.getResourceAsStream(pmml_path);
         PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;

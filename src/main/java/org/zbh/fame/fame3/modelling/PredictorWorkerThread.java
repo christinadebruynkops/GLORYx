@@ -326,7 +326,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// do the modelling and process the results
 			System.out.println("Predicting: " + mol_name);
-			globals.modeller.predict(molecule, Double.parseDouble(globals.misc_params.get("decision_threshold")));
+			globals.modeller.predict(molecule, Double.parseDouble(globals.model_hyperparams.get("decision_threshold")));
 
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
