@@ -15,6 +15,7 @@ import org.zbh.fame.fame3.utils.depiction.Depictor;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -24,20 +25,23 @@ import java.util.*;
  * Created by sicho on 10/5/16.
  */
 public class Globals {
+
+    // TODO: this should be refactored in improved on (inputs should be separated from model parameters and encapsulated under common interface)
+    public String input_sdf;
+    public List<String> input_smiles;
+    public int input_number;
+
     public String AD_model_path;
     public String AD_model_attrs_path;
     public String pmml_path;
     public String model_code;
     public String model_name;
     public Modeller modeller;
-    public String input_sdf;
-    public List<String> input_smiles = new ArrayList<>();
-    public int input_number;
     public String output_dir;
     public String model_dir;
     public String encoders_json;
     public String imputation_json;
-    public Map<String, String> model_hyperparams = new HashMap<>();
+    public Map<String, String> model_hyperparams;
     public String target_var;
     public Set<String> desc_groups;
     public boolean generate_pngs;
@@ -47,33 +51,35 @@ public class Globals {
     public Depictor som_depictor;
     public Encoder at_encoder;
     public CircImputer circ_imputer;
-    public Map<String, String> model_map = new HashMap<>();
+    public Map<String, String> model_map;
 
-    public int circ_depth;
-    public int fing_depth;
+    public Integer circ_depth;
+    public Integer fing_depth;
     public static final String CHEMDOODLE_ROOT = "/js/";
     public static final String MODELS_ROOT = "/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
     public int cpus;
-    public boolean save_files;
     public String decision_threshold;
 
     public Globals() throws JSONException, IOException {
+        this.model_map = new HashMap<>();
         model_map.put("P1+P2", "global");
         model_map.put("P1", "phaseI");
         model_map.put("P2", "phaseII");
+
+        this.input_sdf = null;
+        this.input_smiles = new ArrayList<>();
 
         this.model_name = null;
         this.model_code = null;
         this.target_var = null;
         this.circ_depth = 10;
         this.fing_depth = 10;
-        this.decision_threshold = null;
+        this.decision_threshold = "model";
 
         this.output_dir = null;
         this.generate_pngs = false;
         this.generate_csvs = false;
-        this.save_files = false;
         this.use_AD = true;
         this.cpus = 0;
 
@@ -85,7 +91,7 @@ public class Globals {
         getValenceForDummyAtom();
     }
 
-    public Globals(String model_definition, int bond_depth, boolean init_models) throws JSONException, IOException {
+    public Globals(String model_definition, int bond_depth, boolean init_models, boolean init_directories) throws JSONException, IOException {
         this();
 
         this.model_name = model_map.get(model_definition) + "_" + bond_depth;
@@ -95,14 +101,28 @@ public class Globals {
         this.fing_depth = 10; // is always 10 because of the AD score
         this.decision_threshold = "model";
 
+        this.desc_groups = new HashSet<>();
+        this.model_dir = null;
+        this.pmml_path = null;
+        this.encoders_json = null;
+        this.at_encoder = null;
+        this.imputation_json = null;
+        this.circ_imputer = null;
+        this.model_hyperparams = new HashMap<>();
+        this.modeller = null;
+
         if (init_models) {
             initModels();
+        }
+
+        if (init_directories) {
+            initDirectories();
         }
     }
 
     public Globals(Namespace args_ns) throws JSONException, IOException
     {
-        this(args_ns.getString("model"), Integer.parseInt(args_ns.getString("depth")), false);
+        this(args_ns.getString("model"), Integer.parseInt(args_ns.getString("depth")), false, false);
         System.out.println("Initializing and validating settings...");
         this.output_dir = args_ns.getString("output_directory");
         this.generate_pngs = args_ns.getBoolean("depict_png");
@@ -189,24 +209,26 @@ public class Globals {
     }
 
     public void initDirectories() throws IOException {
-        // check files and create directories
-        File outdir = new File(output_dir);
-        if (!outdir.exists()) {
-            outdir.mkdir();
-        }
-        File outdir_js = new File(output_dir, "ui");
-        if (!outdir_js.exists()) {
-            outdir_js.mkdir();
-        }
+        if (output_dir != null) {
+            // check files and create directories
+            File outdir = new File(output_dir);
+            if (!outdir.exists()) {
+                outdir.mkdir();
+            }
+            File outdir_js = new File(output_dir, "ui");
+            if (!outdir_js.exists()) {
+                outdir_js.mkdir();
+            }
 
-        // write the necessary JavaScript code
-        List<File> js_code_paths = new ArrayList<>();
-        js_code_paths.add(new File(outdir_js, "ChemDoodleWeb.js"));
-        js_code_paths.add(new File(outdir_js, "ChemDoodleWeb-libs.js"));
-        for (File item : js_code_paths) {
-            InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
-            OutputStream js_ostram = new FileOutputStream(item);
-            copyStreams(js_istream, js_ostram);
+            // write the necessary JavaScript code
+            List<File> js_code_paths = new ArrayList<>();
+            js_code_paths.add(new File(outdir_js, "ChemDoodleWeb.js"));
+            js_code_paths.add(new File(outdir_js, "ChemDoodleWeb-libs.js"));
+            for (File item : js_code_paths) {
+                InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
+                OutputStream js_ostram = new FileOutputStream(item);
+                copyStreams(js_istream, js_ostram);
+            }
         }
     }
 
@@ -218,6 +240,50 @@ public class Globals {
             this.depictor = null;
             this.som_depictor = null;
         }
+    }
+
+    public boolean isValid() {
+        if (
+                (this.model_name != null)
+                && (this.model_code != null)
+                && (this.target_var != null)
+                && (this.circ_depth != null)
+                && (this.fing_depth != null)
+                && (this.decision_threshold != null)
+                && (this.desc_groups != null)
+                && (this.model_dir != null)
+                && (this.pmml_path != null)
+                && (this.encoders_json != null)
+                && (this.at_encoder != null)
+                && (this.imputation_json != null)
+                && (this.circ_imputer != null)
+                && (this.model_hyperparams != null)
+                && (this.modeller != null)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder field_vals = new StringBuilder();
+        for (Field f : getClass().getDeclaredFields()) {
+            try {
+                field_vals.append(f.getName());
+                field_vals.append(": ");
+                if (f.get(this) != null) {
+                    field_vals.append(f.get(this).toString());
+                } else {
+                    field_vals.append("null");
+                }
+                field_vals.append("\n");
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return field_vals.toString();
     }
 
     private void getValenceForDummyAtom() {

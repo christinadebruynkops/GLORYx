@@ -23,7 +23,12 @@ public class Predictor {
     private Globals globals;
 
 	public Predictor(Globals globals) {
-        this.globals = globals;
+        if (globals.isValid()) {
+            this.globals = globals;
+        } else {
+            System.err.println(globals.toString());
+            throw new IllegalArgumentException("Global parameters are invalid. Aborting...");
+        }
 	}
 
 	public void calculate() throws IOException, InterruptedException, ClassNotFoundException {
@@ -38,7 +43,7 @@ public class Predictor {
 				if (molecule.getProperty(Globals.ID_PROP) == null) {
 					molecule.setProperty(Globals.ID_PROP, molecule.getProperty("Identifier"));
 					if (molecule.getProperty(Globals.ID_PROP) == null) {
-						molecule.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
+						molecule.setProperty(Globals.ID_PROP, "mol_" + globals.input_number + "_" + counter);
 						System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
 					}
 				} else {
@@ -70,7 +75,7 @@ public class Predictor {
 					System.exit(1);
 				}
 
-				mol.setProperty(Globals.ID_PROP, "mol_" + Integer.toString(globals.input_number) + "_" + Integer.toString(counter));
+				mol.setProperty(Globals.ID_PROP, "mol_" + globals.input_number + "_" + counter);
 				System.out.println("Generating identifier for " + smiles + ": " + mol.getProperty(Globals.ID_PROP));
 				try {
 					MoleculeKUFAME mol_ku = new MoleculeKUFAME(mol, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());

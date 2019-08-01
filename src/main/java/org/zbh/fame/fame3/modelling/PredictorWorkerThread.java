@@ -64,7 +64,7 @@ public class PredictorWorkerThread implements Runnable {
 	public PredictorWorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
 		this.globals = globals;
 		this.molecule = molecule;
-		mol_name = molecule.getProperty(Globals.ID_PROP).toString();
+		this.mol_name = molecule.getProperty(Globals.ID_PROP).toString();
 	}
 
 	@Override
@@ -99,11 +99,13 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			// make output directory
-			File out_dir_file = new File(globals.output_dir, mol_name);
-			if (!out_dir_file.exists()) {
-				out_dir_file.mkdir();
+			if (globals.output_dir != null) {
+				File out_dir_file = new File(globals.output_dir, mol_name);
+				if (!out_dir_file.exists()) {
+					out_dir_file.mkdir();
+				}
+				this.out_dir = out_dir_file.toPath().toString() + '/';
 			}
-			this.out_dir = out_dir_file.toPath().toString() + '/';
 
 			System.out.println("Processing molecule: " + mol_name);
 			if (globals.generate_pngs) {
