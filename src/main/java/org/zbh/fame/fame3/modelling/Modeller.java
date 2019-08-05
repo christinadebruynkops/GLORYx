@@ -1,6 +1,7 @@
 package org.zbh.fame.fame3.modelling;
 
 import com.google.common.collect.RangeSet;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.globals.Globals;
 import org.apache.commons.math3.stat.StatUtils;
@@ -102,7 +103,7 @@ public class Modeller {
         return 1 - (StatUtils.mean(dists_k));
     }
 
-    synchronized public void getADScore(IMolecule molecule) {
+    synchronized public void getADScore(IAtomContainer molecule) {
         ArrayList<Attribute> mol_attrs = new ArrayList<>();
         for (String nns_attribute : nns_attributes) {
             mol_attrs.add(new Attribute(nns_attribute));
@@ -139,7 +140,7 @@ public class Modeller {
         }
     }
 
-    public Map<IAtom, Result> predict(IMolecule molecule, double decision_threshold) {
+    public Map<IAtom, Result> predict(IAtomContainer molecule, double decision_threshold) {
         Map<IAtom, Result> results = new HashMap<>();
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equals("H")) {

@@ -8,6 +8,11 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import org.zbh.fame.fame3.utils.Utils;
+import org.zbh.fame.fame3.utils.data.FAMEMolSupplier;
+import org.zbh.fame.fame3.utils.data.parsers.FAMEFileParser;
+import org.zbh.fame.fame3.utils.data.parsers.SDFParser;
+import org.zbh.fame.fame3.utils.data.parsers.SMILESFileParser;
+import org.zbh.fame.fame3.utils.data.parsers.SMILESListParser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -59,13 +64,17 @@ public class Main {
                         "with the default bond depth of 5. However, in some cases the lower " +
                         "complexity model could be more successful, especially if FAMEscores are low.");
         parser.addArgument("FILE").nargs("*")
-                .help("One or more SDF files with the compounds to predict. " +
-                        "One SDF can contain multiple compounds. "+
+                .help("One or more files with the compounds to predict. " +
+                        "FAME 3 currently supports SDF files and SMILES files." +
+                        "In order for a file to be parsed as a SMILES file, it needs to have the \".smi\"" +
+                        "file extension. Files with a different extension will be parsed as an SDF." +
+                        "The file can contain multiple compounds. "+
                         "\nAll molecules should be neutral (with the exception of tertiary ammonium) " +
                         "and have explicit hydrogens added prior to modelling. " +
                         "However, if there are missing hydrogens, " +
                         "the software will try to add them automatically. " +
-                        "Calculating spatial coordinates of atoms is not necessary.")
+                        "Calculating spatial coordinates of atoms is not necessary." +
+                        "The compounds will be assigned a generic name if the name cannot be determined from the file.")
                 ;
         parser.addArgument("-s", "--smiles").nargs("*")
                 .help ("One or more SMILES strings of the compounds to predict. " +
@@ -112,10 +121,32 @@ public class Main {
         }
 
         // fetch inputs
-        List<String> sdf_inputs = args_ns.<String>getList("FILE");
+        List<String> file_inputs = args_ns.<String>getList("FILE");
         List<String> smile_inputs = args_ns.<String>getList("smiles");
         if (smile_inputs == null) {
             smile_inputs = new ArrayList<>();
+        }
+
+        // process files
+        List<FAMEFileParser> parsers = new ArrayList<>();
+        int counter = 1;
+        for (String input_file : file_inputs) {
+            if (input_file.endsWith(".smi")) {
+                System.out.println("Processing SMILES file: " + input_file);
+                SMILESFileParser smi_parser = new SMILESFileParser(input_file, "SMIFile_" + counter++ + "_");
+                parsers.add(smi_parser);
+            } else {
+                // all unrecognized files are processed as SDF files
+                System.out.println("Processing SDF file: " + input_file);
+                SDFParser sdf_parser = new SDFParser(input_file, "SDF_" + counter++ + "_");
+                parsers.add(sdf_parser);
+            }
+        }
+
+        // process smiles input list
+        if (!smile_inputs.isEmpty()) {
+            System.out.println("Processing SMILES: " + smile_inputs.toString());
+            parsers.add(new SMILESListParser(smile_inputs, "SMIList_" + counter++ + "_"));
         }
 
         // initialize global settings
@@ -123,43 +154,8 @@ public class Main {
                 args_ns
         );
 
-        // process files
-        int counter = 1;
-        for (String input_file : sdf_inputs) {
-            System.out.println("Processing SDF file: " + input_file);
-//            System.out.println("Note: Make sure that all molecules in the input file are neutral and have explicit hydrogens added.");
-
-            // check if input file exists and change the path in settings
-            try {
-                params.setInputSDF(input_file);
-            } catch (FileNotFoundException e) {
-                System.err.println("File not found: " + input_file);
-                System.err.println("Skipping...");
-            }
-
-            params.input_number = counter;
-
-            // sanitize the data if requested and save the path to the modified file
-//            if (args_ns.getBoolean("sanitize")) {
-//                System.out.println("Sanitizing structures with babel...");
-//                params.input_sdf = Sanitize.sanitize(params);
-//            }
-
-            // make predictions
-            Predictor desc_calc = new Predictor(params);
-            desc_calc.calculate();
-            counter++;
-        }
-
-        // process smiles
-        if (!smile_inputs.isEmpty()) {
-            System.out.println("Processing SMILES: " + smile_inputs.toString());
-            params.setInputSmiles(smile_inputs);
-            params.input_number = counter;
-
-            // make predictions
-            Predictor desc_calc = new Predictor(params);
-            desc_calc.calculate();
-        }
+        // begin the calculation
+        Predictor predictor = new Predictor(params, new FAMEMolSupplier(parsers));
+        predictor.calculate();
     }
 }

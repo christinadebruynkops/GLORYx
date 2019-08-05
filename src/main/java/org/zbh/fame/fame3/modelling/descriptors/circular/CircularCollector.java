@@ -3,6 +3,7 @@ package org.zbh.fame.fame3.modelling.descriptors.circular;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
@@ -113,7 +114,7 @@ public class CircularCollector implements NeighborhoodCollector {
         return joiners.keySet();
     }
 
-    public void writeData(IMolecule mol) throws Exception {
+    public void writeData(IAtomContainer mol) throws Exception {
         int starting_depth = 0;
         if (ignore_zero_depth) {
             starting_depth = 1;

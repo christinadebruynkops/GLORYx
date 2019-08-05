@@ -1,5 +1,6 @@
 package org.zbh.fame.fame3.modelling.descriptors.circular;
 
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.zbh.fame.fame3.globals.Globals;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtom;
@@ -18,11 +19,11 @@ import java.util.*;
 public class NeighborhoodIterator {
 
     private int depth;
-    private IMolecule mol;
+    private IAtomContainer mol;
     private boolean depict = false;
     private boolean ignore_hydrogens = true;
 
-    public NeighborhoodIterator(IMolecule mol, int depth) {
+    public NeighborhoodIterator(IAtomContainer mol, int depth) {
         this.mol = mol;
         this.depth = depth;
     }
@@ -37,7 +38,7 @@ public class NeighborhoodIterator {
         this.ignore_hydrogens = ignore_hydrogens;
     }
 
-    private static void depictNeighborhood(IMolecule mol, Set<IAtom> frag_atms, String outfile) throws Exception {
+    private static void depictNeighborhood(IAtomContainer mol, Set<IAtom> frag_atms, String outfile) throws Exception {
         Set<IBond> bonds_all = new HashSet<>();
         for (IBond bond : mol.bonds()) {
             if (frag_atms.contains(bond.getAtom(0)) && frag_atms.contains(bond.getAtom(1))) {

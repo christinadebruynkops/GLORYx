@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class Encoder {
         }
     }
 
-    public void encode(IMolecule molecule) {
+    public void encode(IAtomContainer molecule) {
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equalsIgnoreCase("H")) {
                 continue;

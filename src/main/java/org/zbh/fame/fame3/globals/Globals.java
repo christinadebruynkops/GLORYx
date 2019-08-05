@@ -25,12 +25,6 @@ import java.util.*;
  * Created by sicho on 10/5/16.
  */
 public class Globals {
-
-    // TODO: this should be refactored in improved on (inputs should be separated from model parameters and encapsulated under common interface)
-    public String input_sdf;
-    public List<String> input_smiles;
-    public int input_number;
-
     public String AD_model_path;
     public String AD_model_attrs_path;
     public String pmml_path;
@@ -58,6 +52,7 @@ public class Globals {
     public static final String CHEMDOODLE_ROOT = "/js/";
     public static final String MODELS_ROOT = "/models/";
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
+    public static final String FILE_PATH_PROP = "FAME:File";
     public int cpus;
     public String decision_threshold;
 
@@ -66,9 +61,6 @@ public class Globals {
         model_map.put("P1+P2", "global");
         model_map.put("P1", "phaseI");
         model_map.put("P2", "phaseII");
-
-        this.input_sdf = null;
-        this.input_smiles = new ArrayList<>();
 
         this.model_name = null;
         this.model_code = null;
@@ -306,19 +298,5 @@ public class Globals {
         //flush OutputStream to write any buffered data to file
         os.flush();
         os.close();
-    }
-
-    public void setInputSDF(String sdf_path) throws FileNotFoundException {
-        input_sdf = sdf_path;
-        File sdf_file = new File(input_sdf);
-        if (!sdf_file.exists()) {
-            throw new FileNotFoundException("Input SDF '" + sdf_file.getAbsolutePath() + "' not found.");
-        }
-        input_smiles = new ArrayList<>();
-    }
-
-    public void setInputSmiles(List<String> smiles_input) {
-        input_smiles = smiles_input;
-        input_sdf = "";
     }
 }

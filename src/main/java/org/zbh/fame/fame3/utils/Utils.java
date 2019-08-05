@@ -223,7 +223,7 @@ public class Utils {
 
     }
 
-    public static void writeAtomData(IMolecule mol, String path, List<String> properties, boolean null_as_zero) throws Exception {
+    public static void writeAtomData(IAtomContainer mol, String path, List<String> properties, boolean null_as_zero) throws Exception {
         PrintWriter outfile = new PrintWriter(new BufferedWriter(new FileWriter(path)));
         outfile.println(String.join(",", properties));
         for (IAtom atom : mol.atoms()) {

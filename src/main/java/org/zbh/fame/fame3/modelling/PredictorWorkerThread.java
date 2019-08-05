@@ -4,6 +4,7 @@ package org.zbh.fame.fame3.modelling;
 
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
+import org.openscience.cdk.Molecule;
 import org.zbh.fame.fame3.globals.Globals;
 import org.zbh.fame.fame3.modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import org.zbh.fame.fame3.modelling.descriptors.circular.CircularCollector;
@@ -35,7 +36,7 @@ import java.util.*;
 
 public class PredictorWorkerThread implements Runnable {
 
-	private IMolecule molecule;
+	private IAtomContainer molecule;
 	private String mol_name;
 	private String out_dir;
 	private Globals globals;
@@ -61,7 +62,7 @@ public class PredictorWorkerThread implements Runnable {
 		return circ_collector.getSignatures();
 	}
 
-	public PredictorWorkerThread(IMolecule molecule, Globals globals) throws IOException, ClassNotFoundException{
+	public PredictorWorkerThread(IAtomContainer molecule, Globals globals) throws IOException, ClassNotFoundException{
 		this.globals = globals;
 		this.molecule = molecule;
 		this.mol_name = molecule.getProperty(Globals.ID_PROP).toString();
@@ -109,7 +110,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			System.out.println("Processing molecule: " + mol_name);
 			if (globals.generate_pngs) {
-				globals.depictor.generateDepiction(molecule, out_dir + mol_name + ".png");
+				globals.depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + ".png");
 			}
 
 			// start stop watch
@@ -167,7 +168,7 @@ public class PredictorWorkerThread implements Runnable {
 
 				if (globals.generate_pngs) {
 					System.err.println("Generating depiction for: " + mol_name);
-					globals.depictor.generateDepiction(molecule, out_dir + mol_name + "_with_hs.png");
+					globals.depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + "_with_hs.png");
 				}
 			}
 
@@ -337,12 +338,12 @@ public class PredictorWorkerThread implements Runnable {
 
 			// generate PNG depictions if requested
 			if (globals.generate_pngs) {
-				globals.som_depictor.generateDepiction(molecule, out_dir + mol_name + "_soms.png");
+				globals.som_depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + "_soms.png");
 			}
 
 			// write the HTML output
 			String[] filenames = new String[1];
-			filenames[0] = globals.input_sdf;
+			filenames[0] = (String) molecule.getProperty(Globals.FILE_PATH_PROP);
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 			Date date = new Date();
 			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
