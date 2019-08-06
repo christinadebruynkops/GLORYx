@@ -11,7 +11,7 @@ import org.dmg.pmml.Value;
 import org.jpmml.evaluator.*;
 import org.jpmml.model.PMMLUtil;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
+import org.zbh.fame.fame3.utils.data.Predictions;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -140,7 +140,11 @@ public class Modeller {
         }
     }
 
-    public Map<IAtom, Result> predict(IAtomContainer molecule, double decision_threshold) {
+    public Map<IAtom, Result> predict(
+            IAtomContainer molecule
+            , double decision_threshold
+            , Predictions predictions
+    ) {
         Map<IAtom, Result> results = new HashMap<>();
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equals("H")) {
@@ -195,6 +199,13 @@ public class Modeller {
             atom.setProperty(proba_yes_fld, res.probability_yes);
             atom.setProperty(proba_no_fld, res.probability_no);
             results.put(atom, res);
+
+            if (predictions != null) {
+                predictions.addResult(
+                        atom.getProperty("Atom").toString()
+                        , res
+                );
+            }
         }
         return results;
     }

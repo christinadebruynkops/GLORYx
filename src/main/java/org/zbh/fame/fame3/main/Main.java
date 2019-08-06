@@ -155,7 +155,11 @@ public class Main {
         );
 
         // begin the calculation
-        Predictor predictor = new Predictor(params, new FAMEMolSupplier(parsers));
+        Predictor predictor = new Predictor(
+                params
+                , new FAMEMolSupplier(parsers)
+                , false
+        );
         predictor.calculate();
     }
 }

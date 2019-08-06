@@ -24,6 +24,16 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
     private Map<String, String> model_map = new HashMap<>();
     private StringWriter string_writer;
 
+    public boolean isUsingPlacehoders() {
+        return use_placehoders;
+    }
+
+    public void usePlacehoders(boolean use_placehoders) {
+        this.use_placehoders = use_placehoders;
+    }
+
+    private boolean use_placehoders;
+
     public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile, Globals globals) {
         super(dateTime, infileNames, outputdir, outputfile);
         model_map.put("global", "P1+P2");
@@ -141,8 +151,12 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("canvas.ChemDoodleWebComponent {border: none;}");
         outfile.println("-->");
         outfile.println("</style>");
-        outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb-libs.js\"></script>");
-        outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb.js\"></script>");
+        if (this.isUsingPlacehoders()) {
+            outfile.println("${chemdoodle_js}");
+        } else {
+            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb-libs.js\"></script>");
+            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb.js\"></script>");
+        }
         outfile.println("<script type=\"text/javascript\">");
         outfile.println("function roll_over(img_name, img_src)");
         outfile.println("   {");

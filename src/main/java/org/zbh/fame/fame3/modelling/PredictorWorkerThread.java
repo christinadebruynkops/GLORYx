@@ -4,7 +4,6 @@ package org.zbh.fame.fame3.modelling;
 
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
-import org.openscience.cdk.Molecule;
 import org.zbh.fame.fame3.globals.Globals;
 import org.zbh.fame.fame3.modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import org.zbh.fame.fame3.modelling.descriptors.circular.CircularCollector;
@@ -26,6 +25,7 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.zbh.fame.fame3.utils.Utils;
+import org.zbh.fame.fame3.utils.data.Predictions;
 import org.zbh.fame.fame3.utils.depiction.DepictorSMARTCyp;
 
 import java.io.File;
@@ -40,6 +40,7 @@ public class PredictorWorkerThread implements Runnable {
 	private String mol_name;
 	private String out_dir;
 	private Globals globals;
+	private Predictions predictions;
 
 	private static final Set<String> allowed_atoms = new HashSet<>(Arrays.asList(
 			"C"
@@ -62,9 +63,10 @@ public class PredictorWorkerThread implements Runnable {
 		return circ_collector.getSignatures();
 	}
 
-	public PredictorWorkerThread(IAtomContainer molecule, Globals globals) throws IOException, ClassNotFoundException{
+	public PredictorWorkerThread(IAtomContainer molecule, Globals globals) {
 		this.globals = globals;
 		this.molecule = molecule;
+		this.predictions = null;
 		this.mol_name = molecule.getProperty(Globals.ID_PROP).toString();
 
 		// create output directory
@@ -76,6 +78,11 @@ public class PredictorWorkerThread implements Runnable {
 			this.out_dir = out_dir_file.toPath().toString() + '/';
 		}
 	}
+
+    public PredictorWorkerThread(IAtomContainer molecule, Globals globals, Predictions predictions) {
+        this(molecule, globals);
+        this.predictions = predictions;
+    }
 
 	@Override
 	public void run() {
@@ -323,7 +330,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// do the modelling and process the results
 			System.out.println("Predicting: " + mol_name);
-			globals.modeller.predict(molecule, Double.parseDouble(globals.model_hyperparams.get("decision_threshold")));
+			globals.modeller.predict(molecule, Double.parseDouble(globals.model_hyperparams.get("decision_threshold")), predictions);
 
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
@@ -336,16 +343,20 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 			// write the HTML output
+            String[] filenames = new String[1];
+            filenames[0] = (String) molecule.getProperty(Globals.FILE_PATH_PROP);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+            Date date = new Date();
+            DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
+            MoleculeSet moleculeSet = new MoleculeSet();
+            moleculeSet.addAtomContainer(molecule);
 			if (globals.output_dir != null) {
-				String[] filenames = new String[1];
-				filenames[0] = (String) molecule.getProperty(Globals.FILE_PATH_PROP);
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-				Date date = new Date();
-				DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
-				MoleculeSet moleculeSet = new MoleculeSet();
-				moleculeSet.addAtomContainer(molecule);
 				depictor_sc.writeHTML(moleculeSet);
 			}
+			if (predictions != null) {
+			    depictor_sc.usePlacehoders(true);
+				predictions.setPredictionHTML(depictor_sc.getPageAsString(moleculeSet));
+            }
 
 			// write CSV files if requested
 			if (globals.generate_csvs && globals.output_dir != null) {
@@ -402,17 +413,28 @@ public class PredictorWorkerThread implements Runnable {
 		catch (ArrayIndexOutOfBoundsException e) {
 			//catches some massive molecules
 			System.out.println("Error: ArrayIndexOutOfBoundsException: " + mol_name);
+			saveErrorToPrediction(e);
 		}
 		catch (CDKException e) {
 			System.out.println("Error: CDKException: " + mol_name);
 			e.printStackTrace();
+            saveErrorToPrediction(e);
 		}
 		catch (IOException e) {
+            System.out.println("Error: IOException: " + mol_name);
 			e.printStackTrace();
+            saveErrorToPrediction(e);
 		}
 		catch (Exception e) {
-			System.out.println("Error: Exception: " + mol_name);
+			System.out.println("Error: Unknown Exception: " + mol_name);
 			e.printStackTrace();
+            saveErrorToPrediction(e);
 		}
 	}
+
+	private void saveErrorToPrediction(Exception exp) {
+	    if (this.predictions != null) {
+	        this.predictions.setError(exp);
+        }
+    }
 }
