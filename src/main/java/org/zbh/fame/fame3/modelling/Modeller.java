@@ -103,7 +103,7 @@ public class Modeller {
         return 1 - (StatUtils.mean(dists_k));
     }
 
-    synchronized public void getADScore(IAtomContainer molecule) {
+    public void getADScore(IAtomContainer molecule) {
         ArrayList<Attribute> mol_attrs = new ArrayList<>();
         for (String nns_attribute : nns_attributes) {
             mol_attrs.add(new Attribute(nns_attribute));
