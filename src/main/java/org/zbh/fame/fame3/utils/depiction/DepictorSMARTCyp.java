@@ -22,6 +22,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
     private Globals globals;
     private Map<String, String> model_map = new HashMap<>();
+    private StringWriter string_writer;
 
     public DepictorSMARTCyp(String dateTime, String[] infileNames, String outputdir, String outputfile, Globals globals) {
         super(dateTime, infileNames, outputdir, outputfile);
@@ -29,25 +30,48 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         model_map.put("phaseI", "P1");
         model_map.put("phaseII", "P2");
         this.globals = globals;
+        this.string_writer = new StringWriter();
     }
 
     public void writeHTML(MoleculeSet moleculeSet) {
+        if (globals.output_dir != null) {
+            try {
+                if (OutputFile=="") OutputFile = "FAME_2_Results_" + this.dateAndTime;
+                outfile = new PrintWriter(new BufferedWriter(new FileWriter(this.OutputFile)));
+            } catch (IOException e) {
+                System.out.println("Could not create HTML outfile");
+                e.printStackTrace();
+            }
 
-        if (OutputFile=="") OutputFile = "FAME_2_Results_" + this.dateAndTime;
+            this.writeHead(moleculeSet);
 
-        try {
-            outfile = new PrintWriter(new BufferedWriter(new FileWriter(this.OutputFile)));
-        } catch (IOException e) {
-            System.out.println("Could not create HTML outfile");
-            e.printStackTrace();
+            this.writeBody(moleculeSet);
+
+            outfile.close();
+        } else {
+            outfile = new PrintWriter(new BufferedWriter(string_writer));
+
+            this.writeHead(moleculeSet);
+
+            this.writeBody(moleculeSet);
+
+            outfile.flush();
         }
+    }
 
-        this.writeHead(moleculeSet);
+    public String getPageAsString(MoleculeSet moleculeSet) {
+        if (string_writer.toString().isEmpty()) {
+            outfile = new PrintWriter(new BufferedWriter(string_writer));
 
-        this.writeBody(moleculeSet);
+            this.writeHead(moleculeSet);
 
-        outfile.close();
+            this.writeBody(moleculeSet);
 
+            outfile.flush();
+            return string_writer.toString();
+        } else {
+            return string_writer.toString();
+        }
     }
 
     public void writeHead(MoleculeSet moleculeSet){
@@ -57,7 +81,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("");
         outfile.println("<head>");
         outfile.println("");
-        outfile.println("<title>FAME II Output</title>");
+        outfile.println("<title>FAME 3 Output</title>");
         outfile.println("<style type=\"text/css\">");
         outfile.println("<!--");
         outfile.println("body {");
