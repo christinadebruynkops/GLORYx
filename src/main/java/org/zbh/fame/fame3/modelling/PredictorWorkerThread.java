@@ -66,6 +66,15 @@ public class PredictorWorkerThread implements Runnable {
 		this.globals = globals;
 		this.molecule = molecule;
 		this.mol_name = molecule.getProperty(Globals.ID_PROP).toString();
+
+		// create output directory
+		if (globals.output_dir != null) {
+			File out_dir_file = new File(globals.output_dir, mol_name);
+			if (!out_dir_file.exists()) {
+				out_dir_file.mkdir();
+			}
+			this.out_dir = out_dir_file.toPath().toString() + '/';
+		}
 	}
 
 	@Override
@@ -99,17 +108,8 @@ public class PredictorWorkerThread implements Runnable {
 				throw new Exception("Error: Two components after standardization: " + mol_name);
 			}
 
-			// make output directory
-			if (globals.output_dir != null) {
-				File out_dir_file = new File(globals.output_dir, mol_name);
-				if (!out_dir_file.exists()) {
-					out_dir_file.mkdir();
-				}
-				this.out_dir = out_dir_file.toPath().toString() + '/';
-			}
-
 			System.out.println("Processing molecule: " + mol_name);
-			if (globals.generate_pngs) {
+			if (globals.generate_pngs && globals.output_dir != null) {
 				globals.depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + ".png");
 			}
 
@@ -166,7 +166,7 @@ public class PredictorWorkerThread implements Runnable {
 				System.err.println("Added hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
-				if (globals.generate_pngs) {
+				if (globals.generate_pngs && globals.output_dir != null) {
 					System.err.println("Generating depiction for: " + mol_name);
 					globals.depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + "_with_hs.png");
 				}
@@ -220,12 +220,6 @@ public class PredictorWorkerThread implements Runnable {
 //			Utils.fixSybylCarboxyl(molecule);
 //			Utils.protonateCarboxyls(molecule); // protonate the molecule back
 //			Depictor.generateDepiction(molecule, "prot.png");
-
-			// create the output directory
-			File data_dir = new File(out_dir);
-			if (!data_dir.exists()) {
-				data_dir.mkdir();
-			}
 
 			System.out.println("Calculating descriptors for: " + mol_name);
 
@@ -337,22 +331,24 @@ public class PredictorWorkerThread implements Runnable {
 			System.out.println("Prediction finished for " + mol_name + ". Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
 
 			// generate PNG depictions if requested
-			if (globals.generate_pngs) {
+			if (globals.generate_pngs && globals.output_dir != null) {
 				globals.som_depictor.generateDepiction((IMolecule) molecule, out_dir + mol_name + "_soms.png");
 			}
 
 			// write the HTML output
-			String[] filenames = new String[1];
-			filenames[0] = (String) molecule.getProperty(Globals.FILE_PATH_PROP);
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-			Date date = new Date();
-			DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
-			MoleculeSet moleculeSet = new MoleculeSet();
-			moleculeSet.addAtomContainer(molecule);
-			depictor_sc.writeHTML(moleculeSet);
+			if (globals.output_dir != null) {
+				String[] filenames = new String[1];
+				filenames[0] = (String) molecule.getProperty(Globals.FILE_PATH_PROP);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+				Date date = new Date();
+				DepictorSMARTCyp depictor_sc = new DepictorSMARTCyp(dateFormat.format(date), filenames, out_dir, out_dir + mol_name + "_soms.html", globals);
+				MoleculeSet moleculeSet = new MoleculeSet();
+				moleculeSet.addAtomContainer(molecule);
+				depictor_sc.writeHTML(moleculeSet);
+			}
 
 			// write CSV files if requested
-			if (globals.generate_csvs) {
+			if (globals.generate_csvs && globals.output_dir != null) {
 				System.out.println("Writing CSV files for: " + mol_name);
 				// write the basic CDK descriptors
 				List<String> basic_descs = new ArrayList<>(Arrays.asList(
