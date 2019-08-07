@@ -61,7 +61,6 @@ public class Predictor {
 		}
 		executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
-		System.out.println();
 	}
 
 	public List<Predictions> getPredictions() {
