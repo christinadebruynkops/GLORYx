@@ -158,7 +158,7 @@ public class Main {
         Predictor predictor = new Predictor(
                 params
                 , new FAMEMolSupplier(parsers)
-                , true
+                , false
         );
         predictor.calculate();
     }
