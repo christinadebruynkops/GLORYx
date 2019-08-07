@@ -30,7 +30,7 @@ import java.util.*;
 public class Modeller {
 
     private Evaluator evaluator;
-    private NearestNeighbourSearch nns;
+    private volatile NearestNeighbourSearch nns;
     private List<String> nns_attributes;
     public static final int bits_per_layer = 32;
     public static final int yes_val = 0;
