@@ -4,6 +4,7 @@ package org.zbh.fame.fame3.modelling;
 
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
+import org.openscience.cdk.io.MDLV2000Writer;
 import org.zbh.fame.fame3.globals.Globals;
 import org.zbh.fame.fame3.modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import org.zbh.fame.fame3.modelling.descriptors.circular.CircularCollector;
@@ -30,6 +31,7 @@ import org.zbh.fame.fame3.utils.depiction.DepictorSMARTCyp;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -319,23 +321,31 @@ public class PredictorWorkerThread implements Runnable {
 			}
 			System.out.println("Descriptor calculation finished for: " + mol_name);
 
-			// add applicability domain info
-			if (globals.use_AD) {
-				System.out.println("Calculating applicability domain for atoms in: " + mol_name);
-				globals.modeller.getADScore(molecule);
-			}
-
 			// encode atom types
             globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
 			System.out.println("Predicting: " + mol_name);
-			globals.modeller.predict(molecule, Double.parseDouble(globals.model_hyperparams.get("decision_threshold")), predictions);
+			globals.modeller.predict(
+					molecule
+					, Double.parseDouble(globals.model_hyperparams.get("decision_threshold"))
+					, globals.use_AD
+					, predictions
+			);
 
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
 			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
 			System.out.println("Prediction finished for " + mol_name + ". Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
+
+			// save the MDL block of the molecule to predictions if avaialable
+			if (predictions != null) {
+				StringWriter string_writer = new StringWriter();
+				MDLV2000Writer mdl_writer = new MDLV2000Writer(string_writer);
+				mdl_writer.writeMolecule(molecule);
+				String temp = string_writer.toString();
+				predictions.setMolBlock(string_writer.toString());
+			}
 
 			// generate PNG depictions if requested
 			if (globals.generate_pngs && globals.output_dir != null) {

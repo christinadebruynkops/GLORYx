@@ -5,7 +5,9 @@ package org.zbh.fame.fame3.modelling;
  */
 public class Result {
 
-    public double probability_yes;
-    public double probability_no;
-    public boolean is_som;
+    public Double probability_yes = null;
+    public Double probability_no = null;
+    public Boolean is_som = null;
+    public String atom_id = null;
+    public Double AD_score = null;
 }

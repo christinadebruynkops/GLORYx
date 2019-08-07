@@ -4,26 +4,24 @@ import org.zbh.fame.fame3.modelling.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Predictions {
     private String mol_name;
-    private List<Double> probabilites;
-    private List<Boolean> predictions;
-    private List<String> atom_ids;
+    private List<Result> results;
+    private String mol_block;
     private String prediction_HTML;
     private Exception error;
 
     public Predictions(
             String mol_name
-            , List<Double> probabilites
-            , List<Boolean> predictions
-            , List<String> atom_ids
+            , List<Result> results
+            , String mol_block
             , String prediction_HTML
     ) {
+        this.results = results;
         this.mol_name = mol_name;
-        this.probabilites = probabilites;
-        this.predictions = predictions;
-        this.atom_ids = atom_ids;
+        this.mol_block = mol_block;
         this.prediction_HTML = prediction_HTML;
         this.error = null;
     }
@@ -32,8 +30,7 @@ public class Predictions {
         this(
             mol_name
             , new ArrayList<>()
-            , new ArrayList<>()
-            , new ArrayList<>()
+            , null
             , null
         );
     }
@@ -43,15 +40,27 @@ public class Predictions {
     }
 
     public List<Double> getProbabilites() {
-        return probabilites;
+        return results.stream().map(item -> item.probability_yes).collect(Collectors.toList());
     }
 
     public List<Boolean> getPredictions() {
-        return predictions;
+        return results.stream().map(item -> item.is_som).collect(Collectors.toList());
     }
 
     public List<String> getAtomIDs() {
-        return atom_ids;
+        return results.stream().map(item -> item.atom_id).collect(Collectors.toList());
+    }
+
+    public List<Double> getFAMEScores() {
+        return results.stream().map(item -> item.AD_score).collect(Collectors.toList());
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public String getMolBlock() {
+        return mol_block;
     }
 
     public String getPredictionHTML() {
@@ -62,10 +71,12 @@ public class Predictions {
         return error;
     }
 
-    public void addResult(String atom_id, Result result) {
-        atom_ids.add(atom_id);
-        predictions.add(result.is_som);
-        probabilites.add(result.probability_yes);
+    public void addResult(Result result) {
+        results.add(result);
+    }
+
+    public void setMolBlock(String mol_block) {
+        this.mol_block = mol_block;
     }
 
     public void setPredictionHTML(String prediction_HTML) {

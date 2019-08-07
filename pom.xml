@@ -37,7 +37,7 @@
 
     <groupId>org.zbh.fame.fame3</groupId>
     <artifactId>fame3</artifactId>
-    <version>0.0.0.dev9</version>
+    <version>0.0.0.dev10</version>
     <packaging>jar</packaging>
 
     <name>FAst MEtabolizer 3</name>

@@ -32,8 +32,7 @@ public class Modeller {
     private Evaluator evaluator;
     private NearestNeighbourSearch nns;
     private List<String> nns_attributes;
-    int bits_per_layer = 32;
-    private String target_var;
+    public static final int bits_per_layer = 32;
     public static final int yes_val = 0;
     public static final int no_val = 1;
     public static final String proba_yes_fld = "probability(" + yes_val + ")";
@@ -41,7 +40,6 @@ public class Modeller {
     public static final String is_som_fld = "isSoM";
 
     public Modeller(Globals globals) throws JAXBException, SAXException, IOException, ClassNotFoundException {
-        this.target_var = globals.target_var;
         System.out.println("Loading model...");
         PMML pmml = loadModel(globals.pmml_path);
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
@@ -60,6 +58,8 @@ public class Modeller {
             in2.close();
             file_in.close();
             file2_in.close();
+        } else {
+            nns = null;
         }
     }
 
@@ -69,7 +69,7 @@ public class Modeller {
         return pmml;
     }
 
-    private Instances encodeMol(Instances at_fingeprints) {
+    private Instances encodeAtom(Instances at_fingeprints) {
         ArrayList<Attribute> new_atts = new ArrayList<>();
         int num_bits = bits_per_layer * at_fingeprints.numAttributes();
         for (int i = 1; i <= num_bits ; i++) {
@@ -103,6 +103,36 @@ public class Modeller {
         return 1 - (StatUtils.mean(dists_k));
     }
 
+    private void getADScore(IAtom atm, ArrayList<Attribute> mol_attrs) {
+        if (atm.getSymbol().equalsIgnoreCase("H")) {
+            return;
+        }
+        Instances insts_numeric = new Instances("insts_numeric", mol_attrs, 1);
+        Instance inst = new DenseInstance(mol_attrs.size());
+        for (String att_name : nns_attributes) {
+            if (atm.getProperty(att_name) != null) {
+                inst.setValue(insts_numeric.attribute(att_name), ((Integer) atm.getProperty(att_name)).doubleValue());
+            } else {
+                inst.setValue(insts_numeric.attribute(att_name), 0.0);
+                if (att_name.contains("_" + atm.getProperty("AtomType").toString() + "_0")) {
+                    inst.setValue(insts_numeric.attribute(att_name), 1.0);
+                }
+            }
+        }
+
+        insts_numeric.add(inst);
+        Instances insts_fings = encodeAtom(insts_numeric);
+        try {
+            int k = 3;
+            Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), k);
+            double[] dists = nns.getDistances();
+
+            atm.setProperty("AD_score", calculateADScoreValue(dists, k));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getADScore(IAtomContainer molecule) {
         ArrayList<Attribute> mol_attrs = new ArrayList<>();
         for (String nns_attribute : nns_attributes) {
@@ -110,42 +140,24 @@ public class Modeller {
         }
 
         for (IAtom atm : molecule.atoms()) {
-            if (atm.getSymbol().equalsIgnoreCase("H")) {
-                continue;
-            }
-            Instances insts_numeric = new Instances("insts_numeric", mol_attrs, 1);
-            Instance inst = new DenseInstance(mol_attrs.size());
-            for (String att_name : nns_attributes) {
-                if (atm.getProperty(att_name) != null) {
-                    inst.setValue(insts_numeric.attribute(att_name), ((Integer) atm.getProperty(att_name)).doubleValue());
-                } else {
-                    inst.setValue(insts_numeric.attribute(att_name), 0.0);
-                    if (att_name.contains("_" + atm.getProperty("AtomType").toString() + "_0")) {
-                        inst.setValue(insts_numeric.attribute(att_name), 1.0);
-                    }
-                }
-            }
-
-            insts_numeric.add(inst);
-            Instances insts_fings = encodeMol(insts_numeric);
-            try {
-                int k = 3;
-                Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), k);
-                double[] dists = nns.getDistances();
-
-                atm.setProperty("AD_score", calculateADScoreValue(dists, k));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            getADScore(atm, mol_attrs);
         }
     }
 
-    public Map<IAtom, Result> predict(
+    public void predict(
             IAtomContainer molecule
             , double decision_threshold
+            , boolean calc_AD_score
             , Predictions predictions
     ) {
-        Map<IAtom, Result> results = new HashMap<>();
+        ArrayList<Attribute> mol_attrs = null;
+        if (calc_AD_score) {
+            mol_attrs = new ArrayList<>();
+            for (String nns_attribute : nns_attributes) {
+                mol_attrs.add(new Attribute(nns_attribute));
+            }
+        }
+
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equals("H")) {
                 continue;
@@ -184,6 +196,10 @@ public class Modeller {
                 outfields.put(outputFieldName.getValue(), (Double) result.get(outputFieldName));
             }
 
+            if (calc_AD_score) {
+                getADScore(atom, mol_attrs);
+            }
+
 //            System.out.println(outfields.get("probability_1"));
 //            System.out.println(outfields.get("probability_0"));
 //            System.out.println(targetfields.get(Globals.target_var).getResult());
@@ -195,19 +211,20 @@ public class Modeller {
             } else {
                 res.is_som = false;
             }
+            res.atom_id = atom.getProperty("Atom").toString();
+            if (calc_AD_score) {
+                res.AD_score = (double) atom.getProperty("AD_score");
+            }
             atom.setProperty(is_som_fld, res.is_som);
             atom.setProperty(proba_yes_fld, res.probability_yes);
             atom.setProperty(proba_no_fld, res.probability_no);
-            results.put(atom, res);
 
             if (predictions != null) {
                 predictions.addResult(
-                        atom.getProperty("Atom").toString()
-                        , res
+                        res
                 );
             }
         }
-        return results;
     }
 
     public void inspect() {
