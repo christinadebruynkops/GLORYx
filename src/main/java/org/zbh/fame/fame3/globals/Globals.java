@@ -169,18 +169,6 @@ public class Globals {
                 this.model_hyperparams.put(param_name, json.getString(param_name));
             }
 
-            if (!decision_threshold.equals("model")) {
-                try {
-                    double dv = Double.parseDouble(decision_threshold);
-                    if (dv < 0 || dv > 1) throw new NumberFormatException("Bad decision threshold value.");
-                } catch (NumberFormatException exp) {
-                    System.err.println("Bad decision threshold.");
-                    exp.printStackTrace();
-                    throw exp;
-                }
-                this.model_hyperparams.put("decision_threshold", decision_threshold);
-            }
-
             // init modeller
             try {
                 this.modeller = new Modeller(this);

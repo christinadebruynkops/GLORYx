@@ -43,6 +43,8 @@ public class PredictorWorkerThread implements Runnable {
 	private String out_dir;
 	private Globals globals;
 	private Predictions predictions;
+	private boolean useAD;
+	private String decision_threshold;
 
 	private static final Set<String> allowed_atoms = new HashSet<>(Arrays.asList(
 			"C"
@@ -69,6 +71,8 @@ public class PredictorWorkerThread implements Runnable {
 		this.globals = globals;
 		this.molecule = molecule;
 		this.predictions = null;
+		this.useAD = false;
+		this.decision_threshold = globals.decision_threshold;
 		this.mol_name = molecule.getProperty(Globals.ID_PROP).toString();
 
 		// create output directory
@@ -81,10 +85,12 @@ public class PredictorWorkerThread implements Runnable {
 		}
 	}
 
-    public PredictorWorkerThread(IAtomContainer molecule, Globals globals, Predictions predictions) {
-        this(molecule, globals);
-        this.predictions = predictions;
-    }
+	public PredictorWorkerThread(IAtomContainer molecule, Globals globals, Predictions predictions, boolean useAD, String decision_threshold) {
+		this(molecule, globals);
+		this.predictions = predictions;
+		this.useAD = useAD;
+		this.decision_threshold = decision_threshold;
+	}
 
 	@Override
 	public void run() {
@@ -326,10 +332,15 @@ public class PredictorWorkerThread implements Runnable {
 
 			// do the modelling and process the results
 			System.out.println("Predicting: " + mol_name);
+			double threshold = Double.parseDouble(globals.model_hyperparams.get("decision_threshold"));
+			if (!decision_threshold.equals("model")) {
+				threshold = Double.parseDouble(decision_threshold);
+			}
+			System.out.println(threshold);
 			globals.modeller.predict(
 					molecule
-					, Double.parseDouble(globals.model_hyperparams.get("decision_threshold"))
-					, globals.use_AD
+					, threshold
+					, useAD
 					, predictions
 			);
 
