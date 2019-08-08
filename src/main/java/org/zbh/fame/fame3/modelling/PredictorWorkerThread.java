@@ -336,7 +336,6 @@ public class PredictorWorkerThread implements Runnable {
 			if (!decision_threshold.equals("model")) {
 				threshold = Double.parseDouble(decision_threshold);
 			}
-			System.out.println(threshold);
 			globals.modeller.predict(
 					molecule
 					, threshold
