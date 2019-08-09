@@ -12,7 +12,22 @@ on the FAME 3 method, see the FAME 3 publication [2].
    Journal of Medicinal Chemistry 2018 61 (3), 1019-1030
    DOI: 10.1021/acs.jmedchem.7b01473
 
-2. TODO: add reference
+2. FAME 3: Predicting the Sites of Metabolism in Synthetic Compounds and Natural Products for Phase 1 and Phase 2 Metabolic Enzymes
+   Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair
+   Journal of Chemical Information and Modeling Just Accepted Manuscript
+   DOI: 10.1021/acs.jcim.9b00376
+
+## Installation instructions
+
+There is no installation needed for the software. Just unpack the archive 
+into your desired installation directory. For example, on a Linux system this can be done
+with the `tar` command:
+
+```bash
+tar -xzf fame3-${version}-bin.tar.gz ${YOUR_INSTALL_DIR}
+```
+
+The FAME 3 binary and the required dependencies will then become available in the installation directory.
 
 ## Usage Examples
 

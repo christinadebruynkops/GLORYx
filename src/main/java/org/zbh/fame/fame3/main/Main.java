@@ -35,7 +35,10 @@ public class Main {
                         " and also separate phase I and phase II models (\"P1\" and \"P2\"). It is based on extra trees classifiers " +
                         "trained for regioselectivity prediction on data from the MetaQSAR database [2]." +
                         "Feel free to take a look at the README.html file for usage examples." +
-                        "\n\n1. TODO: FAME 3 paper reference" + // TODO: add FAME3 paper reference
+                        "\n\n1. FAME 3: Predicting the Sites of Metabolism in Synthetic Compounds and Natural Products for Phase 1 and Phase 2 Metabolic Enzymes\n" +
+                        "Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair\n" +
+                        "Journal of Chemical Information and Modeling Just Accepted Manuscript\n" +
+                        "DOI: 10.1021/acs.jcim.9b00376" +
                         "\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
                         "Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa\n" +
                         "Journal of Medicinal Chemistry 2018 61 (3), 1019-1030\n" +
