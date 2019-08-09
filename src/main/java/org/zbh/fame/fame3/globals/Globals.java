@@ -20,7 +20,8 @@ import java.util.*;
 
 /**
  * A simple class holding some useful global constants that are used
- * to configure the scripts.
+ * to configure the prediction facilities. It is a wrong spaghetti way
+ * to handle something like this, but oh well...
  *
  * Created by sicho on 10/5/16.
  */
