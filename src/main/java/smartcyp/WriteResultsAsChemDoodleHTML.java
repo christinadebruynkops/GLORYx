@@ -22,7 +22,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 
 import org.openscience.cdk.Atom;
@@ -36,7 +36,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.zbh.fame.fame3.smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
+import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
 import java.io.*;
 import java.text.DecimalFormat;

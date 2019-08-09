@@ -8,8 +8,8 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.listener.PropertiesListener;
-import org.zbh.fame.fame3.smartcyp.MoleculeKU;
-import org.zbh.fame.fame3.smartcyp.WriteResultsAsChemDoodleHTML;
+import smartcyp.MoleculeKU;
+import smartcyp.WriteResultsAsChemDoodleHTML;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
 import java.io.*;

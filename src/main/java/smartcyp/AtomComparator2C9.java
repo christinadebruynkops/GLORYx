@@ -22,18 +22,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 
 import java.util.Comparator;
 
 import org.openscience.cdk.Atom;
 
-import org.zbh.fame.fame3.smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
+import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
-
-
-public class AtomComparator implements Comparator<Atom> {
+public class AtomComparator2C9 implements Comparator<Atom> {
 
 	private final int before = -1;
 	private final int equal = 0;		// Only used for symmetric atoms, not atoms with same Score
@@ -49,6 +47,7 @@ public class AtomComparator implements Comparator<Atom> {
 	// Atoms sorted by Energy and A
 	// My implementation of compare, compares E and A
 	public int compare(Atom currentAtom, Atom comparisonAtom) {
+		
 
 		return this.compareScore(currentAtom, comparisonAtom);
 
@@ -59,18 +58,18 @@ public class AtomComparator implements Comparator<Atom> {
 	private int compareScore(Atom currentAtom, Atom comparisonAtom){
 		
 		// Set Score values
-		if(SMARTCYP_PROPERTY.Score.get(currentAtom) != null)  currentAtomScore = SMARTCYP_PROPERTY.Score.get(currentAtom).doubleValue();
-		if(SMARTCYP_PROPERTY.Score.get(comparisonAtom) != null)  comparisonAtomScore = SMARTCYP_PROPERTY.Score.get(comparisonAtom).doubleValue();
+		if(SMARTCYP_PROPERTY.Score2C9.get(currentAtom) != null)  currentAtomScore = SMARTCYP_PROPERTY.Score2C9.get(currentAtom).doubleValue();
+		if(SMARTCYP_PROPERTY.Score2C9.get(comparisonAtom) != null)  comparisonAtomScore = SMARTCYP_PROPERTY.Score2C9.get(comparisonAtom).doubleValue();
 		
 		// Dual null Scores
-		if (SMARTCYP_PROPERTY.Score.get(currentAtom) == null && SMARTCYP_PROPERTY.Score.get(comparisonAtom) == null){					
+		if (SMARTCYP_PROPERTY.Score2C9.get(currentAtom) == null && SMARTCYP_PROPERTY.Score2C9.get(comparisonAtom) == null){					
 			//If scores are null the Energies are too, then compare the Accessibility
 			return this.compareAccessibility(currentAtom, comparisonAtom);
 		}
 
 		// Single null scores
-		else if(SMARTCYP_PROPERTY.Score.get(currentAtom) == null) return after;
-		else if(SMARTCYP_PROPERTY.Score.get(comparisonAtom) == null) return before;
+		else if(SMARTCYP_PROPERTY.Score2C9.get(currentAtom) == null) return after;
+		else if(SMARTCYP_PROPERTY.Score2C9.get(comparisonAtom) == null) return before;
 
 		// Compare 2 numeric scores
 		else if(currentAtomScore < comparisonAtomScore) return before;
@@ -108,4 +107,3 @@ public class AtomComparator implements Comparator<Atom> {
 
 
 }
-

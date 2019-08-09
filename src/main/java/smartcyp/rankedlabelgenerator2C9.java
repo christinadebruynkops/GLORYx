@@ -22,7 +22,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 import java.awt.Color;
 import java.util.List;
@@ -41,7 +41,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
-import org.zbh.fame.fame3.smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
+import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
 public class rankedlabelgenerator2C9 implements IGenerator<IAtomContainer> {
 	       

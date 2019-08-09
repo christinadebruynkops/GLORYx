@@ -22,24 +22,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Properties;
 
-import org.openscience.cdk.Atom;
-import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.io.listener.PropertiesListener;

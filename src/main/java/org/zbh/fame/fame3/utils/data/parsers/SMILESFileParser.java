@@ -7,7 +7,7 @@ import org.openscience.cdk.io.iterator.IIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingSMILESReader;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.zbh.fame.fame3.globals.Globals;
-import org.zbh.fame.fame3.smartcyp.SMARTSnEnergiesTable;
+import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
 import java.io.File;

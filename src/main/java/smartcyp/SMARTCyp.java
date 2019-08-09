@@ -22,7 +22,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,21 +46,15 @@ import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLReader;
-import org.openscience.cdk.io.MDLV2000Reader;
-import org.openscience.cdk.io.MDLV3000Reader;
-import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.SMILESReader;
 import org.openscience.cdk.io.ReaderFactory;
-import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;

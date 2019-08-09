@@ -6,7 +6,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.zbh.fame.fame3.globals.Globals;
-import org.zbh.fame.fame3.smartcyp.SMARTSnEnergiesTable;
+import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
 import java.util.ArrayList;

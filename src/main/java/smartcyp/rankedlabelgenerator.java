@@ -22,7 +22,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 import java.awt.Color;
 import java.util.List;
@@ -41,10 +41,9 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
+import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
-import org.zbh.fame.fame3.smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
-
-public class rankedlabelgenerator2D6 implements IGenerator<IAtomContainer> {
+public class rankedlabelgenerator implements IGenerator<IAtomContainer> {
 	       
 	       public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 	    	   IAtom atom;
@@ -57,7 +56,7 @@ public class rankedlabelgenerator2D6 implements IGenerator<IAtomContainer> {
 	           // make a circle at each ranked atom
 	           for (int atomIndex=0; atomIndex < ac.getAtomCount(); atomIndex++) {
 	        	   atom = ac.getAtom(atomIndex);
-	        	   if (SMARTCYP_PROPERTY.Ranking2D6.get(atom) != null && SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 1){
+	        	   if (SMARTCYP_PROPERTY.Ranking.get(atom) != null && SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 1){
 	        		   Point2d p = atom.getPoint2d();
 		               
 		               IRenderingElement oval = 
@@ -65,7 +64,7 @@ public class rankedlabelgenerator2D6 implements IGenerator<IAtomContainer> {
 		               
 		               rankedCircles.add(oval);
 	        	   }
-	        	   if (SMARTCYP_PROPERTY.Ranking2D6.get(atom) != null && SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 2){
+	        	   if (SMARTCYP_PROPERTY.Ranking.get(atom) != null && SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 2){
 	        		   Point2d p = atom.getPoint2d();
 		               
 		               IRenderingElement oval = 
@@ -73,7 +72,7 @@ public class rankedlabelgenerator2D6 implements IGenerator<IAtomContainer> {
 		               
 		               rankedCircles.add(oval);
 	        	   }
-	        	   if (SMARTCYP_PROPERTY.Ranking2D6.get(atom) != null && SMARTCYP_PROPERTY.Ranking2D6.get(atom).intValue() == 3){
+	        	   if (SMARTCYP_PROPERTY.Ranking.get(atom) != null && SMARTCYP_PROPERTY.Ranking.get(atom).intValue() == 3){
 	        		   Point2d p = atom.getPoint2d();
 		               
 		               IRenderingElement oval = 
@@ -86,10 +85,11 @@ public class rankedlabelgenerator2D6 implements IGenerator<IAtomContainer> {
 	           return rankedCircles;
 	       }
 
-			@Override
-			public List<IGeneratorParameter<?>> getParameters() {
-				// TODO Auto-generated method stub
-				return null;
-			}
+		@Override
+		public List<IGeneratorParameter<?>> getParameters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	   }
 

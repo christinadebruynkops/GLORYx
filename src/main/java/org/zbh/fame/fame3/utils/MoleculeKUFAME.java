@@ -2,7 +2,7 @@ package org.zbh.fame.fame3.utils;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.zbh.fame.fame3.smartcyp.MoleculeKU;
+import smartcyp.MoleculeKU;
 
 import java.util.HashMap;
 import java.util.TreeSet;

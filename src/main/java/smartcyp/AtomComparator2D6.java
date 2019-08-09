@@ -22,14 +22,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package org.zbh.fame.fame3.smartcyp;
+package smartcyp;
 
 
 import java.util.Comparator;
 
 import org.openscience.cdk.Atom;
 
-import org.zbh.fame.fame3.smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
+import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
 public class AtomComparator2D6 implements Comparator<Atom> {
 
