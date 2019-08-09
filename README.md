@@ -7,6 +7,11 @@ a combined phase I and phase II (P1+P2)
 model and separate phase I (P1) and phase II (P2) models. For more details 
 on the FAME 3 method, see the FAME 3 publication [2].
 
+*IMPORTANT*: If this file is packaged with a source code distribution of this software, 
+note that the FAME 3 models are not bundled with it, but need to be obtained from the authors of the 
+original work [2]. The models are available free of charge for non-profit use or
+a license to use the models in for-profit organisations can be issued by the authors. 
+
 1. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data
    Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa
    Journal of Medicinal Chemistry 2018 61 (3), 1019-1030
@@ -113,4 +118,16 @@ Rydberg and his collaborators who made their visualization code from the
 SMARTCyp program freely available as open source software.
 
 This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1, Bergen Research Foundation (BFS) - grant no. BFS2017TMT01,
-and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI..
+and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI.
+
+## Disclaimer
+
+This software is based on a number of third-party dependencies that are listed in the attached 
+`NOTICE`, which also includes their licensing information and 
+links to websites where original copies of the software can be obtained. The source code 
+of the third-party libraries was not modified with the important exception of the SMARTCyp software, 
+which was integrated into the FAME 3 codebase as obtained through the SMARTCyp website mentioned in the 
+[original publication](https://academic.oup.com/bioinformatics/article/26/23/2988/221339). 
+The SMARTCyp code was slightly adapted 
+in order to work well with the FAME 3 software and the changes are tracked in 
+the [GitHub repository](TODO: add link).
