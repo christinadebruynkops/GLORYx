@@ -112,5 +112,5 @@ We highly appreciate the help of Patrik
 Rydberg and his collaborators who made their visualization code from the 
 SMARTCyp program freely available as open source software.
 
-This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1 
-and by the Ministry of Education of the Czech Republic - project numbers MSMT No 20-SVV/2017, NPU I - LO1220 and LM2015063.
+This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1, Bergen Research Foundation (BFS) - grant no. BFS2017TMT01,
+and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI..
