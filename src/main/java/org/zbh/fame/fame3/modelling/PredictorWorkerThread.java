@@ -353,7 +353,6 @@ public class PredictorWorkerThread implements Runnable {
 				StringWriter string_writer = new StringWriter();
 				MDLV2000Writer mdl_writer = new MDLV2000Writer(string_writer);
 				mdl_writer.writeMolecule(molecule);
-				String temp = string_writer.toString();
 				predictions.setMolBlock(string_writer.toString());
 			}
 
