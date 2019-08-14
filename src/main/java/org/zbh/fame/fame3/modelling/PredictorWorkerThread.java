@@ -57,6 +57,8 @@ public class PredictorWorkerThread implements Runnable {
 			, "Br"
 			, "I"
 			, "P"
+            , "B"
+            , "Si"
 	));
 
 	private Set<String> computeCircDescriptors(List<String> desc_names, CircularCollector.Aggregator aggregator, int circ_depth) throws Exception {
