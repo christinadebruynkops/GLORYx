@@ -125,6 +125,7 @@ public class Modeller {
         try {
             int k = 3;
             synchronized (nns) {
+                // TODO: this is a major bottleneck because the search takes a long time and the threads cannot access this instance concurrently -> look into it
                 nns.kNearestNeighbours(insts_fings.instance(0), k);
             }
             double[] dists = nns.getDistances();
