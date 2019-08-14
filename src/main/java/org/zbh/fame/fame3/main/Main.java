@@ -39,7 +39,7 @@ public class Main {
                         "Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair\n" +
                         "Journal of Chemical Information and Modeling Just Accepted Manuscript\n" +
                         "DOI: 10.1021/acs.jcim.9b00376" +
-                        "\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
+                        "\n\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
                         "Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa\n" +
                         "Journal of Medicinal Chemistry 2018 61 (3), 1019-1030\n" +
                         "DOI: 10.1021/acs.jmedchem.7b01473")
