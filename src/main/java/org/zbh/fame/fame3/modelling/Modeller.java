@@ -30,7 +30,7 @@ import java.util.*;
 public class Modeller {
 
     private Evaluator evaluator;
-    private volatile NearestNeighbourSearch nns;
+    private final NearestNeighbourSearch nns;
     private List<String> nns_attributes;
     public static final int bits_per_layer = 32;
     public static final int yes_val = 0;
@@ -124,7 +124,9 @@ public class Modeller {
         Instances insts_fings = encodeAtom(insts_numeric);
         try {
             int k = 3;
-            Instances nbrs = nns.kNearestNeighbours(insts_fings.instance(0), k);
+            synchronized (nns) {
+                nns.kNearestNeighbours(insts_fings.instance(0), k);
+            }
             double[] dists = nns.getDistances();
 
             atm.setProperty("AD_score", calculateADScoreValue(dists, k));
