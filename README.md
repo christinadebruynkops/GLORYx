@@ -1,14 +1,14 @@
 # FAME 3
 
-This is the *fame3* program. It attempts to predict sites of metabolism (SOMs)
+This is the FAME 3 program. It attempts to predict sites of metabolism (SOMs)
 for the supplied chemical compounds. It is based on extra trees classifier trained 
 for prediction of both phase I and phase II SOMs from the MetaQSAR database [1]. It contains 
-a combined phase I and phase II (P1+P2) 
-model and separate phase I (P1) and phase II (P2) models. For more details 
+a combined phase 1 and phase 2 ("P1 + P2 model") 
+model and separate phase 1 ("P1 model") and phase 2 ("P2 model") models. For more details 
 on the FAME 3 method, see the FAME 3 publication [2].
 
 *IMPORTANT*: If this file is packaged with a source code distribution of this software, 
-note that the FAME 3 models are not bundled with it, but need to be obtained from the authors of the 
+note that the FAME 3 models are not bundled with it. They need to be obtained from the authors of the 
 original work [2]. The models are available free of charge for non-profit use or
 a license to use the models in for-profit organisations can be issued by the authors. 
 
@@ -21,6 +21,18 @@ a license to use the models in for-profit organisations can be issued by the aut
    Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair
    Journal of Chemical Information and Modeling Just Accepted Manuscript
    DOI: 10.1021/acs.jcim.9b00376
+   
+## Build instructions
+
+If you want to build this software from source, you 
+can do so with Maven. Run the following command
+in the source root directory 
+and the binary distribution of the software 
+will be created in the `target` directory:
+
+```bash
+mvn package
+```
 
 ## Installation instructions
 
@@ -104,7 +116,7 @@ quite a bit of memory the `-Xmx16g` flag is necessary.
 
 Otherwise, *fame3* functions as outlined above for Linux and Mac.
 
-## Contact Information
+## Author Contact Information
 
  - Martin Šícho - [martin.sicho@vscht.cz](mailto::martin.sicho@vscht.cz)
     - CZ-OPENSCREEN: National Infrastructure for Chemical Biology, Laboratory of Informatics and Chemistry, Faculty of Chemical Technology, University of Chemistry and Technology Prague, 166 28 Prague 6, Czech Republic
@@ -114,8 +126,12 @@ Otherwise, *fame3* functions as outlined above for Linux and Mac.
 ## Acknowledgement & Funding
 
 We highly appreciate the help of Patrik
-Rydberg and his collaborators who made their visualization code from the 
-SMARTCyp program freely available as open source software.
+Rydberg and his collaborators who made the visualization code from the
+[Java version of the SMARTCyp program](https://smartcyp.sund.ku.dk/mol_to_som) 
+freely available as open source software.
+
+Additional thank you also belongs to Christina de Bruyn Kops, Conrad Stork and Ya Chen
+for their input during model and software development.
 
 This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1, Bergen Research Foundation (BFS) - grant no. BFS2017TMT01,
 and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI.
@@ -126,8 +142,8 @@ This software is based on a number of third-party dependencies that are listed i
 `NOTICE`, which also includes their licensing information and 
 links to websites where original copies of the software can be obtained. The source code 
 of the third-party libraries was not modified with the important exception of the SMARTCyp software, 
-which was integrated into the FAME 3 codebase as obtained through the SMARTCyp website mentioned in the 
+which was integrated into the FAME 3 codebase and obtained through the SMARTCyp website mentioned in the 
 [original publication](https://academic.oup.com/bioinformatics/article/26/23/2988/221339). 
 The SMARTCyp code was slightly adapted 
 in order to work well with the FAME 3 software and the changes are tracked in 
-the [GitHub repository](TODO: add link).
+the [publicly available source code repository](https://bitbucket.org/cheminformatics_allstars/FAME).

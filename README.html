@@ -46,12 +46,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </head>
 <body>
 <h1 id="fame-3">FAME 3</h1>
-<p>This is the <em>fame3</em> program. It attempts to predict sites of metabolism (SOMs) for the supplied chemical compounds. It is based on extra trees classifier trained for prediction of both phase I and phase II SOMs from the MetaQSAR database [1]. It contains a combined phase I and phase II (P1+P2) model and separate phase I (P1) and phase II (P2) models. For more details on the FAME 3 method, see the FAME 3 publication [2].</p>
-<p><em>IMPORTANT</em>: If you are reading this on GitHub, note that the FAME 3 models are not published with the source code, but need to be obtained from the authors of the original work [2]. The models are available free of charge for non-profit use or a license to use the models in for-profit organisations can be issued by the authors.</p>
+<p>This is the FAME 3 program. It attempts to predict sites of metabolism (SOMs) for the supplied chemical compounds. It is based on extra trees classifier trained for prediction of both phase I and phase II SOMs from the MetaQSAR database [1]. It contains a combined phase 1 and phase 2 (&quot;P1 + P2 model&quot;) model and separate phase 1 (&quot;P1 model&quot;) and phase 2 (&quot;P2 model&quot;) models. For more details on the FAME 3 method, see the FAME 3 publication [2].</p>
+<p><em>IMPORTANT</em>: If this file is packaged with a source code distribution of this software, note that the FAME 3 models are not bundled with it. They need to be obtained from the authors of the original work [2]. The models are available free of charge for non-profit use or a license to use the models in for-profit organisations can be issued by the authors.</p>
 <ol style="list-style-type: decimal">
 <li><p>MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa Journal of Medicinal Chemistry 2018 61 (3), 1019-1030 DOI: 10.1021/acs.jmedchem.7b01473</p></li>
 <li><p>FAME 3: Predicting the Sites of Metabolism in Synthetic Compounds and Natural Products for Phase 1 and Phase 2 Metabolic Enzymes Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair Journal of Chemical Information and Modeling Just Accepted Manuscript DOI: 10.1021/acs.jcim.9b00376</p></li>
 </ol>
+<h2 id="build-instructions">Build instructions</h2>
+<p>If you want to build this software from source, you can do so with Maven. Run the following command in the source root directory and the binary distribution of the software will be created in the <code>target</code> directory:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mvn</span> package</code></pre></div>
 <h2 id="installation-instructions">Installation instructions</h2>
 <p>There is no installation needed for the software. Just unpack the archive into your desired installation directory. For example, on a Linux system this can be done with the <code>tar</code> command:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">tar</span> -xzf fame3-<span class="ot">${version}</span>-bin.tar.gz <span class="ot">${YOUR_INSTALL_DIR}</span></code></pre></div>
@@ -79,7 +82,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>java -Xmx16g -jar ${YOUR_INSTALL_DIR}/fame3.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/examples/tamoxifen.sdf&quot;</code></pre>
 <p>Since the unpacked FAME 3 model and the FAMEscore models can take quite a bit of memory the <code>-Xmx16g</code> flag is necessary.</p>
 <p>Otherwise, <em>fame3</em> functions as outlined above for Linux and Mac.</p>
-<h2 id="contact-information">Contact Information</h2>
+<h2 id="author-contact-information">Author Contact Information</h2>
 <ul>
 <li>Martin Šícho - <script type="text/javascript">
 <!--
@@ -101,9 +104,10 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6
 </ul></li>
 </ul>
 <h2 id="acknowledgement-funding">Acknowledgement &amp; Funding</h2>
-<p>We highly appreciate the help of Patrik Rydberg and his collaborators who made their visualization code from the SMARTCyp program freely available as open source software.</p>
+<p>We highly appreciate the help of Patrik Rydberg and his collaborators who made the visualization code from the <a href="https://smartcyp.sund.ku.dk/mol_to_som">Java version of the SMARTCyp program</a> freely available as open source software.</p>
+<p>Additional thank you also belongs to Christina de Bruyn Kops, Conrad Stork and Ya Chen for their input during model and software development.</p>
 <p>This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1, Bergen Research Foundation (BFS) - grant no. BFS2017TMT01, and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI.</p>
 <h2 id="disclaimer">Disclaimer</h2>
-<p>This software is based on a number of third-party dependencies that are listed in the attached <code>NOTICE</code>, which also includes their licensing information and links to websites where original copies of the software can be obtained. The source code of the third-party libraries was not modified with the important exception of the SMARTCyp software, which was integrated into the FAME 3 codebase as obtained through the SMARTCyp website mentioned in the <a href="https://academic.oup.com/bioinformatics/article/26/23/2988/221339">original publication</a>. The SMARTCyp code was slightly adapted in order to work well with the FAME 3 software and the changes are tracked in the <a href="TODO:%20add%20link">GitHub repository</a>.</p>
+<p>This software is based on a number of third-party dependencies that are listed in the attached <code>NOTICE</code>, which also includes their licensing information and links to websites where original copies of the software can be obtained. The source code of the third-party libraries was not modified with the important exception of the SMARTCyp software, which was integrated into the FAME 3 codebase and obtained through the SMARTCyp website mentioned in the <a href="https://academic.oup.com/bioinformatics/article/26/23/2988/221339">original publication</a>. The SMARTCyp code was slightly adapted in order to work well with the FAME 3 software and the changes are tracked in the <a href="https://bitbucket.org/cheminformatics_allstars/FAME">publicly available source code repository</a>.</p>
 </body>
 </html>

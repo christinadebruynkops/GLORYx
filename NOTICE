@@ -2,11 +2,11 @@ This software is based on a number of third-party dependencies that are listed i
 here with their appropriate licensing information and
 links to websites where original copies of the software can be obtained. The source code
 of the third-party libraries was not modified with the important exception of the SMARTCyp software,
-which was integrated into the FAME 3 codebase as obtained through the SMARTCyp website mentioned in the
+which was integrated into the FAME 3 codebase and obtained through the SMARTCyp website mentioned in the
 original publication (https://academic.oup.com/bioinformatics/article/26/23/2988/221339).
 The original SMARTCyp code was slightly adapted
 in order to work well with the FAME 3 code and the changes are tracked in
-the GitHub repository: TODO: add link
+the GitHub repository: https://bitbucket.org/cheminformatics_allstars/FAME
 
 The included SMARTCyp source code and the following third-party dependencies
 are released under the GNU Lesser General Public License, Version 3:
