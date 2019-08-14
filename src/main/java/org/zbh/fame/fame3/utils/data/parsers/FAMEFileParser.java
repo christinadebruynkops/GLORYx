@@ -11,4 +11,5 @@ public interface FAMEFileParser {
     IAtomContainer getNext();
     boolean hasNext();
     String getFilePath();
+    List<FAMEFileParserException> getErrors();
 }

@@ -22,6 +22,7 @@ public class SDFParser implements FAMEFileParser {
     private String prefix;
     private IIteratingChemObjectReader reader;
     private int counter;
+    private List<FAMEFileParserException> errors;
 
     public SDFParser(String input_sdf) throws FileNotFoundException {
         this.input_sdf = new File(input_sdf);
@@ -31,6 +32,7 @@ public class SDFParser implements FAMEFileParser {
         this.setNamePrefix("SDF_");
         this.reader = null;
         this.counter = 0;
+        this.errors = new ArrayList<>();
     }
 
     public SDFParser(String input_sdf, String prefix) throws FileNotFoundException {
@@ -43,7 +45,7 @@ public class SDFParser implements FAMEFileParser {
         this.prefix = prefix;
     }
 
-    private void initReader(){
+    private void initReader() throws FileNotFoundException{
         try {
             reader = new IteratingMDLReader(
                     new FileInputStream(input_sdf)
@@ -51,8 +53,11 @@ public class SDFParser implements FAMEFileParser {
             );
             counter = 0;
         } catch (FileNotFoundException e) {
-            System.err.println("Input SDF could not be read and it will be skipped: " + input_sdf.getAbsolutePath());
+            String message = "Input SDF could not be read:" + input_sdf.getAbsolutePath();
+            System.err.println(message);
+            this.errors.add(new FAMEFileParserException(message, e));
             e.printStackTrace();
+            throw e;
         }
     }
 
@@ -63,7 +68,11 @@ public class SDFParser implements FAMEFileParser {
 
     @Override
     public synchronized List<IAtomContainer> getMols() {
-        initReader();
+        try {
+            initReader();
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        }
 
         List<IAtomContainer> molecules = new ArrayList<>();
         IAtomContainer mol = getNext();
@@ -79,7 +88,11 @@ public class SDFParser implements FAMEFileParser {
     @Override
     public synchronized IAtomContainer getNext() {
         if (reader == null) {
-            initReader();
+            try {
+                initReader();
+            } catch (FileNotFoundException e) {
+                return null;
+            }
         }
 
         if (reader.hasNext()) {
@@ -102,6 +115,7 @@ public class SDFParser implements FAMEFileParser {
                 mol_ku.setProperty(Globals.FILE_PATH_PROP, getFilePath());
                 return mol_ku;
             } catch (CloneNotSupportedException e) {
+                this.errors.add(new FAMEFileParserException(e, molecule.getProperty(Globals.ID_PROP).toString(), getFilePath()));
                 e.printStackTrace();
                 return null;
             }
@@ -113,7 +127,12 @@ public class SDFParser implements FAMEFileParser {
     @Override
     public boolean hasNext() {
         if (reader == null) {
-            initReader();
+            try {
+                initReader();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return reader.hasNext();
     }
@@ -121,5 +140,10 @@ public class SDFParser implements FAMEFileParser {
     @Override
     public String getFilePath() {
         return this.input_sdf.getAbsolutePath();
+    }
+
+    @Override
+    public List<FAMEFileParserException> getErrors() {
+        return errors;
     }
 }

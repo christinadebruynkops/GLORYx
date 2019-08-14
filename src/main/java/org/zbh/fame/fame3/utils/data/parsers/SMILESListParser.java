@@ -16,11 +16,13 @@ public class SMILESListParser implements FAMEFileParser {
     private List<String> smiles;
     private String prefix;
     private List<IAtomContainer> molecules;
+    private List<FAMEFileParserException> errors;
 
     public SMILESListParser(List<String> smiles) {
         this.smiles = smiles;
         this.setNamePrefix("SMIList_");
         this.molecules = null;
+        this.errors = new ArrayList<>();
     }
 
     public SMILESListParser(List<String> smiles, String prefix) {
@@ -46,8 +48,11 @@ public class SMILESListParser implements FAMEFileParser {
                 SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
                 mol = sp.parseSmiles(smiles);
             } catch (InvalidSmilesException ise) {
-                System.err.println("WARNING: SMILES parsing failed for: " + smiles);
-                System.exit(1);
+                String message = "WARNING: SMILES parsing failed for: " + smiles;
+                System.err.println(message);
+                this.errors.add(new FAMEFileParserException(message, ise, smiles, smiles));
+                ise.printStackTrace();
+                continue;
             }
 
             mol.setProperty(Globals.ID_PROP, prefix + counter++);
@@ -58,6 +63,7 @@ public class SMILESListParser implements FAMEFileParser {
                 mol_ku.setProperty(Globals.FILE_PATH_PROP, getFilePath());
                 molecules.add(mol_ku);
             } catch (CloneNotSupportedException e) {
+                this.errors.add(new FAMEFileParserException(e, smiles, smiles));
                 e.printStackTrace();
             }
         }
@@ -91,5 +97,10 @@ public class SMILESListParser implements FAMEFileParser {
     @Override
     public String getFilePath() {
         return "";
+    }
+
+    @Override
+    public List<FAMEFileParserException> getErrors() {
+        return errors;
     }
 }

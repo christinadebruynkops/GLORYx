@@ -22,6 +22,7 @@ public class SMILESFileParser implements FAMEFileParser {
     private String prefix;
     private IIteratingChemObjectReader reader;
     private int counter;
+    private List<FAMEFileParserException> errors;
 
     public SMILESFileParser(String input_smi) throws FileNotFoundException {
         this.input_smi = new File(input_smi);
@@ -31,6 +32,7 @@ public class SMILESFileParser implements FAMEFileParser {
         this.setNamePrefix("SMIFile_");
         this.reader = null;
         this.counter = 0;
+        this.errors = new ArrayList<>();
     }
 
     public SMILESFileParser(String input_smi, String prefix) throws FileNotFoundException {
@@ -43,7 +45,7 @@ public class SMILESFileParser implements FAMEFileParser {
         this.prefix = prefix;
     }
 
-    private void initReader() {
+    private void initReader() throws FileNotFoundException {
         try {
             reader = new IteratingSMILESReader(
                     new FileInputStream(input_smi)
@@ -51,8 +53,11 @@ public class SMILESFileParser implements FAMEFileParser {
             );
             this.counter = 0;
         } catch (FileNotFoundException e) {
-            System.err.println("Input SMILES file could not be read and it will be skipped: " + getFilePath());
+            String message = "Input SMILES file could not be read and it will be skipped: " + getFilePath();
+            System.err.println(message);
+            this.errors.add(new FAMEFileParserException(message, e));
             e.printStackTrace();
+            throw e;
         }
     }
 
@@ -63,7 +68,11 @@ public class SMILESFileParser implements FAMEFileParser {
 
     @Override
     public synchronized List<IAtomContainer> getMols() {
-        initReader();
+        try {
+            initReader();
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        }
 
         List<IAtomContainer> molecules = new ArrayList<>();
         IAtomContainer mol = getNext();
@@ -79,7 +88,11 @@ public class SMILESFileParser implements FAMEFileParser {
     @Override
     public synchronized IAtomContainer getNext() {
         if (reader == null) {
-            initReader();
+            try {
+                initReader();
+            } catch (FileNotFoundException e) {
+                return null;
+            }
         }
 
         if (reader.hasNext()) {
@@ -113,7 +126,11 @@ public class SMILESFileParser implements FAMEFileParser {
     @Override
     public boolean hasNext() {
         if (reader == null) {
-            initReader();
+            try {
+                initReader();
+            } catch (FileNotFoundException e) {
+                return false;
+            }
         }
         return reader.hasNext();
     }
@@ -121,5 +138,10 @@ public class SMILESFileParser implements FAMEFileParser {
     @Override
     public String getFilePath() {
         return this.input_smi.getAbsolutePath();
+    }
+
+    @Override
+    public List<FAMEFileParserException> getErrors() {
+        return errors;
     }
 }
