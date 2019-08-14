@@ -31,8 +31,6 @@ public class FAMEMolSupplier {
         } else if (this.hasNext()) {
             return current_parser.getNext();
         } else {
-            current_parser = null;
-            parsers = null;
             return null;
         }
     }
@@ -47,6 +45,7 @@ public class FAMEMolSupplier {
             }
             return current_parser.hasNext();
         } else {
+            errors.addAll(current_parser.getErrors());
             return false;
         }
     }

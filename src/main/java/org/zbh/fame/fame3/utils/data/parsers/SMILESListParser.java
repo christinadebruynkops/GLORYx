@@ -21,7 +21,7 @@ public class SMILESListParser implements FAMEFileParser {
     public SMILESListParser(List<String> smiles) {
         this.smiles = smiles;
         this.errors = new ArrayList<>();
-        this.setNamePrefix("SMIList_");
+        this.prefix = "SMIList_";
         this.molecules = null;
     }
 
