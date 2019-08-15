@@ -10,6 +10,7 @@ import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SMILESListParser implements FAMEFileParser {
@@ -19,8 +20,8 @@ public class SMILESListParser implements FAMEFileParser {
     private List<FAMEFileParserException> errors;
 
     public SMILESListParser(List<String> smiles) {
-        this.smiles = smiles;
-        this.errors = new ArrayList<>();
+        this.smiles = new LinkedList<>(smiles);
+        this.errors = new LinkedList<>();
         this.prefix = "SMIList_";
         this.molecules = null;
     }
