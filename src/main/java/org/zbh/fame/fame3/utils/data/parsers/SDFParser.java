@@ -10,33 +10,46 @@ import org.zbh.fame.fame3.globals.Globals;
 import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SDFParser implements FAMEFileParser {
 
-    private File input_sdf;
+    private String sdf_path;
+    private InputStream input_stream;
     private String prefix;
     private IIteratingChemObjectReader reader;
     private int counter;
     private List<FAMEFileParserException> errors;
 
-    public SDFParser(String input_sdf) throws FileNotFoundException {
-        this.input_sdf = new File(input_sdf);
-        if (!this.input_sdf.exists()) {
-            throw new FileNotFoundException("Specified input SDF file does not exist: " + this.input_sdf.getAbsolutePath());
-        }
+    public SDFParser(String sdf_path) {
+        this.sdf_path = sdf_path;
+        this.input_stream = null;
         this.setNamePrefix("SDF_");
         this.reader = null;
         this.counter = 0;
         this.errors = new ArrayList<>();
     }
 
-    public SDFParser(String input_sdf, String prefix) throws FileNotFoundException {
-        this(input_sdf);
+    public SDFParser(String sdf_path, String prefix) {
+        this(sdf_path);
+        this.setNamePrefix(prefix);
+    }
+
+    public SDFParser(String sdf_path, InputStream is) {
+        this.sdf_path = sdf_path;
+        this.input_stream = is;
+        this.setNamePrefix("SMIFile_");
+        this.reader = null;
+        this.counter = 0;
+        this.errors = new ArrayList<>();
+    }
+
+    public SDFParser(String sdf_path, InputStream is, String prefix) {
+        this(sdf_path, is);
         this.setNamePrefix(prefix);
     }
 
@@ -45,15 +58,18 @@ public class SDFParser implements FAMEFileParser {
         this.prefix = prefix;
     }
 
-    private void initReader() throws FileNotFoundException{
+    private void initReader() throws FileNotFoundException {
         try {
+            if (input_stream == null) {
+                input_stream = new FileInputStream(sdf_path);
+            }
             reader = new IteratingMDLReader(
-                    new FileInputStream(input_sdf)
+                    input_stream
                     , DefaultChemObjectBuilder.getInstance()
             );
             counter = 0;
         } catch (FileNotFoundException e) {
-            String message = "Input SDF could not be read:" + input_sdf.getAbsolutePath();
+            String message = "Input SDF could not be read:" + getFilePath();
             System.err.println(message);
             this.errors.add(new FAMEFileParserException(message, e));
             e.printStackTrace();
@@ -139,7 +155,7 @@ public class SDFParser implements FAMEFileParser {
 
     @Override
     public String getFilePath() {
-        return this.input_sdf.getAbsolutePath();
+        return this.sdf_path;
     }
 
     @Override

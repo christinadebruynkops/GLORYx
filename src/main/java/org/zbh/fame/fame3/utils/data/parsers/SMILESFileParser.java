@@ -10,33 +10,46 @@ import org.zbh.fame.fame3.globals.Globals;
 import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SMILESFileParser implements FAMEFileParser {
 
-    private File input_smi;
+    private String smi_path;
+    private InputStream input_stream;
     private String prefix;
     private IIteratingChemObjectReader reader;
     private int counter;
     private List<FAMEFileParserException> errors;
 
-    public SMILESFileParser(String input_smi) throws FileNotFoundException {
-        this.input_smi = new File(input_smi);
-        if (!this.input_smi.exists()) {
-            throw new FileNotFoundException("Specified input SMILES file does not exist: " + getFilePath());
-        }
+    public SMILESFileParser(String smi_path) {
+        this.smi_path = smi_path;
+        this.input_stream = null;
         this.setNamePrefix("SMIFile_");
         this.reader = null;
         this.counter = 0;
         this.errors = new ArrayList<>();
     }
 
-    public SMILESFileParser(String input_smi, String prefix) throws FileNotFoundException {
-        this(input_smi);
+    public SMILESFileParser(String smi_path, String prefix) {
+        this(smi_path);
+        this.setNamePrefix(prefix);
+    }
+
+    public SMILESFileParser(String smi_path, InputStream is) {
+        this.smi_path = smi_path;
+        this.input_stream = is;
+        this.setNamePrefix("SMIFile_");
+        this.reader = null;
+        this.counter = 0;
+        this.errors = new ArrayList<>();
+    }
+
+    public SMILESFileParser(String smi_path, InputStream is, String prefix) {
+        this(smi_path, is);
         this.setNamePrefix(prefix);
     }
 
@@ -47,8 +60,11 @@ public class SMILESFileParser implements FAMEFileParser {
 
     private void initReader() throws FileNotFoundException {
         try {
+            if (input_stream == null) {
+                input_stream = new FileInputStream(smi_path);
+            }
             reader = new IteratingSMILESReader(
-                    new FileInputStream(input_smi)
+                    input_stream
                     , DefaultChemObjectBuilder.getInstance()
             );
             this.counter = 0;
@@ -137,7 +153,7 @@ public class SMILESFileParser implements FAMEFileParser {
 
     @Override
     public String getFilePath() {
-        return this.input_smi.getAbsolutePath();
+        return this.smi_path;
     }
 
     @Override
