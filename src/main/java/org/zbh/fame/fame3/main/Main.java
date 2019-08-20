@@ -121,7 +121,7 @@ public class Main {
             }
 
             if (args_ns.getList("names").size() != 0 && args_ns.getList("smiles").size() != args_ns.getList("names").size()) {
-                throw new ArgumentParserException("The number of provided names is different than the number of provided SMILES string.", parser);
+                throw new ArgumentParserException("The number of provided names is different than the number of provided SMILES strings.", parser);
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
