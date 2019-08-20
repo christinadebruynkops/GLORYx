@@ -109,7 +109,9 @@ public class SMILESListParser implements FAMEFileParser {
 
         if (!molecules.isEmpty()) {
             smiles.remove(molecules.size() - 1);
-            names.remove(molecules.size() - 1);
+            if (names != null) {
+                names.remove(molecules.size() - 1);
+            }
             return molecules.remove(molecules.size() - 1);
         } else {
             return null;
