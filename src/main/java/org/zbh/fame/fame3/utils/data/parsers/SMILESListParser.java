@@ -10,19 +10,34 @@ import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SMILESListParser implements FAMEFileParser {
     private List<String> smiles;
+    private List<String> names;
     private String prefix;
     private List<IAtomContainer> molecules;
     private List<FAMEFileParserException> errors;
 
     public SMILESListParser(List<String> smiles) {
         this.smiles = new LinkedList<>(smiles);
+        this.names = null;
         this.errors = new LinkedList<>();
         this.prefix = "SMIList_";
+        this.molecules = null;
+    }
+
+    public SMILESListParser(List<String> smiles, List<String> names) throws InputMismatchException {
+        this.prefix = "SMIList_";
+        this.names = new LinkedList<>(names);
+        this.smiles = new LinkedList<>(smiles);
+        if (this.names.size() != this.smiles.size()) {
+            throw new InputMismatchException("The list of SMILES does not have the same size as the list of names.");
+        }
+        this.errors = new LinkedList<>();
         this.molecules = null;
     }
 
@@ -31,10 +46,17 @@ public class SMILESListParser implements FAMEFileParser {
         this.setNamePrefix(prefix);
     }
 
+    public SMILESListParser(List<String> smiles, List<String> names, String prefix) {
+        this(smiles, names);
+        this.setNamePrefix(prefix);
+    }
+
     @Override
     public void setNamePrefix(String prefix) {
         this.prefix = prefix;
-        this.molecules = getMols();
+        if (this.molecules != null) {
+            this.molecules = getMols();
+        }
     }
 
     @Override
@@ -56,7 +78,13 @@ public class SMILESListParser implements FAMEFileParser {
                 continue;
             }
 
-            mol.setProperty(Globals.ID_PROP, prefix + counter++);
+            if (this.names == null) {
+                mol.setProperty(Globals.ID_PROP, prefix + counter);
+            } else {
+                mol.setProperty(Globals.ID_PROP, prefix + names.get(counter - 1));
+            }
+            counter++;
+
             System.out.println("Generating identifier for " + smiles + ": " + mol.getProperty(Globals.ID_PROP));
             try {
                 MoleculeKUFAME mol_ku = new MoleculeKUFAME(mol, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
@@ -81,6 +109,7 @@ public class SMILESListParser implements FAMEFileParser {
 
         if (!molecules.isEmpty()) {
             smiles.remove(molecules.size() - 1);
+            names.remove(molecules.size() - 1);
             return molecules.remove(molecules.size() - 1);
         } else {
             return null;

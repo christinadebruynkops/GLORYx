@@ -87,6 +87,10 @@ public class Main {
                         "the software will try to add them automatically. " +
                         "Calculating spatial coordinates of atoms is not necessary.")
         ;
+        parser.addArgument("-n", "--names").nargs("*")
+                .help ("Use this parameter to provide names for compounds submitted as SMILES strings." +
+                        "The number of provided names needs to be the same as the number of provided SMILES strings.")
+        ;
         parser.addArgument("-o", "--output-directory")
                 .setDefault("fame3_results")
                 .help("Path to the output directory. If it doesn't exist, it will be created.");
@@ -114,6 +118,10 @@ public class Main {
             // check inputs
             if (args_ns.<String>getList("FILE").isEmpty() && args_ns.<String>getList("smiles") == null) {
                 throw new ArgumentParserException("No input specified.", parser);
+            }
+
+            if (args_ns.getList("names").size() != 0 && args_ns.getList("smiles").size() != args_ns.getList("names").size()) {
+                throw new ArgumentParserException("The number of provided names is different than the number of provided SMILES string.", parser);
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
@@ -149,7 +157,12 @@ public class Main {
         // process smiles input list
         if (!smile_inputs.isEmpty()) {
             System.out.println("Processing SMILES: " + smile_inputs.toString());
-            parsers.add(new SMILESListParser(smile_inputs, "SMIList_" + counter++ + "_"));
+            List<String> names = args_ns.<String>getList("names");
+            if (names.isEmpty()) {
+                parsers.add(new SMILESListParser(smile_inputs, "SMIList_" + counter++ + "_"));
+            } else {
+                parsers.add(new SMILESListParser(smile_inputs, names,  ""));
+            }
         }
 
         // initialize global settings
