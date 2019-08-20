@@ -120,7 +120,10 @@ public class Main {
                 throw new ArgumentParserException("No input specified.", parser);
             }
 
-            if (args_ns.getList("names").size() != 0 && args_ns.getList("smiles").size() != args_ns.getList("names").size()) {
+            if (args_ns.getList("names") != null
+                    && args_ns.getList("names").size() != 0
+                    && args_ns.getList("smiles").size() != args_ns.getList("names").size())
+            {
                 throw new ArgumentParserException("The number of provided names is different than the number of provided SMILES strings.", parser);
             }
         } catch (ArgumentParserException e) {
@@ -158,7 +161,7 @@ public class Main {
         if (!smile_inputs.isEmpty()) {
             System.out.println("Processing SMILES: " + smile_inputs.toString());
             List<String> names = args_ns.<String>getList("names");
-            if (names.isEmpty()) {
+            if (names == null) {
                 parsers.add(new SMILESListParser(smile_inputs, "SMIList_" + counter++ + "_"));
             } else {
                 parsers.add(new SMILESListParser(smile_inputs, names,  ""));
