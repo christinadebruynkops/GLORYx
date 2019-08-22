@@ -1,6 +1,7 @@
 package org.zbh.fame.fame3.modelling;
 
 import com.google.common.collect.RangeSet;
+import main.NearestNeighbourSearch;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.globals.Globals;
@@ -12,11 +13,7 @@ import org.jpmml.evaluator.*;
 import org.jpmml.model.PMMLUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.zbh.fame.fame3.utils.data.Predictions;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.neighboursearch.NearestNeighbourSearch;
+import weka.core.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -124,13 +121,16 @@ public class Modeller {
         Instances insts_fings = encodeAtom(insts_numeric);
         try {
             int k = 3;
-            synchronized (nns) {
-                // TODO: this is a major bottleneck because the search takes a long time and the threads cannot access this instance concurrently -> look into it
-                nns.kNearestNeighbours(insts_fings.instance(0), k);
-            }
-            double[] dists = nns.getDistances();
+            Instance target = insts_fings.instance(0);
+            Instances nbrs = nns.kNearestNeighbours(target, k);
 
-            atm.setProperty("AD_score", calculateADScoreValue(dists, k));
+            List<Double> dists = new ArrayList<>(k);
+            DistanceFunction df = nns.getDistanceFunction();
+            for (Instance nb : nbrs) {
+                dists.add(df.distance(target, nb));
+            }
+
+            atm.setProperty("AD_score", calculateADScoreValue(dists.stream().mapToDouble(Double::doubleValue).toArray(), k));
         } catch (Exception e) {
             e.printStackTrace();
         }
