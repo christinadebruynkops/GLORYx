@@ -21,6 +21,9 @@ public class FAMEMolSupplier {
 
     public FAMEMolSupplier(List<FAMEFileParser> parsers) {
         this.parsers = parsers;
+        if (this.parsers.isEmpty()) {
+            throw new IllegalArgumentException("The supplied list of file parsers cannot be empty.");
+        }
         this.errors = new ArrayList<>();
         this.current_parser = this.parsers.remove(parsers.size() - 1);
     }
