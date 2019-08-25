@@ -1,5 +1,7 @@
 package org.zbh.fame.fame3.globals;
 
+import main.NearestNeighbourSearch;
+import org.apache.commons.math3.util.Pair;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.modelling.Encoder;
@@ -70,6 +72,15 @@ public class Globals {
         this.fing_depth = 10;
         this.decision_threshold = "model";
 
+        this.desc_groups = new HashSet<>();
+        this.model_dir = null;
+        this.pmml_path = null;
+        this.encoders_json = null;
+        this.at_encoder = null;
+        this.imputation_json = null;
+        this.circ_imputer = null;
+        this.model_hyperparams = new HashMap<>();
+
         this.output_dir = null;
         this.generate_pngs = false;
         this.generate_csvs = false;
@@ -84,8 +95,9 @@ public class Globals {
         getValenceForDummyAtom();
     }
 
-    public Globals(String model_definition, int bond_depth, boolean init_models, boolean init_directories) throws JSONException, IOException {
+    public Globals(String model_definition, int bond_depth, boolean init_models, boolean init_directories, boolean use_AD) throws JSONException, IOException {
         this();
+        this.use_AD = use_AD;
 
         this.model_name = model_map.get(model_definition) + "_" + bond_depth;
         this.model_code = this.model_name.split("_")[0] + "_cdk_fing_ccdk" + "_" + this.model_name.split("_")[1];
@@ -94,14 +106,28 @@ public class Globals {
         this.fing_depth = 10; // is always 10 because of the AD score
         this.decision_threshold = "model";
 
-        this.desc_groups = new HashSet<>();
-        this.model_dir = null;
-        this.pmml_path = null;
-        this.encoders_json = null;
-        this.at_encoder = null;
-        this.imputation_json = null;
-        this.circ_imputer = null;
-        this.model_hyperparams = new HashMap<>();
+        this.desc_groups = new HashSet<>(
+                Arrays.asList(
+                        model_code.split("_")
+                )
+        );
+        this.model_dir = MODELS_ROOT + this.model_code + "/";
+        this.pmml_path = model_dir + "final_model.pmml";
+        this.encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
+        this.at_encoder = new Encoder("AtomType", encoders_json);
+        this.imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
+        this.circ_imputer = new CircImputer(imputation_json);
+
+        this.AD_model_path = MODELS_ROOT + "AD/" + "nns_" + target_var + ".ser";
+        this.AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes_" + target_var + ".ser";
+
+        String model_hyperparams = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
+        JSONObject json = new JSONObject(model_hyperparams);
+        Iterator iterator = json.keys();
+        while (iterator.hasNext()) {
+            String param_name = iterator.next().toString();
+            this.model_hyperparams.put(param_name, json.getString(param_name));
+        }
         this.modeller = null;
 
         if (init_models) {
@@ -115,12 +141,17 @@ public class Globals {
 
     public Globals(Namespace args_ns) throws JSONException, IOException
     {
-        this(args_ns.getString("model"), Integer.parseInt(args_ns.getString("depth")), false, false);
+        this(
+                args_ns.getString("model")
+                , Integer.parseInt(args_ns.getString("depth"))
+                , false
+                , false
+                , !args_ns.getBoolean("no_app_domain")
+        );
         System.out.println("Initializing and validating settings...");
         this.output_dir = args_ns.getString("output_directory");
         this.generate_pngs = args_ns.getBoolean("depict_png");
         this.generate_csvs = args_ns.getBoolean("output_csv");
-        this.use_AD = !args_ns.getBoolean("no_app_domain");
         this.cpus = args_ns.getInt("processors");
         this.decision_threshold = args_ns.getString("decision_threshold");
         System.out.println("Selected model: " + args_ns.getString("model"));
@@ -140,36 +171,8 @@ public class Globals {
         System.out.println("Global settings initialized.");
     }
 
-    public void initModels() throws JSONException, IOException {
+    public void initModels() throws IOException {
         if (model_code != null) {
-            this.desc_groups = new HashSet<>(
-                    Arrays.asList(
-                            model_code.split("_")
-                    )
-            );
-            this.model_dir = MODELS_ROOT + this.model_code + "/";
-            this.pmml_path = model_dir + "final_model.pmml";
-            this.encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
-            this.at_encoder = new Encoder("AtomType", encoders_json);
-            this.imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
-            this.circ_imputer = new CircImputer(imputation_json);
-
-            if (use_AD) {
-                this.AD_model_path = MODELS_ROOT + "AD/" + "nns_" + target_var + ".ser";
-                this.AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes_" + target_var + ".ser";
-            } else {
-                this.AD_model_path = null;
-                this.AD_model_attrs_path = null;
-            }
-
-            String model_hyperparams = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
-            JSONObject json = new JSONObject(model_hyperparams);
-            Iterator iterator = json.keys();
-            while (iterator.hasNext()) {
-                String param_name = iterator.next().toString();
-                this.model_hyperparams.put(param_name, json.getString(param_name));
-            }
-
             // init modeller
             try {
                 this.modeller = new Modeller(this);
@@ -245,6 +248,25 @@ public class Globals {
         } else {
             return false;
         }
+    }
+
+    public void setADModel(String AD_model_path, String AD_model_attrs_path) throws IOException, ClassNotFoundException {
+        this.use_AD = true;
+        this.AD_model_path = AD_model_path;
+        this.AD_model_attrs_path = AD_model_attrs_path;
+        this.modeller.setADModel(AD_model_path, AD_model_attrs_path);
+    }
+
+    public void setADModel(Pair<NearestNeighbourSearch, List<String>> model) throws IOException, ClassNotFoundException {
+        this.modeller.setADModel(model);
+    }
+
+    public Pair<String, String> getADModelInfo() {
+        return new Pair<>(this.AD_model_path, this.AD_model_attrs_path);
+    }
+
+    public Pair<NearestNeighbourSearch, List<String>> getADModel() {
+        return this.modeller.getADModel();
     }
 
     @Override

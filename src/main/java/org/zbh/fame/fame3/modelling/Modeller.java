@@ -2,6 +2,7 @@ package org.zbh.fame.fame3.modelling;
 
 import com.google.common.collect.RangeSet;
 import main.NearestNeighbourSearch;
+import org.apache.commons.math3.util.Pair;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.globals.Globals;
@@ -27,7 +28,7 @@ import java.util.*;
 public class Modeller {
 
     private Evaluator evaluator;
-    private final NearestNeighbourSearch nns;
+    private NearestNeighbourSearch nns;
     private List<String> nns_attributes;
     public static final int bits_per_layer = 32;
     public static final int yes_val = 0;
@@ -44,20 +45,33 @@ public class Modeller {
         evaluator = modelEvaluator;
 
         if (globals.use_AD) {
-            System.out.println("Loading applicability domain model...");
-            InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
-            InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
-            ObjectInputStream in = new ObjectInputStream(file_in);
-            ObjectInputStream in2 = new ObjectInputStream(file2_in);
-            nns = (NearestNeighbourSearch) in.readObject();
-            nns_attributes = (List<String>) in2.readObject();
-            in.close();
-            in2.close();
-            file_in.close();
-            file2_in.close();
+            setADModel(globals.AD_model_path, globals.AD_model_attrs_path);
         } else {
             nns = null;
         }
+    }
+
+    public void setADModel(String AD_model_path, String AD_model_attrs_path) throws IOException, ClassNotFoundException {
+        System.out.println("Loading applicability domain model...");
+        InputStream file_in = Modeller.class.getResourceAsStream(AD_model_path);
+        InputStream file2_in = Modeller.class.getResourceAsStream(AD_model_attrs_path);
+        ObjectInputStream in = new ObjectInputStream(file_in);
+        ObjectInputStream in2 = new ObjectInputStream(file2_in);
+        nns = (NearestNeighbourSearch) in.readObject();
+        nns_attributes = (List<String>) in2.readObject();
+        in.close();
+        in2.close();
+        file_in.close();
+        file2_in.close();
+    }
+
+    public void setADModel(Pair<NearestNeighbourSearch, List<String>> model) throws IOException, ClassNotFoundException {
+        this.nns = model.getFirst();
+        this.nns_attributes = model.getSecond();
+    }
+
+    public Pair<NearestNeighbourSearch, List<String>>getADModel() {
+        return new Pair<>(this.nns, this.nns_attributes);
     }
 
     private static PMML loadModel(String pmml_path) throws JAXBException, SAXException {
