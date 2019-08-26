@@ -46,7 +46,12 @@ public class FAMEMolSupplier {
                 errors.addAll(current_parser.getErrors());
                 current_parser = parsers.remove(parsers.size() - 1);
             }
-            return current_parser.hasNext();
+            if (!current_parser.hasNext()) {
+                errors.addAll(current_parser.getErrors());
+                return false;
+            } else {
+                return true;
+            }
         } else {
             errors.addAll(current_parser.getErrors());
             return false;
