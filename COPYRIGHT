@@ -28,8 +28,8 @@
  *
  * The "smartcyp" module was obtained as provided in the original publication: https://academic.oup.com/bioinformatics/article/26/23/2988/221339.
  * This source code is subjected to the following copyright
- * notice, which is also copied at the beginning of each source
- * code file of the "smartcyp" module:
+ * notice (also copied at the beginning of each source
+ * code file of the "smartcyp" module):
  *
  * Copyright (C) 2010-2013  David Gloriam <davidgloriam@googlemail.com> & Patrik Rydberg <patrik.rydberg@gmail.com>
  *
@@ -52,4 +52,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * -------------------------------------------------------------------------------------------------------------------------------
+ *
+ * The "LinearNNSearch.java" and "NearestNeighbourSearch.java" classes were
+ * adapted from the "weka" machine learning library. Minor adjustments
+ * were made to the "LinearNNSearch.java" class in order to make it thread safe.
+ * The adapted source code is subjected to the following copyright notice
+ * (also copied at the beginning of both files):
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * LinearNNSearch.java
+ * NearestNeighbourSearch.java
+ * Copyright (C) 1999-2012 University of Waikato
  */
