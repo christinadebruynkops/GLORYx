@@ -16,6 +16,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.NearestNeighbourSearch;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -47,8 +48,11 @@ public class Modeller {
         if (globals.use_AD) {
             System.out.println("Loading applicability domain model...");
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            InputStream file_in = classLoader.getResourceAsStream(globals.AD_model_path);
-            InputStream file2_in = classLoader.getResourceAsStream(globals.AD_model_attrs_path);
+            
+            InputStream file_in = new FileInputStream(globals.AD_model_path);
+            InputStream file2_in = new FileInputStream(globals.AD_model_attrs_path);
+//            InputStream file_in = classLoader.getResourceAsStream(globals.AD_model_path);
+//            InputStream file2_in = classLoader.getResourceAsStream(globals.AD_model_attrs_path);
 //            InputStream file_in = Modeller.class.getResourceAsStream(globals.AD_model_path);
 //            InputStream file2_in = Modeller.class.getResourceAsStream(globals.AD_model_attrs_path);
             ObjectInputStream in = new ObjectInputStream(file_in);
@@ -64,7 +68,8 @@ public class Modeller {
 
     private static PMML loadModel(String pmml_path) throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        InputStream res = classLoader.getResourceAsStream(pmml_path);
+        InputStream res = new FileInputStream(pmml_path);
+//        InputStream res = classLoader.getResourceAsStream(pmml_path);
 //        InputStream res = Modeller.class.getResourceAsStream(pmml_path);
         PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;
