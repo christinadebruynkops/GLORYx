@@ -40,6 +40,7 @@ public class Globals {
     public Set<String> desc_groups;
     public boolean generate_pngs;
     public boolean generate_csvs;
+    public boolean generate_html;  // new for GLORY
     public boolean use_AD;
     public Depictor depictor;
     public Depictor som_depictor;
@@ -66,6 +67,7 @@ public class Globals {
         this.model_name = model_map.get(args_ns.getString("model")) + "_" + args_ns.getString("depth");;
         this.generate_pngs = args_ns.getBoolean("depict_png");
         this.generate_csvs = args_ns.getBoolean("output_csv");
+        this.generate_html = args_ns.getBoolean("output_html");
         this.use_AD = !args_ns.getBoolean("no_app_domain");
         this.target_var = model_map.get(args_ns.getString("model"));
         this.depictor = new Depictor();

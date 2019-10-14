@@ -281,6 +281,10 @@ public class Main {
                 .action(Arguments.storeTrue())
                 .setDefault(false)
                 .help("Saves calculated descriptors and predictions to CSV files.");
+        parser.addArgument("-l", "--output-html") // for implementation in GLORY
+        			.action(Arguments.storeTrue())
+        			.setDefault(false)
+        			.help("Creates HTML file visualizing predictions.");
         parser.addArgument("-t", "--decision-threshold")
                 .setDefault("model")
                 .help("Define the decision threshold for the model (0 to 1). Use \"model\" for the default model threshold.");
