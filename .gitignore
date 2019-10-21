@@ -2,3 +2,5 @@
 /target/
 /test_files/
 /src/main/resources/models/
+/fame_ii/target/
+/fame_ii/.*
