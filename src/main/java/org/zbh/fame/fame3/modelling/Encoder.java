@@ -29,13 +29,21 @@ public class Encoder {
         }
     }
 
-    public void encode(IAtomContainer molecule) {
+    public void encode(IAtomContainer molecule) throws Exception {
         for (IAtom atom : molecule.atoms()) {
             if (atom.getSymbol().equalsIgnoreCase("H")) {
                 continue;
             }
             String current_val = atom.getProperty(descriptor).toString();
-            atom.setProperty(descriptor, encoder_map.get(current_val));
+            
+            if (current_val.equals("O.co2")) {
+            	// FIXME: look into this and fix properly
+            		current_val = "O.2";
+            }
+
+            	Integer encoded_val = encoder_map.get(current_val);
+            	if (encoded_val == null) throw new Exception("Unknown atom type code:" + current_val);
+            	atom.setProperty(descriptor, encoded_val);
         }
     }
 }
