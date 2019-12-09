@@ -120,7 +120,7 @@ public class Main {
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
         parser.addArgument("-m", "--model")
-                .choices("P1+P2", "P1", "P2").setDefault("P1+P2")
+                .choices("P1+P2", "P1", "P2", "glucuronidation", "acetylation", "gshconjugation", "methylation", "sulfonation").setDefault("P1+P2") // changed to add specific phase 2 reaction type models
                 .help("Model to use to generate predictions. " +
                         "Select P1+P2 to predict both phase I and phase II SOMs. " +
                         "Select P1 to predict phase I only. " +
