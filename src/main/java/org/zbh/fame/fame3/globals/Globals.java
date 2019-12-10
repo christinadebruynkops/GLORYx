@@ -65,11 +65,11 @@ public class Globals {
         model_map.put("P1+P2", "global");
         model_map.put("P1", "phaseI");
         model_map.put("P2", "phaseII");
-        model_map.put("glucuronidation", "glucuronidation"); // added individual phase 2 reaction type model names
-        model_map.put("acetylation", "acetylation"); 
-        model_map.put("gshconjugation", "gshconjugation");
-        	model_map.put("methylation", "methylation");
-        	model_map.put("sulfonation", "sulfonation");
+        model_map.put("UGT", "glucuronidation"); // added individual phase 2 reaction type model names
+        model_map.put("NAT", "acetylation"); 
+        model_map.put("GST", "gshconjugation");
+        	model_map.put("MT", "methylation");
+        	model_map.put("SULT", "sulfonation");
 
         this.model_name = null;
         this.model_code = null;
