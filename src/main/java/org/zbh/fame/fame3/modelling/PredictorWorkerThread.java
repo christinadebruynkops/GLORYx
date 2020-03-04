@@ -10,6 +10,7 @@ import org.zbh.fame.fame3.globals.Globals;
 import org.zbh.fame.fame3.modelling.descriptors.PartialSigmaChargeDescriptorPatched;
 import org.zbh.fame.fame3.modelling.descriptors.circular.CircularCollector;
 import org.zbh.fame.fame3.modelling.descriptors.circular.NeighborhoodIterator;
+import org.openscience.cdk.aromaticity.Kekulization;
 import org.openscience.cdk.atomtype.IAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -136,6 +137,7 @@ public class PredictorWorkerThread implements Runnable {
 				throw new Exception("Error: Two components after standardization: " + mol_name);
 			}
 
+
 			System.out.println("Processing molecule: " + mol_name);
 			if (globals.generate_pngs && globals.output_dir != null) {
 				globals.depictor.generateDepiction((IAtomContainer) molecule, out_dir + mol_name + ".png");
@@ -144,12 +146,21 @@ public class PredictorWorkerThread implements Runnable {
 			// start stop watch
 			long startTime = System.nanoTime();
 
-			// prepare the structure
-			AllRingsFinder finder = new AllRingsFinder();
-			IRingSet rings = finder.findAllRings(molecule);
-			for (IAtomContainer ring: rings.atomContainers()) {
-				DeAromatizationTool.deAromatize((IRing) ring);
+
+			// Replaced this deprecated code because it cannot handle e.g. a thiophene ring
+//			// prepare the structure
+//			AllRingsFinder finder = new AllRingsFinder();
+//			IRingSet rings = finder.findAllRings(molecule);
+//			for (IAtomContainer ring: rings.atomContainers()) {
+//				DeAromatizationTool.deAromatize((IRing) ring);
+//			}
+			try {
+				Kekulization.kekulize(molecule);
+			} catch (CDKException e1) {
+				System.out.println("Error kekulizing molecule {}" + (String) molecule.getProperty(Globals.ID_PROP));
 			}
+			
+			
 			AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
 			// aromatize; required for correct Sybyl atom type determination
 			SMSDNormalizer.aromatizeMolecule(molecule);
@@ -164,6 +175,7 @@ public class PredictorWorkerThread implements Runnable {
 //			FixBondOrdersTool botool = new FixBondOrdersTool();
 //			botool.kekuliseAromaticRings(molecule);
 //			CDKHueckelAromaticityDetector.detectAromaticity(molecule);
+
 
 			// check atom types and count the number of added hydrogens
 			int hydrogens_total = 0;
