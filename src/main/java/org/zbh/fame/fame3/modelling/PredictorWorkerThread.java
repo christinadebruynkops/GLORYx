@@ -147,19 +147,12 @@ public class PredictorWorkerThread implements Runnable {
 			long startTime = System.nanoTime();
 
 
-			// Replaced this deprecated code because it cannot handle e.g. a thiophene ring
 //			// prepare the structure
-//			AllRingsFinder finder = new AllRingsFinder();
-//			IRingSet rings = finder.findAllRings(molecule);
-//			for (IAtomContainer ring: rings.atomContainers()) {
-//				DeAromatizationTool.deAromatize((IRing) ring);
-//			}
-			try {
-				Kekulization.kekulize(molecule);
-			} catch (CDKException e1) {
-				System.out.println("Error kekulizing molecule {}" + (String) molecule.getProperty(Globals.ID_PROP));
+			AllRingsFinder finder = new AllRingsFinder();
+			IRingSet rings = finder.findAllRings(molecule);
+			for (IAtomContainer ring: rings.atomContainers()) {
+				DeAromatizationTool.deAromatize((IRing) ring);
 			}
-			
 			
 			AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
 			// aromatize; required for correct Sybyl atom type determination
