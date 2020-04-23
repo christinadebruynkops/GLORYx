@@ -1,5 +1,7 @@
 package org.zbh.fame.fame3.main;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.globals.Globals;
 import org.zbh.fame.fame3.modelling.Predictor;
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -24,6 +26,8 @@ import java.util.List;
  */
 public class Main {
 
+	private static final Logger logger = LoggerFactory.getLogger(Main.class.getName());
+	
     public static void main(String[] args) throws Exception {
         ArgumentParser parser = getArgumentParser();
 
@@ -45,7 +49,7 @@ public class Main {
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             if (e.getMessage().equals("too few arguments")) {
-                System.err.println("Run the program with the '-h' or '--help' option to see detailed usage description.");
+                logger.error("Run the program with the '-h' or '--help' option to see detailed usage description.");
             }
             System.exit(1);
         }
@@ -62,12 +66,12 @@ public class Main {
         int counter = 1;
         for (String input_file : file_inputs) {
             if (input_file.endsWith(".smi")) {
-                System.out.println("Processing SMILES file: " + input_file);
+                logger.debug("Processing SMILES file: " + input_file);
                 SMILESFileParser smi_parser = new SMILESFileParser(input_file, "SMIFile_" + counter++ + "_");
                 parsers.add(smi_parser);
             } else {
                 // all unrecognized files are processed as SDF files
-                System.out.println("Processing SDF file: " + input_file);
+                logger.debug("Processing SDF file: " + input_file);
                 SDFParser sdf_parser = new SDFParser(input_file, "SDF_" + counter++ + "_");
                 parsers.add(sdf_parser);
             }
@@ -75,7 +79,7 @@ public class Main {
 
         // process smiles input list
         if (!smile_inputs.isEmpty()) {
-            System.out.println("Processing SMILES: " + smile_inputs.toString());
+            logger.debug("Processing SMILES: " + smile_inputs.toString());
             List<String> names = args_ns.<String>getList("names");
             if (names == null) {
                 parsers.add(new SMILESListParser(smile_inputs, "SMIList_" + counter++ + "_"));

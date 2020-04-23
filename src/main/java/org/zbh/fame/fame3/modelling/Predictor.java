@@ -27,12 +27,12 @@ public class Predictor {
     
     private boolean save_molecules;
     private IAtomContainerSet predictedMolecules;
-
+    
 	public Predictor(Globals globals, FAMEMolSupplier supplier) {
         if (globals.isValid()) {
             this.globals = globals;
         } else {
-            System.err.println(globals.toString());
+            logger.error(globals.toString());
             throw new IllegalArgumentException("Global parameters are invalid. Aborting...");
         }
         this.supplier = supplier;

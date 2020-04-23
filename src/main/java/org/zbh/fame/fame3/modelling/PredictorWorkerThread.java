@@ -26,6 +26,8 @@ import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.DeAromatizationTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.utils.Utils;
 import org.zbh.fame.fame3.utils.data.Predictions;
 import org.zbh.fame.fame3.utils.depiction.DepictorSMARTCyp;
@@ -47,6 +49,9 @@ public class PredictorWorkerThread implements Runnable {
 	private boolean returnMol;
 	private boolean useAD;
 	private String decision_threshold;
+	
+	private static final Logger logger = LoggerFactory.getLogger(PredictorWorkerThread.class.getName());
+
 
 	private static final Set<String> allowed_atoms = new HashSet<>(Arrays.asList(
 			"C"
@@ -125,7 +130,7 @@ public class PredictorWorkerThread implements Runnable {
 			SMIRKSReaction transformationNitroGroup = smirksManager.parse(nitroGroupStandardizationSMIRKS);
 			SMIRKSReaction transformationExpandedValenceNitrogen = smirksManager.parse(nitrogenStandardizationSMIRKS);
 			if (smirksManager.hasErrors()) {
-				System.out.println("Error parsing SMIRKS " + nitroGroupStandardizationSMIRKS);
+				logger.error("Error parsing SMIRKS " + nitroGroupStandardizationSMIRKS);
 			}
 			smirksManager.applyTransformation(molecule, null, transformationNitroGroup);  // apply this first because otherwise the other SMIRKS may result in two (same) products. Only want one.
 			smirksManager.applyTransformation(molecule, null, transformationExpandedValenceNitrogen);
@@ -138,7 +143,7 @@ public class PredictorWorkerThread implements Runnable {
 			}
 
 
-			System.out.println("Processing molecule: " + mol_name);
+			logger.debug("Processing molecule: " + mol_name);
 			if (globals.generate_pngs && globals.output_dir != null) {
 				globals.depictor.generateDepiction((IAtomContainer) molecule, out_dir + mol_name + ".png");
 			}
@@ -162,7 +167,7 @@ public class PredictorWorkerThread implements Runnable {
 			try {
 				adder.addImplicitHydrogens(molecule);
 			} catch (Exception exp) {
-				System.err.println("CDK internal error for: " + mol_name);
+				logger.error("CDK internal error for: " + mol_name);
 				throw exp;
 			}
 //			FixBondOrdersTool botool = new FixBondOrdersTool();
@@ -191,16 +196,16 @@ public class PredictorWorkerThread implements Runnable {
 
 			// if implicit hydrogens were added, show a warning and make them explicit
 			if (implicit_hydrogens > 0) {
-				System.err.println("WARNING: implicit hydrogens detected for molecule: " + mol_name);
+				logger.warn("WARNING: implicit hydrogens detected for molecule: " + mol_name);
 
 				// add convert implicit hydrogens to explicit ones
-				System.err.println("Making all hydrogens explicit...");
-				System.err.println("Explicit hydrogens in the original structure: " + Integer.toString(hydrogens_total));
-				System.err.println("Added hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
+				logger.warn("Making all hydrogens explicit...");
+				logger.debug("Explicit hydrogens in the original structure: " + Integer.toString(hydrogens_total));
+				logger.debug("Added hydrogens: " + AtomContainerManipulator.getTotalHydrogenCount(molecule));
 				AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
 
 				if (globals.generate_pngs && globals.output_dir != null) {
-					System.err.println("Generating depiction for: " + mol_name);
+					logger.debug("Generating depiction for: " + mol_name);
 					globals.depictor.generateDepiction((IAtomContainer) molecule, out_dir + mol_name + "_with_hs.png");
 				}
 			}
@@ -254,7 +259,7 @@ public class PredictorWorkerThread implements Runnable {
 //			Utils.protonateCarboxyls(molecule); // protonate the molecule back
 //			Depictor.generateDepiction(molecule, "prot.png");
 
-			System.out.println("Calculating descriptors for: " + mol_name);
+			logger.debug("Calculating descriptors for: " + mol_name);
 
 			// original CDK descriptors used in FAME
 			List<IAtomicDescriptor> calculators = new ArrayList<>();
@@ -350,13 +355,13 @@ public class PredictorWorkerThread implements Runnable {
 				fg_iterator.iterate(fg_collector);
 				fg_collector.writeData(molecule);
 			}
-			System.out.println("Descriptor calculation finished for: " + mol_name);
+			logger.debug("Descriptor calculation finished for: " + mol_name);
 
 			// encode atom types
             globals.at_encoder.encode(molecule);
 
 			// do the modelling and process the results
-			System.out.println("Predicting: " + mol_name);
+			logger.debug("Predicting: " + mol_name);
 			double threshold = Double.parseDouble(globals.model_hyperparams.get("decision_threshold"));
 			if (!decision_threshold.equals("model")) {
 				threshold = Double.parseDouble(decision_threshold);
@@ -371,7 +376,7 @@ public class PredictorWorkerThread implements Runnable {
 			// stop the stop watch and print result
 			long stopTime = System.nanoTime();
 			double elapsedTimeMillis = ((double) (stopTime - startTime)) / 10e6;
-			System.out.println("Prediction finished for " + mol_name + ". Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
+			logger.info("Prediction finished for " + mol_name + ". Elapsed time: " + Double.toString(elapsedTimeMillis) + " ms.");
 
 			// save the MDL block of the molecule to predictions if avaialable
 			if (predictions != null) {
@@ -406,7 +411,7 @@ public class PredictorWorkerThread implements Runnable {
 
 			// write CSV files if requested
 			if (globals.generate_csvs && globals.output_dir != null) {
-				System.out.println("Writing CSV files for: " + mol_name);
+				logger.debug("Writing CSV files for: " + mol_name);
 				// write the basic CDK descriptors
 				List<String> basic_descs = new ArrayList<>(Arrays.asList(
 						"Molecule"
@@ -452,7 +457,7 @@ public class PredictorWorkerThread implements Runnable {
 				}
 			}
 
-			System.out.println("************** Done (" + mol_name + ") **************");
+			logger.info("************** Done (" + mol_name + ") **************");
 			if (!returnMol) {
 				molecule = null; // clears memory since we are done with this one
 			}
@@ -460,22 +465,19 @@ public class PredictorWorkerThread implements Runnable {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			//catches some massive molecules
-			System.out.println("Error: ArrayIndexOutOfBoundsException: " + mol_name);
+			logger.error("Error: ArrayIndexOutOfBoundsException: " + mol_name);
 			saveErrorToPrediction(e);
 		}
 		catch (CDKException e) {
-			System.out.println("Error: CDKException: " + mol_name);
-			e.printStackTrace();
+			logger.error("Error: CDKException: {}", mol_name, e);
             saveErrorToPrediction(e);
 		}
 		catch (IOException e) {
-            System.out.println("Error: IOException: " + mol_name);
-			e.printStackTrace();
+            logger.error("Error: IOException: {}", mol_name, e);
             saveErrorToPrediction(e);
 		}
 		catch (Exception e) {
-			System.out.println("Error: Unknown Exception: " + mol_name);
-			e.printStackTrace();
+			logger.error("Error: Unknown Exception: {}", mol_name, e);
             saveErrorToPrediction(e);
 		}
 	}

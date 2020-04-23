@@ -6,6 +6,8 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.utils.depiction.Depictor;
 
 import java.util.*;
@@ -21,6 +23,9 @@ public class NeighborhoodIterator {
     private IAtomContainer mol;
     private boolean depict = false;
     private boolean ignore_hydrogens = true;
+    
+	private static final Logger logger = LoggerFactory.getLogger(NeighborhoodIterator.class.getName());
+
 
     public NeighborhoodIterator(IAtomContainer mol, int depth) {
         this.mol = mol;
@@ -96,7 +101,7 @@ public class NeighborhoodIterator {
                     }
                     depictNeighborhood(mol, fragment_atoms, String.format("%s_%d.png", mol.getProperty(Globals.ID_PROP), idx + 1));
                 } catch (Exception exp) {
-                    System.err.println("WARNING: failed to generate neighborhood depiction");
+                    logger.warn("WARNING: failed to generate neighborhood depiction");
                     exp.printStackTrace();
                 }
             }

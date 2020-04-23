@@ -5,7 +5,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IIteratingChemObjectReader;
 import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.smiles.SmilesGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.globals.Globals;
+
 import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
@@ -23,6 +26,9 @@ public class SDFParser implements FAMEFileParser {
     private IIteratingChemObjectReader reader;
     private int counter;
     private List<FAMEFileParserException> errors;
+    
+	private static final Logger logger = LoggerFactory.getLogger(SDFParser.class.getName());
+
 
     public SDFParser(String sdf_path) {
         this.sdf_path = sdf_path;
@@ -69,7 +75,7 @@ public class SDFParser implements FAMEFileParser {
             counter = 0;
         } catch (FileNotFoundException e) {
             String message = "Input SDF could not be read:" + getFilePath();
-            System.err.println(message);
+            logger.error(message);
             this.errors.add(new FAMEFileParserException(message, e));
             e.printStackTrace();
             throw e;
@@ -117,7 +123,7 @@ public class SDFParser implements FAMEFileParser {
                 molecule.setProperty(Globals.ID_PROP, molecule.getProperty("Identifier"));
                 if (molecule.getProperty(Globals.ID_PROP) == null) {
                     molecule.setProperty(Globals.ID_PROP, prefix + counter++);
-                    System.err.println("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
+                    logger.warn("WARNING: No SDF name field found for molecule:\n" + smi_gen.createSMILES(molecule) + ".\nUsing a generated name: " + molecule.getProperty(Globals.ID_PROP));
                 }
             } else {
 //				System.out.println("Reading " + molecule.getProperty(Globals.ID_PROP));
@@ -126,12 +132,12 @@ public class SDFParser implements FAMEFileParser {
             try {
                 MoleculeKUFAME mol_ku = new MoleculeKUFAME(molecule, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
                 mol_ku.setProperties(molecule.getProperties());
-                System.out.println("Successfully parsed structure from SDF for: " + molecule.getProperty(Globals.ID_PROP));
+                logger.debug("Successfully parsed structure from SDF for: " + molecule.getProperty(Globals.ID_PROP));
                 mol_ku.setProperty(Globals.FILE_PATH_PROP, getFilePath());
                 return mol_ku;
             } catch (CloneNotSupportedException e) {
                 this.errors.add(new FAMEFileParserException(e, molecule.getProperty(Globals.ID_PROP).toString(), getFilePath()));
-                e.printStackTrace();
+                logger.error("Error parsing molecule.", e);
                 return null;
             }
         } else {
@@ -145,7 +151,7 @@ public class SDFParser implements FAMEFileParser {
             try {
                 initReader();
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            		logger.error("File not found.", e);
                 return false;
             }
         }

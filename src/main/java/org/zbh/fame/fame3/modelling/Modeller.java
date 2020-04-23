@@ -4,6 +4,8 @@ import com.google.common.collect.RangeSet;
 import main.NearestNeighbourSearch;
 import org.apache.commons.math3.util.Pair;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.zbh.fame.fame3.globals.Globals;
 import org.apache.commons.math3.stat.StatUtils;
@@ -41,8 +43,11 @@ public class Modeller {
     public static final String proba_no_fld = "probability(" + no_val + ")";
     public static final String is_som_fld = "isSoM";
 
+	private static final Logger logger = LoggerFactory.getLogger(Modeller.class.getName());
+
+    
     public Modeller(Globals globals) throws JAXBException, SAXException, IOException, ClassNotFoundException {
-        System.out.println("Loading model...");
+        logger.info("Loading model...");
         PMML pmml = loadModel(globals.pmml_path);
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
@@ -56,7 +61,7 @@ public class Modeller {
     }
 
     public void setADModel(String AD_model_path, String AD_model_attrs_path) throws IOException, ClassNotFoundException {
-        System.out.println("Loading applicability domain model...");
+        logger.info("Loading applicability domain model...");
 //        InputStream file_in = Modeller.class.getResourceAsStream(AD_model_path);
 //        InputStream file2_in = Modeller.class.getResourceAsStream(AD_model_attrs_path);
         InputStream file_in = new FileInputStream(AD_model_path);

@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.qsar.AtomValenceTool;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.utils.Utils;
 import org.zbh.fame.fame3.utils.depiction.Depictor;
 
@@ -59,6 +61,9 @@ public class Globals {
     public static final String FILE_PATH_PROP = "FAME:File";
     public int cpus;
     public String decision_threshold;
+    
+	private static final Logger logger = LoggerFactory.getLogger(Globals.class.getName());
+
 
     public Globals() throws JSONException, IOException {
         this.model_map = new HashMap<>();
@@ -157,17 +162,17 @@ public class Globals {
                 , false
                 , !args_ns.getBoolean("no_app_domain")
         );
-        System.out.println("Initializing and validating settings...");
+        logger.info("Initializing and validating settings...");
         this.output_dir = args_ns.getString("output_directory");
         this.generate_pngs = args_ns.getBoolean("depict_png");
         this.generate_csvs = args_ns.getBoolean("output_csv");
         this.generate_html = args_ns.getBoolean("output_html");
         this.cpus = args_ns.getInt("processors");
         this.decision_threshold = args_ns.getString("decision_threshold");
-        System.out.println("Selected model: " + args_ns.getString("model"));
-        System.out.println("Model bond depth: " + this.circ_depth);
-        System.out.println("Decision threshold: " + this.decision_threshold);
-        System.out.println("Output Directory: " + this.output_dir);
+        logger.info("Selected model: " + args_ns.getString("model"));
+        logger.info("Model bond depth: " + this.circ_depth);
+        logger.info("Decision threshold: " + this.decision_threshold);
+        logger.info("Output Directory: " + this.output_dir);
 
         // init PNG depictor
         initPNGDepictor();
@@ -178,7 +183,7 @@ public class Globals {
         // init directories
         initDirectories();
 
-        System.out.println("Global settings initialized.");
+        logger.info("Global settings initialized.");
     }
 
     public void initModels() throws IOException {
@@ -187,9 +192,8 @@ public class Globals {
             try {
                 this.modeller = new Modeller(this);
             } catch (JAXBException | SAXException | ClassNotFoundException e) {
-                System.err.println("Failed to initialize and parse model: " + model_code);
-                System.err.println("Settings might be invalid.");
-                e.printStackTrace();
+                logger.error("Failed to initialize and parse model: {}", model_code);
+                logger.error("Settings might be invalid. {}", e);
             }
         } else {
             this.model_dir = null;
@@ -296,7 +300,7 @@ public class Globals {
                 }
                 field_vals.append("\n");
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            		logger.error("Error. {}", e);
             }
         }
         return field_vals.toString();

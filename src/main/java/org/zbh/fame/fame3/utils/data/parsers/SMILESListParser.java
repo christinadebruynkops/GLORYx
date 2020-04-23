@@ -4,7 +4,10 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.SmilesParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zbh.fame.fame3.globals.Globals;
+
 import smartcyp.SMARTSnEnergiesTable;
 import org.zbh.fame.fame3.utils.MoleculeKUFAME;
 
@@ -20,6 +23,9 @@ public class SMILESListParser implements FAMEFileParser {
     private String prefix;
     private List<IAtomContainer> molecules;
     private List<FAMEFileParserException> errors;
+    
+	private static final Logger logger = LoggerFactory.getLogger(SMILESListParser.class.getName());
+
 
     public SMILESListParser(List<String> smiles) {
         this.smiles = new LinkedList<>(smiles);
@@ -71,7 +77,7 @@ public class SMILESListParser implements FAMEFileParser {
                 mol = sp.parseSmiles(smiles);
             } catch (InvalidSmilesException ise) {
                 String message = "WARNING: SMILES parsing failed for: " + smiles;
-                System.err.println(message);
+                logger.error(message);
                 this.errors.add(new FAMEFileParserException(message, ise, smiles, smiles));
                 ise.printStackTrace();
                 continue;
@@ -84,7 +90,7 @@ public class SMILESListParser implements FAMEFileParser {
             }
             counter++;
 
-            System.out.println("Generating identifier for " + smiles + ": " + mol.getProperty(Globals.ID_PROP));
+            logger.debug("Generating identifier for " + smiles + ": " + mol.getProperty(Globals.ID_PROP));
             try {
                 MoleculeKUFAME mol_ku = new MoleculeKUFAME(mol, new SMARTSnEnergiesTable().getSMARTSnEnergiesTable());
                 mol_ku.setProperties(mol.getProperties());
@@ -92,7 +98,7 @@ public class SMILESListParser implements FAMEFileParser {
                 molecules.add(mol_ku);
             } catch (CloneNotSupportedException e) {
                 this.errors.add(new FAMEFileParserException(e, smiles, smiles));
-                e.printStackTrace();
+                logger.error("Error parsing molecule.", e);
             }
         }
 
