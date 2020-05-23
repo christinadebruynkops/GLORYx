@@ -46,7 +46,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
     public void writeHTML(IAtomContainerSet moleculeSet) {
         if (globals.output_dir != null) {
             try {
-                if (OutputFile=="") OutputFile = "FAME_2_Results_" + this.dateAndTime;
+                if (OutputFile=="") OutputFile = "FAME_3_Results_" + this.dateAndTime;
                 outfile = new PrintWriter(new BufferedWriter(new FileWriter(this.OutputFile)));
             } catch (IOException e) {
                 System.out.println("Could not create HTML outfile");
@@ -92,6 +92,9 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("<head>");
         outfile.println("");
         outfile.println("<title>FAME 3 Output</title>");
+        
+        outfile.println("{% load static %}");  // needed for webserver
+
         outfile.println("<style type=\"text/css\">");
         outfile.println("<!--");
         outfile.println("body {");
@@ -151,12 +154,17 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("canvas.ChemDoodleWebComponent {border: none;}");
         outfile.println("-->");
         outfile.println("</style>");
-        if (this.isUsingPlacehoders()) {
-            outfile.println("${chemdoodle_js}");
-        } else {
-            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb-libs.js\"></script>");
-            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb.js\"></script>");
-        }
+//        if (this.isUsingPlacehoders()) {
+//            outfile.println("${chemdoodle_js}");
+//        } else {
+//            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb-libs.js\"></script>");
+//            outfile.println("<script type=\"text/javascript\" src=\"../ui/ChemDoodleWeb.js\"></script>");
+//        }
+
+        // for webserver
+        outfile.println("<script type=\"text/javascript\" src=\"{% static \"metabol/ui/ChemDoodleWeb-libs.js\" %}\"></script>");
+        outfile.println("<script type=\"text/javascript\" src=\"{% static \"metabol/ui/ChemDoodleWeb.js\" %}\"></script>");
+        
         outfile.println("<script type=\"text/javascript\">");
         outfile.println("function roll_over(img_name, img_src)");
         outfile.println("   {");
@@ -233,11 +241,11 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         }
         else {
             //no error message, print normal output
-            outfile.println("<h1>FAME 3 Output</h1>");
-            outfile.println("\n <b>Produced:</b> " + this.dateAndTime + ".<br />");
-            outfile.println("\n <b>Input file:</b> " + Arrays.toString(namesOfInfiles) + ".<br />");
-            outfile.println("\n <br /><br /><b>Visualization:</b><br />");
-            outfile.println("\n <i>To alternate between atoms and atom numbers, move the mouse cursor over the figure.</i>");
+            outfile.println("<h2>Sites of Metabolism Predicted by FAME 3</h2>");
+//            outfile.println("\n <b>Produced:</b> " + this.dateAndTime + ".<br />");
+//            outfile.println("\n <b>Input file:</b> " + Arrays.toString(namesOfInfiles) + ".<br />");
+            outfile.println("\n <b>Visualization:</b><br />");
+            outfile.println("\n <i>To alternate between atoms and atom numbers, move the mouse cursor over the figure.</i><br />");
 
 
             // Iterate MoleculKUs
@@ -410,21 +418,24 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
         outfile.println("</td>");
         outfile.println("<td style='vertical-align:top;'>");
         outfile.println("<ul id='navlist'>");
-        outfile.println("<li id='cypHLM' style=\"padding: 2px;\">Model: " + this.model_map.get(globals.model_name.split("_")[0]) + " (depth: " + Integer.toString(globals.circ_depth) + ")</li>");
+        outfile.println("<li id='cypHLM' style=\"padding: 2px; background-color: white; border: none;\">Model: " + this.model_map.get(globals.model_name.split("_")[0]) + " (depth: " + Integer.toString(globals.circ_depth) + ")</li>");
 //        outfile.println("<li id='cyp3A4'><a href=\"javascript:Switch2D6and3A4('3A4')\" title=\"Click to show standard predictions\">Standard</a></li>");
 //        outfile.println("<li id='cyp2C9'><a href=\"javascript:Switch2D6and3A4('2C9')\" title=\"Click to show CYP2C predictions\">CYP2C</a></li>");
 //        outfile.println("<li id='cyp2D6'><a href=\"javascript:Switch2D6and3A4('2D6')\" >CYP2D6</a></li>");
         outfile.println("</ul>");
 
-        outfile.println("<div class='tableHLM'>");
+//        outfile.println("<div class='tableHLM'>");
+        outfile.println("<div class='tableHLM' style='margin-top: 8px'>");
 
         // Visible header for Molecule
         outfile.println("<span class=\"boldlarge\">" + title + "</span><br />");
 
         // Table of Atom data
         outfile.println("<table class=\"molecule\">");
-        outfile.println("<tr><th>Atom</th><th>Probability</th><th>FAMEscore</th></tr>");
+//        outfile.println("<tr><th>Atom</th><th>Probability</th><th>FAMEscore</th></tr>");
+        outfile.println("<tr><th>Atom</th><th>Probability</th></tr>");
 
+        
         // Iterate over the Atoms in this sortedAtomsTreeSet
         TreeSet<IAtom> sortedAtomsTreeSet = (TreeSet<IAtom>) ((MoleculeKUFAME) moleculeKU).getAtomsSortedByHLMProbability();
 
@@ -865,7 +876,7 @@ public class DepictorSMARTCyp extends WriteResultsAsChemDoodleHTML {
 
         outfile.println("<td>" + atom.getSymbol() + "."+ atom.getID() + "</td>"); // For example C.22 or N.9
         outfile.println("<td>" + roundProp(atom.getProperty(Modeller.proba_yes_fld)) + "</td>");
-        outfile.println("<td>" + roundProp(atom.getProperty("AD_score")) + "</td>");
+//        outfile.println("<td>" + roundProp(atom.getProperty("AD_score")) + "</td>"); // for webserver
 
 //        if(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom) == null) outfile.println("<td>-</td>");
 //        else outfile.println("<td>" + twoDecimalFormat.format(MoleculeKU.SMARTCYP_PROPERTY.Score2D6.get(atom)) + "</td>");

@@ -39,7 +39,7 @@ import java.text.DecimalFormatSymbols;
 
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 
 import smartcyp.MoleculeKU.SMARTCYP_PROPERTY;
 
@@ -74,7 +74,7 @@ public class WriteResultsAsHTML {
 	}
 
 	
-	public void writeHTML(MoleculeSet moleculeSet) {
+	public void writeHTML(IAtomContainerSet moleculeSet) {
 		
 		if (OutputFile=="") OutputFile = "SMARTCyp_Results_" + this.dateAndTime;
 
@@ -94,7 +94,7 @@ public class WriteResultsAsHTML {
 	}
 
 
-	public void writeHead(MoleculeSet moleculeSet){
+	public void writeHead(IAtomContainerSet moleculeSet){
 
 		outfile.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 		outfile.println("");
@@ -169,21 +169,21 @@ public class WriteResultsAsHTML {
 		outfile.println("	}");
 		outfile.println("function Switch2D6and3A4(cyp2show) {");
 		outfile.println("	var cyp2d6list = [];");
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 			int iplusone = moleculeIndex + 1;
 			outfile.println("	cyp2d6list[" + moleculeIndex + "] = \"molecule" + iplusone + "CYP2D6\";");
 		}
 		outfile.println("	var cyp3a4list = [];");
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 			int iplusone = moleculeIndex + 1;
 			outfile.println("	cyp3a4list[" + moleculeIndex + "] = \"molecule" + iplusone + "standard\";");
 		}
 		outfile.println("	var cyp2c9list = [];");
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 			int iplusone = moleculeIndex + 1;
 			outfile.println("	cyp2c9list[" + moleculeIndex + "] = \"molecule" + iplusone + "CYP2C9\";");
 		}
-		outfile.println("	var maxmol = " + moleculeSet.getMoleculeCount() + ";");
+		outfile.println("	var maxmol = " + moleculeSet.getAtomContainerCount() + ";");
 		outfile.println("	if(cyp2show=='2D6'){");
 		outfile.println("		for(var i=0; i<maxmol; i++) {"); 
 		outfile.println("			HideContent(cyp3a4list[i]);");
@@ -212,11 +212,11 @@ public class WriteResultsAsHTML {
 
 	}
 
-	public void writeBody(MoleculeSet moleculeSet){
+	public void writeBody(IAtomContainerSet moleculeSet){
 
 		outfile.println("<body>");
 		//error message if problems
-		if (moleculeSet.getMoleculeCount()==0){
+		if (moleculeSet.getAtomContainerCount()==0){
 			outfile.println("<h1>There were no molecules in the input</h1>");
 		}
 		else {
@@ -228,17 +228,17 @@ public class WriteResultsAsHTML {
 		
 
 		// Iterate MoleculKUs
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 
-			MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getMolecule(moleculeIndex);
+			MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getAtomContainer(moleculeIndex);
 			this.writeMoleculeKUTable(moleculeKU);
 		}
 		
 		
 		// Iterate again to preload images with atom numbers
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 
-			MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getMolecule(moleculeIndex);
+			MoleculeKU moleculeKU = (MoleculeKU) moleculeSet.getAtomContainer(moleculeIndex);
 			this.writePreLoadImage(moleculeKU);
 		}
 		}

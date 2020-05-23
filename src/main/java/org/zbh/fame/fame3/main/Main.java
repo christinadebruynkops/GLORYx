@@ -119,8 +119,8 @@ public class Main {
                         "\n\n2. MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data\n" +
                         "Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa\n" +
                         "Journal of Medicinal Chemistry 2018 61 (3), 1019-1030\n" +
-                        "DOI: 10.1021/acs.jmedchem.7b01473")
-                .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/VERSION.txt")));
+                        "DOI: 10.1021/acs.jmedchem.7b01473");
+//                .version(Utils.convertStreamToString(Main.class.getResourceAsStream("/VERSION.txt")));
         parser.addArgument("--version").action(Arguments.version()).help("Show program version.");
 
         parser.addArgument("-m", "--model")

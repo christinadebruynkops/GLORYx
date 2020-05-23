@@ -19,6 +19,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.zbh.fame.fame3.utils.Utils;
 import org.zbh.fame.fame3.utils.data.Predictions;
 import weka.core.*;
 
@@ -86,8 +87,9 @@ public class Modeller {
     }
 
     private static PMML loadModel(String pmml_path) throws JAXBException, SAXException, FileNotFoundException {
-//        InputStream res = Modeller.class.getResourceAsStream(pmml_path);
-        InputStream res = new FileInputStream(pmml_path);
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+		InputStream res = classLoader.getResourceAsStream(pmml_path);	
+//        InputStream res = new FileInputStream(pmml_path);
         PMML pmml = PMMLUtil.unmarshal(res);
         return pmml;
     }

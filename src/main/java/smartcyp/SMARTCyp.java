@@ -40,17 +40,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.lang.System;
 
+import org.openscience.cdk.AtomContainerSet;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
+import org.openscience.cdk.AtomContainerSet;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLReader;
 import org.openscience.cdk.io.SMILESReader;
@@ -189,11 +189,11 @@ public class SMARTCyp {
 		
 		// Read in structures/molecules
 		System.out.println("\n ************** Reading molecule structures **************");
-		MoleculeSet moleculeSet = SMARTCyp.readInStructures(filenames, SMARTSnEnergiesTable.getSMARTSnEnergiesTable());
+		AtomContainerSet AtomContainerSet = SMARTCyp.readInStructures(filenames, SMARTSnEnergiesTable.getSMARTSnEnergiesTable());
 
 		MoleculeKU moleculeKU;
-		for(int moleculeIndex = 0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++){
-			moleculeKU = (MoleculeKU) moleculeSet.getMolecule(moleculeIndex);
+		for(int moleculeIndex = 0; moleculeIndex < AtomContainerSet.getAtomContainerCount(); moleculeIndex++){
+			moleculeKU = (MoleculeKU) AtomContainerSet.getAtomContainer(moleculeIndex);
 			
 			System.out.println("\n ************** Molecule " + (moleculeIndex + 1) + " **************");
 			
@@ -242,12 +242,12 @@ public class SMARTCyp {
 
 		
 		//don't write csv file if there are no molecules in the input
-		if (moleculeSet.getMoleculeCount()>0){
+		if (AtomContainerSet.getAtomContainerCount()>0){
 			if (nocsv==0){
 				// Write results as CSV
 				System.out.println("\n ************** Writing Results as CSV **************");
 				WriteResultsAsCSV writeResultsAsCSV = new WriteResultsAsCSV(dateAndTime, arguments, outputdir, outputfile, printall);
-				writeResultsAsCSV.writeCSV(moleculeSet);
+				writeResultsAsCSV.writeCSV(AtomContainerSet);
 			}
 		}
 		
@@ -257,39 +257,39 @@ public class SMARTCyp {
 			// Write Images	
 			System.out.println("\n ************** Writing Images **************");
 			GenerateImages generateImages = new GenerateImages(dateAndTime, outputdir);
-			generateImages.generateAndWriteImages(moleculeSet);
+			generateImages.generateAndWriteImages(AtomContainerSet);
 
 			// Write results as HTML
 			System.out.println("\n ************** Writing Results as HTML **************");
 			WriteResultsAsHTML writeResultsAsHTML = new WriteResultsAsHTML(dateAndTime, filenames, outputdir, outputfile);
-			writeResultsAsHTML.writeHTML(moleculeSet);
+			writeResultsAsHTML.writeHTML(AtomContainerSet);
 		}
 		
 		if (nohtml==0 && png==0){
 			//use ChemDoodle HTML output
 			System.out.println("\n ************** Writing Results as ChemDoodle HTML **************");
 			WriteResultsAsChemDoodleHTML writeResultsAsChemDoodle = new WriteResultsAsChemDoodleHTML(dateAndTime, filenames, outputdir, outputfile);
-			writeResultsAsChemDoodle.writeHTML(moleculeSet);
+			writeResultsAsChemDoodle.writeHTML(AtomContainerSet);
 		}
 		
 		if (filter == 1){
 			WriteFilterValuesAsCSV writeFilterValuesAsCSV = new WriteFilterValuesAsCSV(dateAndTime, arguments, outputdir, outputfile);
-			writeFilterValuesAsCSV.writeCSV(moleculeSet);
+			writeFilterValuesAsCSV.writeCSV(AtomContainerSet);
 			double FilterValue;
-			MoleculeSet filteredmoleculeSet = new MoleculeSet();;
-			for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
-				MoleculeKU filtermolecule = (MoleculeKU) moleculeSet.getMolecule(moleculeIndex);
+			AtomContainerSet filteredAtomContainerSet = new AtomContainerSet();;
+			for (int moleculeIndex=0; moleculeIndex < AtomContainerSet.getAtomContainerCount(); moleculeIndex++) {
+				MoleculeKU filtermolecule = (MoleculeKU) AtomContainerSet.getAtomContainer(moleculeIndex);
 				//System.out.println(test.getProperty("FilterValue"));
 				FilterValue = (Double) filtermolecule.getProperty("FilterValue"); 
 				if(FilterValue > filtercutoffvalue){
-					filteredmoleculeSet.addAtomContainer(filtermolecule);
+					filteredAtomContainerSet.addAtomContainer(filtermolecule);
 					//System.out.println(moleculeIndex);
 				}	
 			}
 			
 			//now save an outputfile in smiles or sdf format
 			WriteFilterStructures writeFilterStructures = new WriteFilterStructures(dateAndTime, arguments, outputdir, outputfile, smilesinput);
-			writeFilterStructures.write(filteredmoleculeSet);
+			writeFilterStructures.write(filteredAtomContainerSet);
 		}
 		
 		//we're done, if smilesinput then remove the temporary smiles file
@@ -319,9 +319,9 @@ public class SMARTCyp {
 
 	// Reads the molecule infiles
 	// Stores MoleculeKUs and AtomKUs
-	public static MoleculeSet readInStructures(String[] inFileNames, HashMap<String, Double> SMARTSnEnergiesTable) throws CloneNotSupportedException, CDKException{
+	public static AtomContainerSet readInStructures(String[] inFileNames, HashMap<String, Double> SMARTSnEnergiesTable) throws CloneNotSupportedException, CDKException{
 
-		MoleculeSet moleculeSet = new MoleculeSet();
+		AtomContainerSet AtomContainerSet = new AtomContainerSet();
 
 
 		List<IAtomContainer> moleculeList;
@@ -408,17 +408,17 @@ public class SMARTCyp {
 					// Remove salts or solvents... Keep only the largest molecule
 			        if (!ConnectivityChecker.isConnected(iAtomContainerTmp)) {
 			        	//System.out.println(atomContainerNr);
-			             IMoleculeSet fragments = ConnectivityChecker.partitionIntoMolecules(iAtomContainerTmp);
+			             IAtomContainerSet fragments = ConnectivityChecker.partitionIntoMolecules(iAtomContainerTmp);
 
 			             int maxID = 0 ;
 			             int maxVal = -1 ;
-			             for(int i = 0 ; i < fragments.getMoleculeCount() ; i++) {
-			            	 if(fragments.getMolecule(i).getAtomCount() > maxVal) {
+			             for(int i = 0 ; i < fragments.getAtomContainerCount() ; i++) {
+			            	 if(fragments.getAtomContainer(i).getAtomCount() > maxVal) {
 			                     maxID = i ;
-			                     maxVal = fragments.getMolecule(i).getAtomCount();
+			                     maxVal = fragments.getAtomContainer(i).getAtomCount();
 			                 }
 			             }
-			             iAtomContainerTmp = fragments.getMolecule(maxID);
+			             iAtomContainerTmp = fragments.getAtomContainer(maxID);
 			        }
 			        //end of salt removal
 					
@@ -433,7 +433,7 @@ public class SMARTCyp {
 						
 						if(deducebonds){
 							DeduceBondSystemTool dbst = new DeduceBondSystemTool();
-							iAtomContainer = dbst.fixAromaticBondOrders((IMolecule) iAtomContainer);
+							iAtomContainer = dbst.fixAromaticBondOrders((IAtomContainer) iAtomContainer);
 						}
 						
 						
@@ -441,7 +441,7 @@ public class SMARTCyp {
 						CDKHueckelAromaticityDetector.detectAromaticity(iAtomContainer); 	
 							
 						moleculeKU = new MoleculeKU(iAtomContainer, SMARTSnEnergiesTable);	
-						moleculeSet.addMolecule(moleculeKU);
+						AtomContainerSet.addAtomContainer(moleculeKU);
 						moleculeKU.setID(Integer.toString(highestMoleculeID));
 						//set the molecule title in the moleculeKU object
 						if (iAtomContainer.getProperty("SMIdbNAME")!="" && iAtomContainer.getProperty("SMIdbNAME")!=null) {
@@ -462,7 +462,7 @@ public class SMARTCyp {
 			} 
 			catch (IOException e) {e.printStackTrace();}
 		}
-		return moleculeSet;
+		return AtomContainerSet;
 	}
 
 }

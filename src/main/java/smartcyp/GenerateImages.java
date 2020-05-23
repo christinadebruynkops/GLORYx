@@ -40,12 +40,9 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.geometry.Projector;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.Molecule;
-import org.openscience.cdk.MoleculeSet;
-
+import org.openscience.cdk.AtomContainerSet;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
@@ -80,7 +77,7 @@ public class GenerateImages {
 
 
 	// This is the "main" method that calls all other methods below
-	public void generateAndWriteImages(MoleculeSet moleculeSet) throws CloneNotSupportedException, CDKException{
+	public void generateAndWriteImages(AtomContainerSet moleculeSet) throws CloneNotSupportedException, CDKException{
 
 
 
@@ -95,9 +92,9 @@ public class GenerateImages {
 		
 		// Iterate MoleculKUs
 		IAtomContainer iAtomContainer;
-		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getMoleculeCount(); moleculeIndex++) {
+		for (int moleculeIndex=0; moleculeIndex < moleculeSet.getAtomContainerCount(); moleculeIndex++) {
 
-			iAtomContainer = moleculeSet.getMolecule(moleculeIndex); 
+			iAtomContainer = moleculeSet.getAtomContainer(moleculeIndex); 
 
 
 			//			iAtomContainer = AtomContainerManipulator.removeHydrogensPreserveMultiplyBonded(iAtomContainer);
@@ -108,7 +105,7 @@ public class GenerateImages {
 			//String id = moleculeSet.getMolecule(moleculeIndex).getID();
 			// System.out.println(id);
 
-			iAtomContainer.setID(moleculeSet.getMolecule(moleculeIndex).getID());
+			iAtomContainer.setID(moleculeSet.getAtomContainer(moleculeIndex).getID());
 
 			// Generators make the image elements
 			List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
@@ -164,7 +161,7 @@ public class GenerateImages {
 	public IAtomContainer generate2Dcoordinates(IAtomContainer iAtomContainer){ 
 
 
-		IMolecule molecule = new Molecule(iAtomContainer);
+		IAtomContainer molecule = new AtomContainer(iAtomContainer);
 
 
 		//		boolean isConnected = ConnectivityChecker.isConnected(iAtomContainer);

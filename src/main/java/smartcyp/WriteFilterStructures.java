@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Properties;
 
-import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.io.listener.PropertiesListener;
@@ -63,7 +63,7 @@ public class WriteFilterStructures {
 	}
 
 
-	public void write(MoleculeSet moleculeSet) throws CDKException {
+	public void write(IAtomContainerSet moleculeSet) throws CDKException {
 	
 		if (OutputFile=="") OutputFile = "SMARTCyp_Results_Filtervalues_" + this.dateAndTime;
 		else OutputFile = OutputFile + "_structures";
@@ -76,7 +76,7 @@ public class WriteFilterStructures {
 				PropertiesListener listener = new PropertiesListener(customSettings);
 				outfile.addChemObjectIOListener(listener);
 				outfile.customizeJob();
-				outfile.writeMoleculeSet(moleculeSet);
+				outfile.writeAtomContainerSet(moleculeSet);
 				outfile.close();
 			}
 			catch (IOException e) {

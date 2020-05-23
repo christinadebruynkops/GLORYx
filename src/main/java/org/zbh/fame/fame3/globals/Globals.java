@@ -56,7 +56,7 @@ public class Globals {
     public Integer circ_depth;
     public Integer fing_depth;
     public static final String CHEMDOODLE_ROOT = "/js/";
-    public static final String MODELS_ROOT = "/work/kops/metaboliteproject/fame3/models/"; // "resources/models/"; // use "src/resources/models/" if exporting as jar
+    public static final String MODELS_ROOT = "models/"; //"/work/kops/metaboliteproject/fame3/models/"; // "resources/models/"; // "src/main/resources/models/" // currently just "models/" if exporting as jar
     public static final String ID_PROP = "cdk:Title"; // SDF file property variable holding the ID of the molecule
     public static final String FILE_PATH_PROP = "FAME:File";
     public int cpus;
@@ -124,18 +124,40 @@ public class Globals {
         );
         this.model_dir = MODELS_ROOT + this.model_code + "/";
         this.pmml_path = model_dir + "final_model.pmml";
-//        this.encoders_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "encoders.json"));
-        this.encoders_json = Utils.convertStreamToString(new FileInputStream(model_dir + "encoders.json"));
+        
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        
+        try {
+        		encoders_json = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "encoders.json")); // was this.getClass()
+        } catch (Exception e) {
+        		logger.error("Error reading json file for model. Exiting.", e);
+        		System.exit(1);
+        }
+//      this.encoders_json = Utils.convertStreamToString(new FileInputStream(model_dir + "encoders.json"));
+        
         this.at_encoder = new Encoder("AtomType", encoders_json);
-//        this.imputation_json = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "imputation.json"));
-        this.imputation_json = Utils.convertStreamToString(new FileInputStream(model_dir + "imputation.json"));
+        
+        try {
+            imputation_json = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "imputation.json"));
+        } catch (Exception e) {
+	    		logger.error("Error reading json file for model. Exiting.", e);
+	    		System.exit(1);
+        }
+//      this.imputation_json = Utils.convertStreamToString(new FileInputStream(model_dir + "imputation.json"));
         this.circ_imputer = new CircImputer(imputation_json);
 
         this.AD_model_path = MODELS_ROOT + "AD/" + "nns_" + target_var + ".ser";
         this.AD_model_attrs_path = MODELS_ROOT + "AD/" + "nns_attributes_" + target_var + ".ser";
 
-//        String model_hyperparams = Utils.convertStreamToString(this.getClass().getResourceAsStream(model_dir + "misc_params.json"));
-        String model_hyperparams = Utils.convertStreamToString(new FileInputStream(model_dir + "misc_params.json"));
+        String model_hyperparams = "";
+	    	try {
+	    		model_hyperparams = Utils.convertStreamToString(classLoader.getResourceAsStream(model_dir + "misc_params.json"));
+	    	} catch (Exception e) {
+	    		logger.error("Error reading json file for model. Exiting.", e);
+	    		System.exit(1);
+	    	}
+//      String model_hyperparams = Utils.convertStreamToString(new FileInputStream(model_dir + "misc_params.json"));
+	    	
         JSONObject json = new JSONObject(model_hyperparams);
         Iterator iterator = json.keys();
         while (iterator.hasNext()) {
@@ -220,15 +242,15 @@ public class Globals {
                     outdir_js.mkdir();
                 }
 
-                // write the necessary JavaScript code
-                List<File> js_code_paths = new ArrayList<>();
-                js_code_paths.add(new File(outdir_js, "ChemDoodleWeb.js"));
-                js_code_paths.add(new File(outdir_js, "ChemDoodleWeb-libs.js"));
-                for (File item : js_code_paths) {
-                    InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
-                    OutputStream js_ostram = new FileOutputStream(item);
-                    copyStreams(js_istream, js_ostram);
-                }
+                // write the necessary JavaScript code - don't want this for web version
+//                List<File> js_code_paths = new ArrayList<>();
+//                js_code_paths.add(new File(outdir_js, "ChemDoodleWeb.js"));
+//                js_code_paths.add(new File(outdir_js, "ChemDoodleWeb-libs.js"));
+//                for (File item : js_code_paths) {
+//                    InputStream js_istream = this.getClass().getResourceAsStream(CHEMDOODLE_ROOT + item.getName());
+//                    OutputStream js_ostram = new FileOutputStream(item);
+//                    copyStreams(js_istream, js_ostram);
+//                }
         		}
         }
     }
