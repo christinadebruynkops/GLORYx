@@ -87,11 +87,13 @@ public class PredictorWorkerThread implements Runnable {
 
 		// create output directory
 		if (globals.output_dir != null) {
-			File out_dir_file = new File(globals.output_dir, mol_name);
-			if (!out_dir_file.exists()) {
-				out_dir_file.mkdir();
+			if (globals.generate_csvs || globals.generate_html || globals.generate_pngs) {
+				File out_dir_file = new File(globals.output_dir, mol_name);
+				if (!out_dir_file.exists()) {
+					out_dir_file.mkdir();
+				}
+				this.out_dir = out_dir_file.toPath().toString() + '/';
 			}
-			this.out_dir = out_dir_file.toPath().toString() + '/';
 		}
 	}
 
