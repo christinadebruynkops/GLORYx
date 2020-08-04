@@ -21,9 +21,15 @@ Copyright (c) 2017-2018 Yannick Djoumbou Feunang, PhD
 
 BioTransformer is offered to the public as a freely acessible software package under the GNU GPL, version 2 license.
 
-Users are free to copy and redistribute the material in any medium or format. Moreover, they could modify, and build upon the material unfer the condition that they must give appropriate credit, provide links to the license, and indicate if changes were made. Furthermore, the above copyright notice and this permission notice must be included. Use and re-distribution of the these resources, in whole or in part, for commercial purposes requires explicit permission of the authors. We ask that all users of the BioTransformer software tool, the BioTransformer web server, or BioTransformerDB to cite the BioTransformer reference in any resulting publications, and to acknowledge the authors.
+Users are free to copy and redistribute the material in any medium or format. Moreover, they could modify, and build upon the material under 
+the condition that they must give appropriate credit, provide links to the license, and indicate if changes were made. Furthermore, the above 
+copyright notice and this permission notice must be included. Use and re-distribution of the these resources, in whole or in part, for 
+commercial purposes requires explicit permission of the authors. We ask that all users of the BioTransformer software tool, the 
+BioTransformer web server, or BioTransformerDB to cite the BioTransformer reference in any resulting publications, and to acknowledge 
+the authors.
 
-Cite: Djoumbou-Feunang Y, Fiamoncini J, de la Fuente AG, Manach C, Greiner R, and Wishart DS; BioTransformer: A Comprehensive Computational Tool for Small Molecule Metabolism Prediction and Metabolite Identification; Journal of Cheminformatics 201911:2; DOI: 10.1186/s13321-018-0324-5.
+Cite: Djoumbou-Feunang Y, Fiamoncini J, de la Fuente AG, Manach C, Greiner R, and Wishart DS; BioTransformer: A Comprehensive Computational 
+Tool for Small Molecule Metabolism Prediction and Metabolite Identification; Journal of Cheminformatics 201911:2; DOI: 10.1186/s13321-018-0324-5.
 
 
 GNU GENERAL PUBLIC LICENSE
