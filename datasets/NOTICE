@@ -1,4 +1,5 @@
-The reference dataset developed to evaluate GLORYx contains data on parent-metabolite pairs sourced from the DrugBank and MetXBioDB databases. Here we provide  appropriate licensing information and links to websites where these databases can be accessed directly.
+The reference dataset developed to evaluate GLORYx contains data on parent-metabolite pairs sourced from the DrugBank and MetXBioDB databases. 
+Here we provide  appropriate licensing information and links to websites where these databases can be accessed directly.
 
 * DrugBank: https://www.drugbank.ca/
 * MetXBioDB: https://bitbucket.org/djoumbou/biotransformer/ 
@@ -7,7 +8,9 @@ The reference dataset developed to evaluate GLORYx contains data on parent-metab
 
 The DrugBank database is provided with the following notice:
 
-DrugBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes (including internal use) requires a license. We ask that users who download significant portions of the database cite the DrugBank paper in any resulting publications.
+DrugBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial 
+purposes (including internal use) requires a license. We ask that users who download significant portions of the database cite the DrugBank 
+paper in any resulting publications.
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
