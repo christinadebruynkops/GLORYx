@@ -1,0 +1,261 @@
+Reaction name,SMIRKS,Priority level,Name of rule subset,Rule source
+"N-demethylation_(R-NHCH3)","[*;!c:1][NH1;X3:2][CH3]>>[*:1][N:2]",common,Phase 1 SyGMa rules,SyGMa
+"N-demethylation_(c-NHCH3)","[c:1][NH1;X3:2][CH3]>>[c:1][N:2]",common,Phase 1 SyGMa rules,SyGMa
+"N-demethylation_(R-N(CH3)2)","[*;!c:1][NH0;X3:2]([CH3])[CH3:3]>>[*:1][N:2][CH3:3]",common,Phase 1 SyGMa rules,SyGMa
+"N-demethylation_(c-N(CH3)2)","[c:1][NH0;X3:2]([CH3])[CH3:3]>>[c:1][N:2][CH3:3]",common,Phase 1 SyGMa rules,SyGMa
+"N-demethylation_(R-N(CR)CH3)","[*;!$([CH3]):1][NH0;X3:2]([CH3])[#6;!$([CH3]):3]>>[*:1][N:2][#6:3]",common,Phase 1 SyGMa rules,SyGMa
+"N-demethylation_(nCH3)","[n:1][CH3]>>[nH1:1]",common,Phase 1 SyGMa rules,SyGMa
+"N-depropylation","[N;X3:2][CH1]([CH3])[CH3]>>[N:2]",common,Phase 1 SyGMa rules,SyGMa
+"n-deglycosidation","[n:2][C:3]1[O:4][C:5][C:6][C:7]1>>([nH1:2].O[C:3]1[O:4][C:5][C:6][C:7]1)",common,Phase 1 SyGMa rules,SyGMa
+"N-deformylation","[NX3:2][CX3;H1]=O>>[N:2]",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(piperazine)","[*;!C,!X4:1][N;X3:2]1[C:3][C:4][N;X3:5][CH2][CH2]1>>[*:1][N:2][C:3][C:4][N:5]",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(morpholine)","[N;X3:2]1[C:3][C:4][O:5][CH2][CH2]1>>[N:2][C:3][C:4][O:5]",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(R-NHCH2-alkyl)","[*;!c:1][NH1;X3:2]!@[CH2:3][#6:4]>>([*:1][N:2].O[C:3][#6:4])",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(c-NHCH2-alkyl)","[c:1][NH1;X3:2]!@[CH2:3][#6:4]>>([c:1][N:2].O[C:3][#6:4])",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(tertiaryN-CH2-alkyl)","[NH0;X3:2]!@[C;X4;H2:4]>>([N:2].O[C:4])",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(quarternary_N)","[#6:1][N+;X4:2]([#6:3])([CH3:4])!@[#6;H1,H2:5]>>([#6:1][N+:2]([H])([#6:3])[C:4].O[#6:5])",common,Phase 1 SyGMa rules,SyGMa
+"N-dealkylation_(nCH2)","[n:1][CH2:2]>>([nH:1].O[C:2])",common,Phase 1 SyGMa rules,SyGMa
+"O-demethylation","[#6;!$(C=O):1][O:2][CH3]>>[#6:1][O:2]",common,Phase 1 SyGMa rules,SyGMa
+"het-O-demethylation","[*;!#6;!#1;!$(*=O):1][O:2][CH3]>>[*:1][O:2]",common,Phase 1 SyGMa rules,SyGMa
+"O-dealkylation_(aliphatic)","[C;!$(C(O)~[!#6;!#1]);!$([CH3]):1][O;!$(O1CC1):2][C;X4;!$(C(O)~[!#6;!#1]);H1,H2:3]>>([C:1][O:2].O[C:3])",common,Phase 1 SyGMa rules,SyGMa
+"O-dealkylation_(aromatic)","[c:1][O:2][C;X4;!$(C(O)~[!#6;!#1]);H1,H2:3]>>([c:1][O:2].O[C:3])",common,Phase 1 SyGMa rules,SyGMa
+"O-deglycosidation","[#6;!$([CH3]);!$(C=O):1][O:2][C:3]1[O:4][C:5][C:6][C:7][C:8]1>>([#6:1][O:2].O[C:3]1[O:4][C:5][C:6][C:7][C:8]1)",common,Phase 1 SyGMa rules,SyGMa
+"O-dealkylation_(methylenedioxyphenyl)a","[O:1]1[c:2]2[c:3][c:4][c:5][c:6][c:7]2[O:8][CH2]1>>[O:1][c:2]2[c:3][c:4][c:5][c:6][c:7]2[O:8]",common,Phase 1 SyGMa rules,SyGMa
+"O-dealkylation_(methylenedioxyphenyl)b","[O:1]1[c:2]2[c:3][c:4][c:5][c:6][c:7]2[O:8][CH2:9]1>>([O:1]1[c:2]2[c:3][c:4][c:5][c:6][c:7]2[O:8].[CH2:9]1)",common,Phase 1 SyGMa rules,SyGMa
+"S-dealkylation_c-SCH2-R","[c:1][S:2][CH2:3]>>([c:1][S:2]([H]).O[C:3])",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(para_to_carbon)","[#6:1]~[a:2]1[a:3][a:4][cH1:5]([H])[a:6][a:7]1>>[#6:1]~[a:2]1[a:3][a:4][c:5](O)[a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(para_to_nitrogen)","[#7:1]~[a:2]1[a:3][a:4][cH1:5]([H])[a:6][a:7]1>>[#7:1]~[a:2]1[a:3][a:4][c:5](O)[a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(para_to_oxygen)","[#8:1]~[a:2]1[a:3][a:4][cH1:5]([H])[a:6][a:7]1>>[#8:1]~[a:2]1[a:3][a:4][c:5](O)[a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(meta_to_carbon)","[#6:1]~[a:2]1[a;!$(a(a)(a)[#6,#7,#8]):3][cH1:4]([H])[a;!$(a(a)(a)[#6,#7,#8]):5][a:6][a;!$(a(a)(a)[#6,#7,#8]):7]1>>[#6:1]~[a:2]1[a:3][c:4](O)[a:5][a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(ortho_to_nitrogen)","[#7:1]~[a:2]1[cH1:3]([H])[a;!$(a(a)(a)[#6,#7,#8]):4][a:5][a;!$(a(a)(a)[#6,#7,#8]):6][a:7]1>>[#7:1]~[a:2]1[c:3](O)[a:4][a:5][a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(ortho_to_oxygen)","[#8:1]~[a:2]1[cH1:3]([H])[a;!$(a(a)(a)[#6,#7,#8]):4][a:5][a;!$(a(a)(a)[#6,#7,#8]):6][a:7]1>>[#8:1]~[a:2]1[c:3](O)[a:4][a:5][a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(ortho_to_2_substituents)","[#6,#7,#8:1]~[a:2]1[cH1:3]([H])[a;$(a(a)(a)[#6,#7,#8]):4][a:5][a;!$(a(a)(a)[#6,#7,#8]):6][a:7]1>>[*:1]~[a:2]1[c:3](O)[a:4][a:5][a:6][a:7]1",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_hydroxylation_(sulfur_containing_5ring)","[cH1;$(c1saaa1):2]([H])>>[c:2]O",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_oxidation_(nitrogen_containing_5ring)","[nH0:1][cH1;$(c1naan1):2]([H])>>[nH1:1]-[cH0:2]=O",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_dehydroxylation","[c;$(cc[OH1]):1][OH1]>>[c:1]",common,Phase 1 SyGMa rules,SyGMa
+"carboxylation_(primary_carbon_next_to_quart_carbon)","[C;X4;H0;$(C[!C]):1][CH3:2]([H])([H])([H])>>[C:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"carboxylation_(primary_carbon_next_to_tert_carbon)","[CH1;$(C(-[#6])(-[#6])-[CH3]):1][CH3:2]([H])([H])([H])>>[C:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"carboxylation_(primary_carbon_next_to_sec_carbon)","[#6:1][CH2:2][CH3:3]([H])([H])([H])>>[#6:1][C:2][C:3](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"carboxylation_(primary_carbon_next_to_SP2)","[C;$(C=*),$(C#*):1][CH3:2]([H])([H])([H])>>[C:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"carboxylation_(benzylic_CH3)","[c:1][CH3:2]([H])([H])([H])>>[c:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(primary_carbon_next_to_quart_carbon)","[C;X4;H0;$(C[!C]):1][CH3:2]([H])>>[C:1][C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(primary_carbon_next_to_tert_carbon)","[CH1;$(C(-[#6])(-[#6])-[CH3]):1][CH3:2]([H])>>[C:1][C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(primary_carbon_next_to_sec_carbon)","[#6:1][CH2:2][CH3:3]([H])>>[#6:1][C:2][C:3]O",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(primary_carbon_next_to_SP2_or_SP1)","[C;$(C=*),$(C#*):1][CH3:2]([H])>>[C:1][C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon,next_to_CH3)","[CX4:1][CH2:2]([H])[CH3]>>[C:1][C:2](O)C",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon_in_a_ringA)","[CX4;H2:1][CH2;R:2]([H])[CX4;H2:3]>>[C:1][C:2](O)[C:3]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon_in_a_ringB)","[CX4;H2:1][CH2;R:2]([H])[CX4;!H2:3][*;!#1;$([CH3]),!#6:4]>>[C:1][C:2](O)[C:3][*:4]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon_next_to_SP2,not_in_a_ring)","[CX4:1][CH2;!R:2]([H])[*;!c;$(*=*):3]>>[C:1][C:2](O)[*:3]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon_next_to_SP2,in_a_ring)","[CX4:1][CH2;R:2]([H])[*;!c;$(*=*),$([#7]):3]>>[C:1][C:2](O)[*:3]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(sec_carbon_both_sides_next_to_SP2,in_a_ring)","[*;!c;$(*=*):1][CH2;R:2]([H])[*;!c;$(*=*):3]>>[*:1][C:2](O)[*:3]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(tert_carbon_next_to_SP2)","[C:1][CH1;X4:2]([C;!$([CH3]):3])([H])[N,C&$([C]=*):4]>>[C:1][C:2](O)([C:3])[*:4]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_hydroxylation_(tert_carbon_linked_to_two_CH3_groups)","[CH3][CH1;X4;!$(Cc):1]([H])[CH3]>>C[C:1](O)C",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH3)","[c:1][CH3:2]([H])>>[c:1][C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH2-CH3)","[c:1][CH2:2]([H])[CH3:3]>>[c:1][C:2](O)[C:3]",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH2-CR)","[c:1][CH2:2]([H])[#6;!$([CH3]):3]>>[c:1][C:2](O)[#6:3]",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH2-N)","[c:1][CH2:2]([H])[NH0:3]>>[c:1][C:2](O)[N:3]",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH1-CH3)","[c:1][CH1;X4;!$(C[O,N]):2]([H])[CH3:3]>>[c:1][C:2](O)[C:3]",common,Phase 1 SyGMa rules,SyGMa
+"benzylic_hydroxylation_(c-CH1-CR)","[c:1][CH1;X4;!$(C[O,N]):2]([H])[#6;c,$(C=*):3]>>[c:1][C:2](O)[#6:3]",common,Phase 1 SyGMa rules,SyGMa
+"carbonyl_reduction_(aliphatic)","[C;X4:1][C:2](=[O:3])[C;X4:4]>>[C:1][C:2](-[O:3])[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"carbonyl_reduction_(next_to_SP2_carbon)","[C;X3:1][C:2](=[O:3])[C;X4:4]>>[C:1][C:2](-[O:3])[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"carbonyl_reduction_(next_to_aromatic_carbon)","[c:1][C:2](=[O:3])[C;X4:4]>>[c:1][C:2](-[O:3])[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"carbonyl_reduction_(both_sides_next_to_aromatic_carbon)","[c:1][C:2](=[O:3])[c:4]>>[c:1][C:2](-[O:3])[c:4]",common,Phase 1 SyGMa rules,SyGMa
+"aldehyde_reduction_(aliphatic)","[C:1][CH1:2]=[O:3]>>[C:1][C:2]-[O:3]",common,Phase 1 SyGMa rules,SyGMa
+"aldehyde_reduction_(aromatic)","[c:1][CH1:2]=[O:3]>>[c:1][C:2]-[O:3]",common,Phase 1 SyGMa rules,SyGMa
+"double_bond_reduction","[C;$(C[OH1]),$(C=O):1][C:2]=[C;!$(Cc):3]>>[C:1][C:2]-[C:3]",common,Phase 1 SyGMa rules,SyGMa
+"double_bond_reduction_(aromatic)","[c;$(c=O);r:1]:,-[c;r:2]:,=[c;H1;$(c[#8]),$(c[#7]);r:3]>>[C:1]-[C:2]([H])-[C:3]([H])",common,Phase 1 SyGMa rules,SyGMa
+"double_bond_reduction_(benzylic)","[C;$(C[OH1]),$(C=O):1][C:2]=[C;$(Cc):3]>>[C:1][C:2]-[C:3]",common,Phase 1 SyGMa rules,SyGMa
+"aldehyde_oxidation_(aliphatic)","[C:1][CH1:2]([H])=[O:3]>>[C:1][C:2](O)=[O:3]",common,Phase 1 SyGMa rules,SyGMa
+"aldehyde_oxidation_(aromatic)","[c:1][CH1:2]([H])=[O:3]>>[c:1][C:2](O)=[O:3]",common,Phase 1 SyGMa rules,SyGMa
+"O-deacetylation","[#6:1][O:2]C(=O)[CH3]>>[#6:1][O:2]",common,Phase 1 SyGMa rules,SyGMa
+"N-deacetylation","[N:2]C(=O)[CH3]>>[N:2]",common,Phase 1 SyGMa rules,SyGMa
+"decarboxylation","[*;!C;!#1:1]~[#6:2]C(=O)[OH1]>>[*:1]~[#6:2]",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_decarboxylation","[O:1]=[C:2][C](=O)[O]>>[O:1]=[C:2][O]",common,Phase 1 SyGMa rules,SyGMa
+"beta-oxidation","[CH2:1]([H])([H])[CH2]C(=O)[OH1]>>[C:1](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"dehydrogenation_(alpha,beta_to_SP2_both_sides)","[*;$([#6&X3]),$([#7]~[#6X3]):1][CX4;H1&!$(C-[!#6;!#1]),H2:2]([H])[CX4;H2:3]([H])[*;$([#6&X3]),$([#7]~[#6X3]):4]>>[*:1][CH0:2]=[CH0:3][*:4]",common,Phase 1 SyGMa rules,SyGMa
+"dehydrogenation_(CH1-CH3->C=CH2)","[#6X3:1][CH1&!$(C-[!#6;!#1]):2]([H])[CH3:3]([H])>>[#6:1][CH0:2]=[CH2:3]",common,Phase 1 SyGMa rules,SyGMa
+"dehydrogenation_(CH2-CH3->C=CH2)","[#6X3:1][CH2:2]([H])[CH3:3]([H])>>[#6:1][CH1:2]=[CH2:3]",common,Phase 1 SyGMa rules,SyGMa
+"dehydrogenation_(amine)","[N,c:1][C;X4;H1:2]([H])-[N;X3;H1:3]([H])>>[*:1][CH0:2]=[NH0:3]",common,Phase 1 SyGMa rules,SyGMa
+"dehydrogenation_(aromatization_of_1,4-dihydropyridine)","[c:1][#6:2]([H])1[#6:3]=[#6:4][NH1:5]([H])[#6:6]=[#6:7]1>>[c:1][#6H0:2]1=[#6:3][#6:4]=[NH0:5][#6:6]=[#6:7]1",common,Phase 1 SyGMa rules,SyGMa
+"dehydration_next_to_SP2_both_sides","[CX4!H0;$(C[#6X3]),$(C[#7]~[#6X3]):1]([H])-[CX4;$(C[#6X3]),$(C[#7]~[#6X3]):2]([OH1])>>[CH0:1]=[C:2]",common,Phase 1 SyGMa rules,SyGMa
+"dehydration_next_to_SP2_a","[CX4!H0;!$(C[*;#6&X3]);!$(C[#7]~[#6X3]):1]([H])-[CX4;$(C[#6X3]),$(C[#7]~[#6X3]):2]([OH1])>>[CH0:1]=[C:2]",common,Phase 1 SyGMa rules,SyGMa
+"dehydration_next_to_SP2_b","[CX4!H0;$(C[#6X3]),$(C[#7]~[#6X3]):1]([H])-[CX4;!$(C[*;#6&X3]);!$(C[#7]~[#6X3]):2]([OH1])>>[CH0:1]=[C:2]",common,Phase 1 SyGMa rules,SyGMa
+"primary_alcohol_oxidation_(benzylic)","[c:1][CH2:2]([H])([H])[OH1]>>[c:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"primary_alcohol_oxidation_(aliphatic)","[C:1][CH2:2]([H])([H])[OH1]>>[C:1][C:2](=O)O",common,Phase 1 SyGMa rules,SyGMa
+"secondary_alcohol_oxidation_(aliphatic)","[C;!$(C[OH1]):1][CH1:2]([H])([C;!$(C[OH1]):3])-[OH1:4]([H])>>[C:1][CH0:2]([C:3])=[OH0:4]",common,Phase 1 SyGMa rules,SyGMa
+"secondary_alcohol_oxidation_(benzylic)","[c:1][CH1:2]([H])([C:3])-[OH1:4]([H])>>[c:1][CH0:2]([C:3])=[O:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfoxide_oxidation_(c-S-C)","[c:1][S;X3:2](=[O:3])[C:4]>>[c:1][S:2](=[O:3])(=O)[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfoxide_oxidation_(C-S-C)","[C:1][S;X3:2](=[O:3])[C:4]>>[C:1][S:2](=[O:3])(=O)[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfoxide_oxidation_(c-S-c)","[c:1][S;X3:2](=[O:3])[c:4]>>[c:1][S:2](=[O:3])(=O)[c:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfide_oxidation_(c-S-C)","[c:1][S;X2:2][C:4]>>[c:1][S:2](=O)[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfide_oxidation_(C-S-C)","[C:1][S;X2:2][C:4]>>[C:1][S:2](=O)[C:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfide_oxidation_(c-S-c)","[c:1][#16;X2:2][c:4]>>[c:1][#16:2](=O)[c:4]",common,Phase 1 SyGMa rules,SyGMa
+"sulfide_oxidation_(c-S-c)","[c:1][S;X2:2][c:4]>>[c:1][S:2](=O)[c:4]",common,Phase 1 SyGMa rules,SyGMa
+"thiophene_oxidation","[sr5:1]>>[sr5:1]=O",common,Phase 1 SyGMa rules,SyGMa
+"sulfoxide_reduction","[S;X3;$(S([#6])[#6]):1]=O>>[S:1]",common,Phase 1 SyGMa rules,SyGMa
+"epoxide_hydrolysis","[C:1]1O[C:2]1>>[C:1](O)[C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(amidine)","[#6:1][N:2]=;@[C:3]([#6:4])[N:5]>>([#6:1][N:2]-[C:3]([#6:4])=O.[N:5])",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(aromatic)","[nX2:1][c:2]([N:3])>>[nH1:1]([H])-[c:2](=O.[N:3])",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(aromatic)","[nX2:1]1[c:2]([N:3])[a:4][a:5][a:6][a:7]1>>[nX2:1]([H])1-[c:2](=O.[N:3])-[a:4]=[a:5]-[a:6]=[a:7]-1",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(aromatic)","[nX2:1]1[c:2]([N:3])[a:4][n:5]([H])[a:6]1>>[nH1:1]([H])1-[c:2](=O.[N:3])-[a:4]-[n:5]=[a:6]-1",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(on_primary_carbon)","[C:1][CH2:2]([H])[NH2]>>[C:1][CH1:2]=O",common,Phase 1 SyGMa rules,SyGMa
+"oxidative_deamination_(on_secondary_carbon)","[C:1][CH1:2]([H])([C:3])[NH2]>>[C:1][CH0:2]([C:3])=O",common,Phase 1 SyGMa rules,SyGMa
+"nitro_to_aniline","[c:1][N+](=O)[O-]>>[c:1][NH2]",common,Phase 1 SyGMa rules,SyGMa
+"aniline_to_nitro","[c;$(c1[cH1][cH1][c]([*;!#1])[cH1][cH1]1):1][NH2]>>[c:1][N+](=O)[O-]",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic_dehalogenation","[CX4;H1,H2:1][Cl,Br,I]>>[C:1]O",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_dechlorination","[c;$(c1ccc([#7])cc1):1][Cl]>>[c:1]O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-5bonds-carboxyl)","[OH1][C:2]!@[*:3]~!@[*:4][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-5bonds-carboxyl)","[OH1][C:2]@[*:3]~!@[*:4][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-5bonds-carboxyl)","[OH1][C:2]!@[*:3]~@[*:4][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-5bonds-carboxyl)2","[NH1;!$(NC=O):1]([H])[#6:2]~!@[*:3]~!@[*:4]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-5bonds-carboxyl)2","[NH1;!$(NC=O):1]([H])[#6:2]~[*:3]~!@[*:4]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-5bonds-carboxyl)2","[NH1;!$(NC=O):1]([H])[#6:2]~!@[*:3]~[*:4]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-6bonds-carboxyl)","[OH1][C:2]!@[*:3]~!@[*:4]~!@[*:5][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-6bonds-carboxyl)","[OH1][C:2]@[*:3]~!@[*:4]~!@[*:5][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-6bonds-carboxyl)","[OH1][C:2]!@[*:3]~@[*:4]~!@[*:5][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(hydroxyl-6bonds-carboxyl)","[OH1][C:2]!@[*:3]~!@[*:4]~@[*:5][C;!$(CC1OCC(O)C(O)C1O)](=O)-[OH1]>>O1[C:2][*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-6bonds-carboxyl)","[NH1;!$(NC=O):1]([H])[#6:2]~!@[*:3]~!@[*:4]~!@[*:5]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-6bonds-carboxyl)","[NH1;!$(NC=O):1]([H])[#6:2]~@[*:3]~!@[*:4]~!@[*:5]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-6bonds-carboxyl)","[NH1;!$(NC=O):1]([H])[#6:2]~!@[*:3]~@[*:4]~!@[*:5]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"ring_closure_(NH1-6bonds-carboxyl)","[NH1;!$(NC=O):1]([H])[#6:2]~!@[*:3]~!@[*:4]~@[*:5]C(=O)-[OH1]>>[N:1]1[#6:2]~[*:3]~[*:4]~[*:5]C1=O",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(methoxyester)","[C;$(C=O):1][O:2][CH3]>>[C:1][O:2]",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(ester)","[C$(C[#6!H3]):2](=[O:3])O[#6!H3:4]>>([C:2](=[O:3])O.O[#6:4])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(primary_amide)","[C$(C[#6!H3]):2](=[O:3])[NH2]>>[C:2](=[O:3])O",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(secondary_amide)","[C$(C[#6!H3]):2](=[O:3])[NH1:4][#6:5]>>([C:2](=[O:3])O.[N:4][#6:5])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(tertiary_amide)","[C$(C[#6!H3]):2](=[O:3])[#7:4]([#6:5])[#6:6]>>([C:2](=[O:3])O.[#7:4]([#6:5])[#6:6])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(heteroatom_bonded_amide)","[C$(C[#6!H3]):2](=[O:3])[N:4][*;!#6;!#1:5]>>([C:2](=[O:3])O.[N:4][*:5])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(urea_or_carbonate)","[#7,#8:1][C:2](=[O:3])[#7,#8:4][*;!#1:5]>>([*:1][C:2](=[O:3])O.[*H1:4][*:5])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(X=X-X_exclude_phosphate)","[*;!#1:5][*;!#6;!#1;!$(S(=O)(=O)N);!$(P(O)(O)(O)=O):1](=[*;!#6;!#1:2])[N,O:3][*;!#1:4]>>([*:5][*:1](=[*:2])O.[*:3][*:4])",common,Phase 1 SyGMa rules,SyGMa
+"hydrolysis_(CNC(OH)R)","[#6:1][N:2][CH1]([OH1])[*;!#1:3]>>([#6:1][N:2].C(=O)[*:3])",common,Phase 1 SyGMa rules,SyGMa
+"N-oxidation_(tertiary_N)","[C;X4;!H3;!$(C(N)[!#6;!#1]):1][N;X3:2]([C;X4;!H3;!$(C(N)[!#6;!#1]):3])[C;X4;!H3;!$(C(N)[!#6;!#1]):4]>>[C:1][N+:2]([C:3])([C:4])[O-]",common,Phase 1 SyGMa rules,SyGMa
+"N-oxidation_(tertiary_NCH3)","[C;X4;!H3;!$(C(N)[!#6;!#1]):1][N;X3:2]([CH3:3])[C;X4;!H3;!$(C(N)[!#6;!#1]):4]>>[C:1][N+:2]([C:3])([C:4])[O-]",common,Phase 1 SyGMa rules,SyGMa
+"N-oxidation_(RN(CH3)2)","[C;X4;!$(C(N)[!#6;!#1]):1][N;X3:2]([CH3:3])[CH3:4]>>[C:1][N+:2]([C:3])([C:4])[O-]",common,Phase 1 SyGMa rules,SyGMa
+"N-oxidation_(-N=)","[#6:1]~[#7;X2;R:2]~[#6:3]>>[#6:1]~[#7+:2](~[#6:3])[O-]",common,Phase 1 SyGMa rules,SyGMa
+"N-oxidation_(aniline)","[c:1][NH2:2]([H])>>[c:1][N:2]O",common,Phase 1 SyGMa rules,SyGMa
+"acetyl_shift","[#6:1][C:2](=O)O[C:5][C:6][OH1]>>[#6:1][C:2](=O)O[C:6][C:5]O",common,Phase 1 SyGMa rules,SyGMa
+"tautomerisation_(keto->enol)","[c:1][C:2](=[O:3])[CH2:4]([H])[#6:5]>>[c:1][C:2](-[O:3])=[C:4][#6:5]",common,Phase 1 SyGMa rules,SyGMa
+"vinyl_oxidation","[#6:3][CH1:1]=[CH2:2]>>[#6:3][C:1](O)-[C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"isopropenyl_oxidation","[#6:3][C:1]([CH3:4])=[CH2:2]>>[#6:3][C:1]([CH3:4])(O)-[C:2]O",common,Phase 1 SyGMa rules,SyGMa
+"oxidation_(amine_in_a_ring)","[CH2:1][CH2;R:2]([H])([H])[N:3]>>[C:1][C:2](=O)[N:3]",common,Phase 1 SyGMa rules,SyGMa
+"imine_hydrolysis","[#6:1][C:2]([#6:3])=[N;!$(N-N):4]>>([#6:1][C:2]([#6:3])=O.[N:4])",common,Phase 1 SyGMa rules,SyGMa
+"hydrazone_hydrolysis","[#6:2]=[N:4]-[N:5]>>([#6:2]=O.[N:4]-[N:5])",common,Phase 1 SyGMa rules,SyGMa
+"diazene_cleavage","[c:1][N:2]=[N:3][c:4]>>([c:1][N:2].[N:3][c:4])",common,Phase 1 SyGMa rules,SyGMa
+"azide_cleavage","[*:1][N:2]=[N+]=[N-]>>[*:1][N:2]",common,Phase 1 SyGMa rules,SyGMa
+"aromatic_oxidation","[#6:1][c:2]1[cH1:3][cH1:4]([H])[cH1:5]([H])[cH1:6][cH1:7]1>>[#6:1][c:2]1[c:3][c:4](OC)[c:5](O)[c:6][c:7]1",common,Phase 1 SyGMa rules,SyGMa
+"phosphine_sulphide_hydrolysis","[P:1]=[S]>>[P:1]=[O]",common,Phase 1 SyGMa rules,SyGMa
+"oxidation_to_quinone","[#7,O;H1:1]([H])[#6:2]:1:[#6:3]:[#6:4]:[#6:5](:[#6:6]:[#6:7]:1)[#7,O;H1:8]([H])>>[*:1]=[#6:2]-1-[#6:3]=[#6:4]-[#6:5](-[#6:6]=[#6:7]-1)=[*:8]",common,Phase 1 SyGMa rules,SyGMa
+"cyclic_hemiacetal_ring_opening","[#6:1][O:2]@[CH1:3]([OH1:4])[*:5]>>([#6:1][O:2].[C:3]([O:4])[*:5])",common,Phase 1 SyGMa rules,SyGMa
+"oxidation_(C=N)","[NX2:1]=[CH1:2]([H])>>[N:1]-[C:2]=O",common,Phase 1 SyGMa rules,SyGMa
+"deiodonidation","[#6X3:1][I]>>[#6:1]",common,Phase 1 SyGMa rules,SyGMa
+"nitrile_to_amide","[C:1]#N>>[C:1](=O)-N",common,Phase 1 SyGMa rules,SyGMa
+"steroid_d5d4","[C;$(C~1~C~C~C~C~2~C~C~C~3~C~4~C~C~C~C~4~C~C~C~3~C~2~1):1]1[C:2][C:3](=[O:30])[C:4]([H])[C:5]=[C:6]1>>[C:1]1[C:2][C:3](=[O:30])[C:4]=[C:5]-[C:6]1",common,Phase 1 SyGMa rules,SyGMa
+"steroid_17hydroxy_to_keto","[C;$(C~1~C~2~C~C~C~3~C~4~C~C~C~C~C~4~C~C~C~3~C~2~C~C~1):17]([OH1:30]([H]))!@[C:31]>>([C:17]=[OH0:30].[C:31])",common,Phase 1 SyGMa rules,SyGMa
+"aliphatic hydroxylation","[C;X4:1][H:2]>>[C:1][O][H:2]",common,CYP rules from GLORY (phase 1),GLORY
+"aliphatic hydroxylation with allylic rearrangement 1","[C;!$(C(=C)CC=C);X3:1]=[C;X3:2][C;!$(C(C=C)C=C);X4:3]([H])>>[C:1](O)-[C:2]=[C:3]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"aliphatic hydroxylation with allylic rearrangement 2","[C;X3:1]=[C;X3:2][C;$(C(C=C)C=C)X4:3]([H])([H])>>[C:1](O)-[C:2]=[C:3]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"aromatic hydroxylation","[c:1][H:2]>>[c:1][O][H:2]",common,CYP rules from GLORY (phase 1),GLORY
+"aromatic hydroxylation with nih shift","[c:1]([H:5])[c;$(c1c([H])c([H])[c;H0]c([H])c([H])1):2][CH3,Br,Cl:3]>>[c:1]([*:3])[c:2][O][H:5]",common,CYP rules from GLORY (phase 1),GLORY
+"aromatic hydroxylation of pyrazolone","[#6;$([#6]1[#6](=O)[#7][#7][#6]:,=1),$([#6]1:,=[#6][#6](=O)[#7][#7]1):1][H:2]>>[#6:1][O][H:2]",common,CYP rules from GLORY (phase 1),GLORY
+"hydroxylation of cyclopropane","[C:1]1[C:2][C:3]1[C:4]([H])>>[C:1](O)[C:2][C:3]=[C:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"amine hydroxylation","[N:1]([H:3])[#6:2]>>[N:1]([O][H:3])[#6:2]",common,CYP rules from GLORY (phase 1),GLORY
+"N-dealkylation","[#7:1][C:2]([H])>>[#7:1][H].[C:2]=[O]",common,CYP rules from GLORY (phase 1),GLORY
+"N-dealkylation of piperazine","[*;!#1:1][N;X3:2]1[C:3][C:4][N;X3:5][CH2][CH2]1>>[*:1][N:2][C:3][C:4][N:5]",common,CYP rules from GLORY (phase 1),GLORY
+"N-dealkylation of morpholine","[N;X3;$(N1CCOCC1):1][CH2;$(C1NCCOC1)][CH2;$(C1OCCNC1)][O;$(O1CCNCC1):4]>>[N:1].[O:4]",common,CYP rules from GLORY (phase 1),GLORY
+"S-dealkylation","[C:3][#16:1][C:2]([H])>>[C:3][#16:1]([H]).[C:2]=[O]",common,CYP rules from GLORY (phase 1),GLORY
+"O-dealkylation of methylenedioxyphenyl","[O$(O1c2ccccc2OC1):1][C:2]([H])([H])[O$(O1c2ccccc2OC1):3]>>[O:1]([H]).[C:2](=O)[O-].[O:3]([H])",common,CYP rules from GLORY (phase 1),GLORY
+"S-oxidation","[#16:1] >> [#16:1](=[O])",common,CYP rules from GLORY (phase 1),GLORY
+"N-oxidation","[#7;X3,X2;H0:1][#6:2]>>[#7+:1]([O-])[#6:2]",common,CYP rules from GLORY (phase 1),GLORY
+"P-oxidation","[#15;X3:1]>>[#15;X4:1]=[O]",common,CYP rules from GLORY (phase 1),GLORY
+"aldehyde oxidation","[C:1]([H])=[O:2]>>[C:1](O)=[O:2]",common,CYP rules from GLORY (phase 1),GLORY
+"aldehyde oxidation to olefin","[C:1]([H])[C:2]([H])[C:3]([H])=[O:4]>>[C:1]=[C:2].[C:3](O)=[O:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"alcohol oxidation","[C:1]([H])[O:2][H]>>[C:1]=[O:2]",common,CYP rules from GLORY (phase 1),GLORY
+"olefin oxidation","[C:1]([C:3])([C:4])=[C:2]([C:5])([C:6])>>[C:1](=O)([C:3])[C:2]([C:4])([C:5])([C:6])",common,CYP rules from GLORY (phase 1),GLORY
+"acetylene oxidation, first step","[#6:3][C:1]#[C:2][#6:4]>>[#6:3][C:1]([#6:4])=[C:2](=O)",common,CYP rules from GLORY (phase 1),GLORY
+"acetylene oxidation, complete oxidation","[#6:3][C:1]#[C:2][#6:4]>>[#6:3][C:1]([#6:4])[C:2](=O)[O]",common,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 4-substituted phenol to quinone","[c:1]1([O:7][H])[c:2][c:3][c;X3:4]([!C:8])[c:5][c:6]1>>[C:1]1(=[O:7])-[C:2]=[C:3]-[C;X3:4](=O)-[C:5]=[C:6]-1.[!C:8]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 4-substituted anisole to quinone","[c:1]1([O:7][C:9])[c:2][c:3][c;X3:4]([!C:8])[c:5][c:6]1>>[C:1]1(=[O:7])-[C:2]=[C:3]-[C;X3:4](=O)-[C:5]=[C:6]-1.[!C:8].[C:9]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 4-substituted phenol to quinone (substituent not a leaving group)","[c:1]1([O:7][H])[c:2][c:3][c;X3:4]([C:8])[c:5][c:6]1>>[C:1]1(=[O:7])-[C:2]=[C:3]-[C:4]([C:8])(O)-[C:5]=[C:6]-1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 4-substituted phenol to quinone imine","[c:1]1([O:7][H])[c:2][c:3][c;X3:4]([N:8][H])[c:5][c:6]1>>[C:1]1(=[O:7])-[C:2]=[C:3]-[C;X3:4](=[N:8])-[C:5]=[C:6]-1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 4-substituted anisole to quinone (substituent not a leaving group)","[c:1]1([O:7][C:9])[c:2][c:3][c;X3:4]([C:8])[c:5][c:6]1>>[C:1]1(=[O:7])-[C:2]=[C:3]-[C:4]([C:8])(O)-[C:5]=[C:6]-1.[C:9]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of indole","[c;$(c1cc2ccccc2n1),$(c1c2ccccc2nc1):1]([H])=,:[c:2]-,:[n:3]>>[C:1](=[O])-[C:2]-[N:3]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"epoxidation","[C:1]=[C:2]>>[C:1]1[C:2][O]1",common,CYP rules from GLORY (phase 1),GLORY
+"oxidation of 1,4-dihydropyridines","[N;X3:1]1([H])[#6:2]=[#6:3][#6;X4:4]([H])[#6:5]=[#6:6]1>>[n;H0:1]1=[#6:2][#6:3]=[#6:4][#6:5]=[#6:6]1",common,CYP rules from GLORY (phase 1),GLORY
+"N-dearylation","[c;R1:1]1[c;R1:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]1[N:7][c:8]>>[C:1]1=[C:2]-[C:3]-[C:4]=[C:5]-[C:6]1=[O].[c:8][NH2:7]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"O-dearylation","[c;R1:1]1[c;R1:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]1[O:7][c:8]>>[C:1]1=[C:2]-[C:3]-[C:4]=[C:5]-[C:6]1=[O].[c:8][O:7]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"O-dearylation","[c;R1:1]1[c;R1:2][c;R1:3][c;R1:4][c;R1:5][c;R1:6]1[O:7][c;R1:8]2[c;R1:9][c;R1:10][c;R1:11][c;R1:12][c;R1:13]2>>[C:1]1=[C:2]-[C:3]-[C:4]=[C:5]-[C:6]1=[O:7].[C:8]2(=[O])-[C:9]=[C:10]-[C:11]-[C:12]=[C:13]-2",uncommon,CYP rules from GLORY (phase 1),GLORY
+"O-dearylation with para hydroxyl","[c;R1:1]1[c;R1:2][c;R1:3]([O:20][H])[c;R1:4][c;R1:5][c;R1:6]1[O:7][c:8]>>[C:1]1=[C:2]-[C:3](=[O:20])-[C:4]=[C:5]-[C:6]1=[O].[c:8][O:7]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"O-dearylation with para hydroxyl","[c;R1:1]1[c;R1:2][c;R1:3]([O:20][H])[c;R1:4][c;R1:5][c;R1:6]1[O:7][c;R1:8]2[c;R1:9][c;R1:10][c;R1:11][c;R1:12][c;R1:13]2>>[C:1]1=[C:2]-[C:3](=[O:20])-[C:4]=[C:5]-[C:6]1=[O:7].[C:8]2(=[O])-[C:9]=[C:10]-[C:11]-[C:12]=[C:13]-2",uncommon,CYP rules from GLORY (phase 1),GLORY
+"deformylation","[C:1]([H])-[C:2]([H])-[C:3]=[O:4]>>[C:1]=[C:2].[C:3]=[O:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"desulfuration of phosphor","[*:1][P:2](=S)([*:3])[*:4]>>[*:1][P:2](=O)([*:3])[*:4]",common,CYP rules from GLORY (phase 1),GLORY
+"desulfuration of carbon","[*:1][C:2](=S)[*:3]>>[*:1][C:2](=O)[*:3]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of N-oxide","[#7+;X4:1]([O-])>>[#7;X3:1]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of RNOR","[#8;$([#8][#6]):1][#7:2]:,=[#6:3]>>[#8:1]([H]).[#7:2]([H])([H])-[#6:3]([H])",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of RNOR","[#8;$([#8][#6]):1][#7:2][#6;!X4:3]>>[#8:1]([H]).[#7:2].[#6:3]=[O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of RNOR","[#8;$([#8][#6]):1][#7;$([#7][#6]):2]>>[#8:1]([H]).[#7:2]([H])",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of nitro group","[N;X3:1](=O)=[O]>>[NH2:1]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of nitro group","[N+;X3:1](=O)[O-]>>[NH2:1]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reduction of C- or N-nitroso compound","[C,N:1][N;X2:2](=O)>>[C,N:1][N;H2:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"azo reduction","[#6:1][N:2]=[N:3][#6:4]>>[#6:1][NH2:2].[NH2:3][#6:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"hydrazine reduction","[NX3:1]-[NX3:2]>>[N:1]([H]).[N:2]([H])",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidative dehalogenation alkyl","[C:1]([H])[F,Cl,Br:2]>>[C:1]=[O].[F,Cl,Br:2]",common,CYP rules from GLORY (phase 1),GLORY
+"oxidative dehalogenation benzyl","[c;$([c;!H]1ccccc1),$(c1[c;!H]cccc1),$(c1c[c;!H]ccc1),$(c1cc[c;!H]cc1),$(c1ccc[c;!H]c1),$(c1cccc[c;!H]1):1][F,Cl,Br,I:2]>>[c:1][O].[F,Cl,Br,I:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"reductive dehalogenation","[C:1]([F,Cl,Br:3])[C:2]([F,Cl,Br:4])>>[C:1]=[C:2].[*:3].[*:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"alkyl dehydrogenation","[C:1]([H])-[C:2]([H])>>[C:1]=[C:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"dehydration of N-C bond","[N;X3:1]([H])[C;!H3:2][H]>>[N:1]=[C:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"dehydration of N-C bond","[#7;X3:1]([H]):,-[#6;!H3:2]([H]):,=[#6:3]-[C:4]([H])>>[#7:1]=[#6:2]-[#6:3]=[C:4]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"dehydration of N-C bond","[N;X3:1][C:2][H]>>[N+:1]=[C:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidative ether cleavage to one alcohol and one aldehyde/ketone","[#6:1][O:2][C:3]([H])>>[#6:1][O;H1:2].[C;X3:3](=O)",common,CYP rules from GLORY (phase 1),GLORY
+"oxidative ester cleavage","[C$(C(O)([#6])=O):2][O:3][C:4][H]>>[C:2][O:3].[C:4]=[O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"monothiophosphate ester cleavage","[S:1]=[P$(P(O)(O)=S):2][O:3][#6:4]>>[S:1]=[P:2][O:3].[#6:4][O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"monothiophosphate ester cleavage","[S:1]=[P$(P(O)(O)=S):2][O:3][#6:4]>>[S:1].[O]=[P:2][O:3].[#6:4][O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"phosphoester cleavage","[O:1]=[P$(P(O)(O)=O):2][O:3][#6:4]>>[O:1]=[P:2][O:3].[#6:4][O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"carbamate cleavage","[#7:1][C;$([C](O)=O):2][O:3][C:4]>>[#7:1][H].[C:2]=[O:3].[C:4][O]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"carbamide cleavage","[N:1][C;$([C](N)(N)=O):2][N:3]>>[N:1][C:2].[N:3]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of N-nitrosamine","[N$(N(C)C):1]([C:3][H])[N$(N(N)=O):2]>>[N:1]([H])([H]).[N:2]([O-]).[C:3](=O)",uncommon,CYP rules from GLORY (phase 1),GLORY
+"scission of unsaturated fatty acid peroxides 1","[C:1]([H])=[C:2]-[C:3]=[C:4]-[C:5]-[O:6]([O])>>[C:1]=[C:2][C:3](O)[C:4]1-[C:5]-[O:6]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"scission of unsaturated fatty acid peroxides 2","[C:1]([H])=[C:2]-[C:3]=[C:4]-[C:5]-[O:6]([O])>>[C:1]([O])[C:2]=[C:3][C:4]1-[C:5]-[O:6]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"dehydration of an aldoxime to a nitrile","[C:1]([H])=[N:2][O]([H])>>[C:1]#[N:2]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclization to 6-membered lactone","[C:1]([H])([OH])[#6:2][#6:3][#6:4][C;$(C=O):5][O:6][*:7]>>[C:1]1[#6:2][#6:3][#6:4][C;$(C=O):5][O:6]1.[*:7]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclization to 5-membered lactone","[C:1]([H])[c:2][c:3][C;$(C=O):4][O:5][C,#1:6]>>[C:1]1[c:2][c:3][C:4][O:5]1.[*:6]",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclization to 6-membered NCN ring","[N;X3:1]([H])~[*:2]~[*:3]~[*:4]~[N:5]-[C:6]([H])>>[N:1]1~[*:2]~[*:3]~[*:4]~[N:5]-[C:6]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclization to 5-membered NCN ring","[N;X3:1]([H])~[*:2]~[*:3]~[N:5]-[C:6]([H])>>[N:1]1~[*:2]~[*:3]~[N:5]-[C:6]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclization to furan","[O:1]=[C;R1:2][C;R1:3]=[C:4][C:5]([H])[H]>>[O:1]1[C:2]=[C:3][C:4]=[C:5]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"cyclobutamine expansion","[C:1]1-[C:2]-[C:3]-[C$(C1(C)CCC1):4]1[N:5]([H])>>[C:1]1-[C:2]-[C:3]-[C:4]=[N+:5]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"D-homoannulation of 17 alpha-ethinyl steroids","[C$([#6R1]~1~[#6R1]~[#6R1]~[#6R2]~2~[#6R2]~1~[#6R1]~[#6R1]~[#6R2]~3~[#6R2]~2~[#6R1]~[#6R1]~[#6R2]~4~[#6R1]~[#6R1]~[#6R1]~[#6R1]~[#6R2]~3~4):1]1([O:6][H])([C:7]#[C:8])[C:2][C:3][C:4][C:5]1>>[C:1]1(=[O:6])[C:7](=[C:8](O))[C:2][C:3][C:4][C:5]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"oxidation of spiro[2,5]oxane","[C:1]1[C:2]2([C:3][C:4]2)[C:5]([H])[C:6][C:7][C:8]1>>[C:1]1[C:2]2(O)[C:3][C:4][C:5]2[C:6][C:7][C:8]1",uncommon,CYP rules from GLORY (phase 1),GLORY
+"O-glucuronidation_(aliphatic_hydroxyl)","[C;!$(C1CCOCC1);!$(C1COCCC1);!$(C(O)=O):1][O:2]([H])>>[C:1][O:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"O-glucuronidation_(aromatic_hydroxyl)","[c:1][O:2]([H])>>[c:1][O:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"O-glucuronidation_(N-hydroxyl)","[#7:1][O:2]([H])>>[#7:1][O:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"O-glucuronidation_(aliphatic_carboxyl)","[C:1][C;!$(C(O)(=O)C1OCCCC1):2](=O)[O]([H])>>[C:1][C:2](=O)OC1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"O-glucuronidation_(aromatic_carboxyl)","[c:1][C:2](=O)[O]([H])>>[c:1][C:2](=O)OC1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(aniline)","[c:1][NH2;X3:2]([H])>>[c:1][N:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(aliphatic_NH2)","[C:1][NH2;X3:2]([H])>>[C:1][N:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(aniline_NH1-R)","[c:1][NH1;X3:2]([H])>>[c:1][N:2]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(N(CH3)2)","[N;X3;$(N([CH3])([CH3])[CH2]C):1]>>[N+:1]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(NCH3_in_a_ring)","[N;X3;R;$(N(C)(C)[CH3]):1]>>[N+:1]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(NH_in_a_ring)","[NH1;X3;R;$(N(C)C):1]([H])>>[N:1]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(aromatic_=n-)","[n;X2:1]>>[n+:1]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"N-glucuronidation_(aromatic_-nH-)","[nH1;X3:1]([H])>>[n:1]C1OC(C(O)=O)C(O)C(O)C1O",common,UGT rules (phase 2),SyGMa
+"sulfation_(aromatic_hydroxyl)","[c:1][O:2]([H])>>[c:1][O:2]S(=O)(=O)O",common,SULT rules (phase 2),SyGMa
+"sulfation_(aniline)","[c:1][NH2:2]([H])>>[c:1][N:2]S(=O)(=O)O",common,SULT rules (phase 2),SyGMa
+"sulfation_(aliphatic_hydroxyl)","[C;!$(C=O);!$(CC[OH1]):1][O:2]([H])>>[C:1][O:2]S(=O)(=O)O",common,SULT rules (phase 2),SyGMa
+"glutathione_conjugation_(epoxide)","[C:1]([H])1-[O:2]-[C:3]([H])1>>[C:1]([O:2]([H]))[C:3]SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(alpha,beta-unsaturated_carbonyl)","[C;!$(C1=CC(=O)C=CC(=[N,O])1);!$(C1=CC(=O)C(=O)C=C1):1]=[C;$(CC=O):2]>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)-[C;$(CC=O):2]([H])",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(aliphatic_nucleophilic_substitution)","[C;H2;$(Cc),$(CCc),$(CC=C),$(C[CH3]),$(C[CH2]):1]([H])[*;Br,Cl,I,$(OS(=O)(=O)[O-]),$(OS(=O)(=O)O*),$(OP(=O)(O*)O*)]>>[C;H2:1]([H])SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(chloroalkene)","[C;$(C=C):1](Cl)>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(aromatic_nucleophilic_substitution)","[c:1][*;Br,Cl,I,$(OS(=O)(=O)[O-]),$(OS(=O)(=O)O*),$(OP(=O)(O*)O*)]>>[c:1]SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(quinone)","[C:1]([H])1-[C:2](=[O:3])-[C:4]=[C:5]-[C:6](=[O,N:7])-[C:8]=1>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)1-[C:2](-[O:3])=[C:4]-[C:5]=[C:6](-[*:7])-[C:8]=1",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(orthoquinone)","[C:1]([H])1[C:2](=O)[C:3](=O)[C:4]=[C:5][C:6]=1>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)1[C:2](-O)=[C:3](-O)[C:4]=[C:5][C:6]=1",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(isocyanate_isothiocyanate)","[C;$(C(=N[#6])=[S,O]):1]=[N:2]>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)[N:2]",common,GST rules (phase 2),Current work
+"glutathione_conjugation_(nitrile)","[C:1]#[N:2]>>[C:1](SCC(C(=O)NCC(=O)O)NC(=O)CCC(C(=O)O)N)=[N:2]",common,GST rules (phase 2),Current work
+"N-acetylation_(aniline)","[c:1][NH2:2]([H])>>[c:1][N:2]C(=O)C",common,NAT rules (phase 2),SyGMa
+"N-acetylation_(aliphatic_NH2)","[C;!$(C=[*;!#6;!#1]):1][NH2:2]([H])>>[C:1][N:2]C(=O)C",common,NAT rules (phase 2),SyGMa
+"N-acetylation_(heteroatom_bonded_NH2)","[*;!#6;!#1:1][NH2:2]([H])>>[*:1][N:2]C(=O)C",common,NAT rules (phase 2),SyGMa
+"N-acetylation_(NH1)","[CX4:1][NH1;R:2]([H])[CX4:3]>>[C:1][N:2]([C:3])C(=O)C",common,NAT rules (phase 2),SyGMa
+"N-acetylation_(NH1-CH3)","[CH3:1][NH1:2]([H])[#6:3]>>[CH3:1][N:2]([#6:3])C(=O)C",common,NAT rules (phase 2),SyGMa
+"methylation_(aromatic_OH)","[c:1][O:2]([H])>>[c:1][O:2]C",common,MT rules (phase 2),SyGMa
+"methylation_(thiol)","[#6:1][SH1:2]([H])>>[#6:1][S:2]C",common,MT rules (phase 2),SyGMa
+"glycination_(aromatic_carboxyl)","[c:1][C:2](=O)[O]([H])>>[c:1][C:2](=O)NCC(=O)O",uncommon,Other phase 2 rules,SyGMa
+"glycination_(aliphatic_carboxyl)","[C!$(CN):1][C:2](=O)[O]([H])>>[C:1][C:2](=O)NCC(=O)O",uncommon,Other phase 2 rules,SyGMa
+"phosphorylation","[OH1;$(O[CH2]C1AACO1),$(OP([OH1])(=O)OCC1AACO1),$(OP([OH1])(=O)OP(O)(=O)OCC1AACO1):1]([H])>>[O:1]P(O)(O)=O",uncommon,Other phase 2 rules,SyGMa
+"dephosphorylation","[#6,P:1][O:2][P:3]([O:4])([O:5])=[O:6]>>([*;#6,P:1][O:2].O[P:3]([O:4])([O:5])=[O:6])",uncommon,Other phase 2 rules,SyGMa

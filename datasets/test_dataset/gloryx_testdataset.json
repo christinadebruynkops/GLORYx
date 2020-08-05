@@ -1,0 +1,1394 @@
+[
+ {
+  "drugName": "Apixaban",
+  "smiles": "COc1ccc(cc1)n2nc(C(=O)N)c3CCN(C(=O)c23)c4ccc(cc4)N5CCCCC5=O",
+  "doi": "10.1124/dmd.108.025981 10.1124/dmd.108.023143",
+  "metabolites": [
+   {
+    "smiles": "NC(=O)c1nn(c2c1CCN(C2=O)c1ccc(cc1)N1CCCCC1=O)-c1ccc(O)cc1",
+    "generation": 1,
+    "metaboliteName": "M2",
+    "metabolites": [
+     {
+      "smiles": "NC(=O)c1nn(c2c1CCN(C2=O)c1ccc(cc1)N1CCCCC1=O)-c1ccc(OS(O)(=O)=O)cc1",
+      "generation": 2,
+      "metaboliteName": "M1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Lenalidomide",
+  "smiles": "Nc1cccc2C(=O)N(Cc12)C3CCC(=O)NC3=O",
+  "doi": "10.1007/s00280-011-1760-3 ",
+  "metabolites": [
+   {
+    "smiles": "Nc1c2CN(C3CCC(=O)NC3=O)C(=O)c2ccc1O",
+    "generation": 1,
+    "metaboliteName": "5-hydroxy-lenalidomide"
+     },
+   {
+    "smiles": "CC(=O)Nc1cccc2C(=O)N(Cc12)C1CCC(=O)NC1=O",
+    "generation": 1,
+    "metaboliteName": "N-acetyl-lenalidomide"
+     }
+    ]
+ },
+ {
+  "drugName": "Rivaroxaban",
+  "smiles": "Clc1ccc(s1)C(=O)NC[C@H]2CN(C(=O)O2)c3ccc(cc3)N4CCOCC4=O",
+  "doi": "10.1124/dmd.108.025569 10.1124/dmd.108.025551",
+  "metabolites": [
+   {
+    "smiles": "OC1OCCN(C1=O)c1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-2",
+    "metabolites": [
+     {
+      "smiles": "OCCN(C(=O)C(O)=O)c1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+      "generation": 2,
+          "metaboliteName": "M-1"
+     }
+    ]
+   },
+   {
+    "smiles": "OCCN(C(=O)CO)c1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-5"
+   },
+   {
+    "smiles": "OCCNc1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-6"
+   },
+   {
+    "smiles": "OC(=O)COCCNc1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-7"
+   },
+   {
+    "smiles": "Clc1ccc(s1)C(=O)NCC(=O)CNc1ccc(cc1)N1CCOCC1=O",
+    "generation": 1,
+    "metaboliteName": "M-12"
+   },
+   {
+    "smiles": "OC(=O)c1ccc(Cl)s1",
+    "generation": 1,
+    "metaboliteName": "M-13",
+    "metabolites": [
+     {
+      "smiles": "OC(=O)CNC(=O)c1ccc(Cl)s1",
+      "generation": 2,
+          "metaboliteName": "M-4"
+     }
+    ]
+   },
+   {
+    "smiles": "NC[C@H]1CN(C(=O)O1)c1ccc(cc1)N1CCOCC1=O",
+    "generation": 1,
+    "metaboliteName": "M-15",
+    "metabolites": [
+     {
+      "smiles": "OC[C@H]1CN(C(=O)O1)c1ccc(cc1)N1CCOCC1=O",
+      "generation": 2,
+          "metaboliteName": "M-17"
+     },
+     {
+      "smiles": "OC(=O)[C@H]1CN(C(=O)O1)c1ccc(cc1)N1CCOCC1=O",
+      "generation": 2,
+          "metaboliteName": "M-18"
+     }
+    ]
+   },
+   {
+    "smiles": "OC1[C@H](CNC(=O)c2ccc(Cl)s2)OC(=O)N1c1ccc(cc1)N1CCOCC1=O",
+    "generation": 1,
+    "metaboliteName": "M-9"
+   },
+   {
+    "smiles": "OC1COCC(=O)N1c1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-8"
+   },
+   {
+    "smiles": "OC1CN(C(=O)CO1)c1ccc(cc1)N1C[C@H](CNC(=O)c2ccc(Cl)s2)OC1=O",
+    "generation": 1,
+    "metaboliteName": "M-3"
+   }
+  ]
+ },
+ {
+  "drugName": "Ibrutinib",
+  "smiles": "Nc1ncnc2c1c(nn2[C@@H]3CCCN(C3)C(=O)C=C)c4ccc(Oc5ccccc5)cc4",
+  "doi": "10.1124/dmd.114.060061",
+  "metabolites": [
+   {
+    "smiles": "NC(CCC(=O)NC(CSCCC(=O)N1CCC[C@H](C1)n1nc(-c2ccc(Oc3ccccc3)cc2)c2c(N)ncnc12)C(=O)NCC(O)=O)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M26"
+   },
+   {
+    "smiles": "Nc1ncnc2n(nc(-c3ccc(Oc4ccccc4)cc3)c12)[C@@H]1CCCN(C1)C(=O)C(O)CO",
+    "generation": 1,
+    "metaboliteName": "M37"
+   }
+  ]
+ },
+ {
+  "drugName": "Cobicistat",
+  "smiles": "CC(C)c1nc(CN(C)C(=O)N[C@@H](CCN2CCOCC2)C(=O)N[C@H](CC[C@H](Cc3ccccc3)NC(=O)OCc4cncs4)Cc5ccccc5)cs1",
+  "doi": "10.2174/1872312810666160303112212",
+  "metabolites": [
+   {
+    "smiles": "CC(C)c1nc(CN(C)C(=O)N[C@@H](CCN2CCOCC2)C(=O)N[C@H](CC[C@@H](N)Cc2ccccc2)Cc2ccccc2)cs1",
+    "generation": 1,
+    "metaboliteName": "M2",
+    "metabolites": [
+     {
+      "smiles": "CNC(=O)N[C@@H](CCN1CCOCC1)C(=O)N[C@H](CC[C@@H](N)Cc1ccccc1)Cc1ccccc1",
+      "generation": 2,
+      "metaboliteName": "M16"
+     }
+    ]
+   },
+   {
+    "smiles": "CNC(=O)N[C@@H](CCN1CCOCC1)C(=O)N[C@H](CC[C@H](Cc1ccccc1)NC(=O)OCc1cncs1)Cc1ccccc1",
+    "generation": 1,
+    "metaboliteName": "M9",
+    "metabolites": [
+     {
+      "smiles": "CNC(=O)N[C@@H](CCN1CCOCC1)C(=O)N[C@H](CC[C@@H](N)Cc1ccccc1)Cc1ccccc1",
+      "generation": 2,
+      "metaboliteName": "M16"
+     },
+     {
+      "smiles": "CNC(=O)N[C@@H](CCNCCO)C(=O)N[C@H](CC[C@H](Cc1ccccc1)NC(=O)OCc1cncs1)Cc1ccccc1",
+      "generation": 2,
+      "metaboliteName": "M15"
+     }
+    ]
+   },
+   {
+    "smiles": "CC(C)c1nc(CN(C)C(=O)N[C@@H](CCNCCO)C(=O)N[C@H](CC[C@H](Cc2ccccc2)NC(=O)OCc2cncs2)Cc2ccccc2)cs1",
+    "generation": 1,
+    "metaboliteName": "M3",
+    "metabolites": [
+     {
+      "smiles": "CNC(=O)N[C@@H](CCNCCO)C(=O)N[C@H](CC[C@H](Cc1ccccc1)NC(=O)OCc1cncs1)Cc1ccccc1",
+      "generation": 2,
+      "metaboliteName": "M15"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Sitagliptin",
+  "smiles": "N[C@@H](CC(=O)N1CCn2c(C1)nnc2C(F)(F)F)Cc3cc(F)c(F)cc3F",
+  "doi": "10.1124/dmd.106.013136",
+  "metabolites": [
+   {
+    "smiles": "OS(=O)(=O)N[C@@H](CC(=O)N1CCn2c(C1)nnc2C(F)(F)F)Cc1cc(F)c(F)cc1F",
+    "generation": 1,
+    "metaboliteName": "M1"
+   },
+   {
+    "smiles": "OC1C(O)C(OC(=O)N[C@@H](CC(=O)N2CCn3c(C2)nnc3C(F)(F)F)Cc2cc(F)c(F)cc2F)OC(C1O)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M4"
+   },
+   {
+    "smiles": "Fc1cc(F)c(CC2CC(=O)N3CCn4c(nnc4C(F)(F)F)C3N2)cc1F",
+    "generation": 1,
+    "metaboliteName": "M2,M5"
+   }
+  ]
+ },
+ {
+  "drugName": "Enzalutamide",
+  "smiles": "CNC(=O)c1ccc(cc1F)N2C(=S)N(C(=O)C2(C)C)c3ccc(C#N)c(c3)C(F)(F)F",
+  "doi": "10.1007/s40262-015-0271-5",
+    "metabolites": [
+   {
+    "smiles": "CC1(C)N(C(=S)N(C1=O)c1ccc(C#N)c(c1)C(F)(F)F)c1ccc(C(O)=O)c(F)c1",
+    "generation": 1,
+    "metaboliteName": "carboxylic acid metabolite"
+   },
+   {
+    "smiles": "CC1(C)N(C(=S)N(C1=O)c1ccc(C#N)c(c1)C(F)(F)F)c1ccc(C(N)=O)c(F)c1",
+    "generation": 1,
+    "metaboliteName": "N-desmethyl enzalutamide"
+   }
+  ]
+ },
+ {
+  "drugName": "Abacavir",
+  "smiles": "Nc1nc(NC2CC2)c3ncn([C@@H]4C[C@H](CO)C=C4)c3n1",
+  "doi": "10.1016/s0009-2797(02)00059-5 PMID:10582871",
+    "metabolites": [
+   {
+    "smiles": "Nc1nc(NC2CC2)c2ncn([C@@H]3C[C@@H](C=C3)C(O)=O)c2n1",
+    "generation": 1,
+    "metaboliteName": "5'-carboxylate"
+   },
+   {
+    "smiles": "Nc1nc(NC2CC2)c2ncn([C@@H]3C[C@H](COC4OC(C(O)C(O)C4O)C(O)=O)C=C3)c2n1",
+    "generation": 1,
+    "metaboliteName": "5'-glucuronide"
+   }
+  ]
+ },
+ {
+  "drugName": "Dolutegravir",
+  "smiles": "C[C@@H]1CCO[C@H]2CN3C=C(C(=O)NCc4ccc(F)cc4F)C(=O)C(=C3C(=O)N12)O",
+  "doi": "10.1128/AAC.00292-13",
+    "metabolites": [
+   {
+    "smiles": "C[C@@H]1CCO[C@H]2CN3C=C(C(=O)NCc4ccc(F)cc4F)C(=O)C(OC4OC(C(O)C(O)C4O)C(O)=O)=C3C(=O)N12",
+    "generation": 1,
+    "metaboliteName": "M2"
+   },
+   {
+    "smiles": "C[C@@H]1CCO[C@H]2CN3C=C(C(=O)NC(O)c4ccc(F)cc4F)C(=O)C(O)=C3C(=O)N12",
+    "generation": 1,
+    "metaboliteName": "M3",
+    "metabolites": [
+     {
+      "smiles": "C[C@@H]1CCO[C@H]2CN3C=C(C(N)=O)C(=O)C(O)=C3C(=O)N12",
+      "generation": 2,
+      "metaboliteName": "M1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Abiraterone",
+  "smiles": "C[C@]12CC[C@H]3[C@@H](CC=C4C[C@@H](O)CC[C@]34C)[C@@H]1CC=C2c5cccnc5",
+  "doi": "10.3109/00498254.2012.721022",
+  "metabolites": [
+   {
+    "smiles": "C[C@]12CC[C@H]3[C@@H](CC=C4C=CCC[C@]34C)[C@@H]1CC=C2c1cccnc1",
+    "generation": 1,
+    "metaboliteName": "M75"
+   },
+   {
+    "smiles": "C[C@]12CC[C@H]3[C@@H](CC=C4CC(CC[C@]34C)OS(O)(=O)=O)[C@@H]1CC=C2c1cccnc1",
+    "generation": 1,
+    "metaboliteName": "M45",
+    "metabolites": [
+     {
+      "smiles": "C[C@]12CC[C@H]3[C@@H](CC=C4CC(CC[C@]34C)OS(O)(=O)=O)[C@@H]1CC=C2c1ccc[n+](c1)C1OC(C(O)C(O)C1O)C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M70"
+     },
+     {
+      "smiles": "C[C@]12CC[C@H]3[C@@H](CC=C4CC(CC[C@]34C)OS(O)(=O)=O)[C@@H]1CC=C2c1ccc[n+]([O-])c1",
+      "generation": 2,
+      "metaboliteName": "M31"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Fingolimod",
+  "smiles": "CCCCCCCCc1ccc(CCC(N)(CO)CO)cc1",
+  "doi": "10.1124/dmd.110.035907",
+  "metabolites": [
+   {
+    "smiles": "NC(CO)(CO)CCc1ccc(CCCCCCCC(O)=O)cc1",
+    "generation": 1,
+    "metaboliteName": "M1",
+    "metabolites": [
+     {
+      "smiles": "NC(CO)(CO)CCc1ccc(CCCCCC(O)=O)cc1",
+      "generation": 2,
+      "metaboliteName": "M2",
+      "metabolites": [
+       {
+        "smiles": "NC(CO)(CO)CCc1ccc(CCCC(O)=O)cc1",
+        "generation": 3,
+        "metaboliteName": "M3",
+        "metabolites": [
+         {
+          "smiles": "NC(CO)(CO)CCc1ccc(CC(O)=O)cc1",
+          "generation": 4,
+          "metaboliteName": "M4"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "smiles": "CCCCCCCCc1ccc(CC[C@](N)(CO)COP(O)(O)=O)cc1",
+    "generation": 1,
+    "metaboliteName": "phosphate"
+   }
+  ]
+ },
+ {
+  "drugName": "Fluticasone Propionate",
+  "smiles": "CCC(=O)O[C@@]1([C@H](C)C[C@H]2[C@@H]3C[C@H](F)C4=CC(=O)C=C[C@]4(C)[C@@]3(F)[C@@H](O)C[C@]12C)C(=O)SCF",
+  "doi": "10.1152/ajplung.00108.2007 10.1124/dmd.105.009043",
+  "metabolites": [
+   {
+    "smiles": "CCC(=O)O[C@@]1([C@H](C)C[C@H]2[C@@H]3C[C@H](F)C4=CC(=O)C=C[C@]4(C)[C@@]3(F)[C@@H](O)C[C@]12C)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M1"
+   }
+  ]
+ },
+ {
+  "drugName": "Budesonide",
+  "smiles": "CCCC1O[C@@H]2C[C@H]3[C@@H]4CCC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+  "doi": "10.1007/s00216-012-6037-0",
+  "metabolites": [
+   {
+    "smiles": "CCC(O)C1O[C@@H]2C[C@H]3[C@@H]4CCC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M-IV",
+    "metabolites": [
+     {
+      "smiles": "CCC(O)C1O[C@@H]2C[C@H]3[C@@H]4C=CC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+      "generation": 2,
+      "metaboliteName": "M-V"
+     }
+    ]
+   },
+   {
+    "smiles": "CCCC1O[C@@H]2C[C@H]3[C@@H]4C=CC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M-VI",
+    "metabolites": [
+     {
+      "smiles": "CCC(O)C1O[C@@H]2C[C@H]3[C@@H]4C=CC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+      "generation": 2,
+      "metaboliteName": "M-V"
+     }
+    ]
+   },
+   {
+    "smiles": "CCCC1O[C@@H]2C[C@H]3[C@@H]4CC(O)C5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M-II/M-III"
+   },
+   {
+    "smiles": "CCCC1O[C@@H]2C[C@H]3[C@@H]4CCC5=CC(=O)C=C[C@]5(C)[C@H]4C(=O)C[C@]3(C)[C@@]2(O1)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M-VII"
+   },
+   {
+    "smiles": "CCCC1O[C@@H]2C[C@H]3[C@@H]4CCC5=CC(=O)C=C[C@]5(C)[C@H]4[C@@H](O)C[C@]3(C)[C@@]2(O1)C(O)CO",
+    "generation": 1,
+    "metaboliteName": "M-VIII"
+   },
+   {
+    "smiles": "C[C@]12C[C@H](O)[C@H]3[C@@H](CCC4=CC(=O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M-I",
+    "metabolites": [
+     {
+      "smiles": "C[C@]12C[C@H](O)[C@H]3[C@@H](CCC4=CC(=O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(O)CO",
+      "generation": 2,
+      "metaboliteName": "M-IX"
+     },
+     {
+      "smiles": "C[C@]12CC(O)[C@H]3[C@@H](CCC4CC(=O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(=O)CO",
+      "generation": 2,
+      "metaboliteName": "M-XI"
+     },
+     {
+      "smiles": "C[C@]12CC(=O)[C@H]3[C@@H](CCC4=CC(=O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(=O)CO",
+      "generation": 2,
+      "metaboliteName": "M-X",
+      "metabolites": [
+       {
+        "smiles": "C[C@]12CC(=O)[C@H]3[C@@H](CCC4CC(=O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(=O)CO",
+        "generation": 3,
+        "metaboliteName": "M-XII",
+        "metabolites": [
+         {
+          "smiles": "C[C@]12CC(=O)[C@H]3[C@@H](CCC4CC(O)C=C[C@]34C)[C@@H]1C[C@@H](O)[C@]2(O)C(=O)CO",
+          "generation": 4,
+          "metaboliteName": "M-XIII"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Formoterol",
+  "smiles": "COc1ccc(CC(C)NCC(O)c2ccc(O)c(NC=O)c2)cc1",
+  "doi": "PMID:10497135",
+  "metabolites": [
+   {
+    "smiles": "CC(Cc1ccc(O)cc1)NCC(O)c1ccc(O)c(NC=O)c1",
+    "generation": 1,
+    "metaboliteName": "Met 1"
+   },
+   {
+    "smiles": "COc1ccc(CC(C)NCC(O)c2ccc(OC3OC(C(O)C(O)C3O)C(O)=O)c(NC=O)c2)cc1",
+    "generation": 1,
+    "metaboliteName": "FG1"
+   },
+   {
+    "smiles": "COc1ccc(CC(C)NCC(OC2OC(C(O)C(O)C2O)C(O)=O)c2ccc(O)c(NC=O)c2)cc1",
+    "generation": 1,
+    "metaboliteName": "FG2"
+   },
+   {
+    "smiles": "COc1ccc(CC(C)NCC(O)c2ccc(OS(O)(=O)=O)c(NC=O)c2)cc1",
+    "generation": 1,
+    "metaboliteName": "FS"
+   }
+  ]
+ },
+ {
+  "drugName": "Esomeprazole",
+  "smiles": "COc1ccc2[nH]c(nc2c1)[S@@](=O)Cc3ncc(C)c(OC)c3C",
+  "doi": "10.1021/acs.jpcb.8b01179 PMID:8331574",
+  "metabolites": [
+   {
+    "smiles": "COc1c(C)cnc(C[S@](=O)c2nc3cc(O)ccc3[nH]2)c1C",
+    "generation": 1,
+    "metaboliteName": "5-O-desmethylomeprazole"
+   },
+   {
+    "smiles": "COc1ccc2[nH]c(nc2c1)S(=O)(=O)Cc1ncc(C)c(OC)c1C",
+    "generation": 1,
+    "metaboliteName": "omeprazole sulfone"
+   }
+  ]
+ },
+ {
+  "drugName": "Empagliflozin",
+  "smiles": "OC[C@H]1O[C@H]([C@H](O)[C@@H](O)[C@@H]1O)c2ccc(Cl)c(Cc3ccc(O[C@H]4CCOC4)cc3)c2",
+  "doi": "10.3109/00498254.2014.999141",
+  "metabolites": [
+   {
+    "smiles": "OC[C@H]1O[C@H]([C@H](OC2OC(C(O)C(O)C2O)C(O)=O)[C@@H](O)[C@@H]1O)c1ccc(Cl)c(Cc2ccc(O[C@H]3CCOC3)cc2)c1",
+    "generation": 1,
+    "metaboliteName": "M626/1"
+   },
+   {
+    "smiles": "O[C@H]1[C@H](O)[C@@H](COC2OC(C(O)C(O)C2O)C(O)=O)O[C@H]([C@@H]1O)c1ccc(Cl)c(Cc2ccc(O[C@H]3CCOC3)cc2)c1",
+    "generation": 1,
+    "metaboliteName": "M626/2"
+   },
+   {
+    "smiles": "OC[C@H]1O[C@H]([C@H](O)[C@@H](OC2OC(C(O)C(O)C2O)C(O)=O)[C@@H]1O)c1ccc(Cl)c(Cc2ccc(O[C@H]3CCOC3)cc2)c1",
+    "generation": 1,
+    "metaboliteName": "M626/3"
+   },
+   {
+    "smiles": "OCC[C@@H](CO)Oc1ccc(Cc2cc(ccc2Cl)[C@@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@H]2O)cc1",
+    "generation": 1,
+    "metaboliteName": "M468/1"
+   }
+  ]
+ },
+ {
+  "drugName": "Dasatinib",
+  "smiles": "Cc1nc(Nc2ncc(s2)C(=O)Nc3c(C)cccc3Cl)cc(n1)N4CCN(CCO)CC4",
+  "doi": "10.1124/dmd.107.018267",
+   "metabolites": [
+   {
+    "smiles": "Cc1nc(Nc2ncc(s2)C2=Nc3c(Cl)cccc3CO2)cc(n1)N1CCN(CCO)CC1",
+    "generation": 1,
+    "metaboliteName": "M9"
+   },
+   {
+    "smiles": "Cc1nc(Nc2ncc(s2)C(=O)Nc2c(C)cccc2Cl)cc(n1)N1CCN(CC(O)=O)CC1",
+    "generation": 1,
+    "metaboliteName": "M6"
+   },
+   {
+    "smiles": "Cc1cccc(Cl)c1NC(=O)c1cnc(Nc2cc(nc(C)n2)N2CCNCC2)s1",
+    "generation": 1,
+    "metaboliteName": "M4"
+   },
+   {
+    "smiles": "Cc1nc(Nc2ncc(s2)C(=O)Nc2c(C)cc(O)cc2Cl)cc(n1)N1CCN(CCO)CC1",
+    "generation": 1,
+    "metaboliteName": "M20"
+   },
+   {
+    "smiles": "Cc1nc(Nc2ncc(s2)C(=O)Nc2c(Cl)cccc2CO)cc(n1)N1CCN(CCO)CC1",
+    "generation": 1,
+    "metaboliteName": "M24"
+   },
+   {
+    "smiles": "Cc1nc(Nc2ncc(s2)C(=O)Nc2c(C)cccc2Cl)cc(n1)N1CC[N+]([O-])(CCO)CC1",
+    "generation": 1,
+    "metaboliteName": "M5"
+   }
+  ]
+ },
+ {
+  "drugName": "Atorvastatin",
+  "smiles": "CC(C)c1c(C(=O)Nc2ccccc2)c(c3ccccc3)c(c4ccc(F)cc4)n1CC[C@@H](O)C[C@@H](O)CC(=O)O",
+  "doi": "10.1080/00498250802334391",
+   "metabolites": [
+   {
+    "smiles": "CC(C)c1c(C(=O)Nc2ccc(O)cc2)c(c(-c2ccc(F)cc2)n1CC[C@@H](O)C[C@@H](O)CC(O)=O)-c1ccccc1",
+    "generation": 1,
+    "metaboliteName": "para-hydroxyatorvastatin"
+   },
+   {
+    "smiles": "CC(C)c1c(C(=O)Nc2ccccc2O)c(c(-c2ccc(F)cc2)n1CC[C@@H](O)C[C@@H](O)CC(O)=O)-c1ccccc1",
+    "generation": 1,
+    "metaboliteName": "ortho-hydroxyatorvastatin"
+   }
+  ]
+ },
+ {
+  "drugName": "Pomalidomide",
+  "smiles": "Nc1cccc2C(=O)N(C3CCC(=O)NC3=O)C(=O)c12",
+  "doi": "10.1007/s00280-012-2040-6",
+   "metabolites": [
+   {
+    "smiles": "NC(=O)C(CCC(O)=O)N1C(=O)c2cccc(N)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M10"
+   },
+   {
+    "smiles": "Nc1ccc(O)c2C(=O)N(C3CCC(=O)NC3=O)C(=O)c12",
+    "generation": 1,
+    "metaboliteName": "M16"
+   },
+   {
+    "smiles": "Nc1cccc(C(O)=O)c1C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M12"
+   },
+   {
+    "smiles": "Nc1cccc2C(=O)N(C3CC(O)C(=O)NC3=O)C(=O)c12",
+    "generation": 1,
+    "metaboliteName": "M19"
+   },
+   {
+    "smiles": "NC(=O)CCC(N1C(=O)c2cccc(N)c2C1=O)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M11"
+   },
+   {
+    "smiles": "OC(=O)Nc1cccc2C(=O)N(C3CCC(=O)NC3=O)C(=O)c12",
+    "generation": 1,
+    "metaboliteName": "M18"
+   },
+   {
+    "smiles": "Nc1c2C(=O)N(C3CCC(=O)NC3=O)C(=O)c2ccc1O",
+    "generation": 1,
+    "metaboliteName": "M17"
+   }
+  ]
+ },
+ {
+  "drugName": "Sofosbuvir",
+  "smiles": "CC(C)OC(=O)[C@H](C)N[P@](=O)(OC[C@H]1O[C@@H](N2C=CC(=O)NC2=O)[C@](C)(F)[C@@H]1O)Oc3ccccc3",
+  "doi": "10.1074/jbc.M110.161802",
+  "metabolites": [
+   {
+    "smiles": "C[C@H](N[P@](=O)(OC[C@H]1O[C@@H](N2C=CC(=O)NC2=O)[C@](C)(F)[C@@H]1O)Oc1ccccc1)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "first metabolite",
+    "metabolites": [
+     {
+      "smiles": "C[C@H](N[P@](O)(=O)OC[C@H]1O[C@@H](N2C=CC(=O)NC2=O)[C@](C)(F)[C@@H]1O)C(O)=O",
+      "generation": 2,
+      "metaboliteName": "PSI-352707",
+      "metabolites": [
+       {
+        "smiles": "C[C@@]1(F)[C@H](O)[C@@H](COP(O)(O)=O)O[C@H]1N1C=CC(=O)NC1=O",
+        "generation": 3,
+        "metaboliteName": "PSI-7411",
+        "metabolites": [
+         {
+          "smiles": "C[C@@]1(F)[C@H](O)[C@@H](CO[P@@](O)(=O)OP(O)(O)=O)O[C@H]1N1C=CC(=O)NC1=O",
+          "generation": 4,
+          "metaboliteName": "PSI-7410",
+          "metabolites": [
+           {
+            "smiles": "C[C@@]1(F)[C@H](O)[C@@H](CO[P@@](O)(=O)OP(O)(=O)OP(O)(O)=O)O[C@H]1N1C=CC(=O)NC1=O",
+            "generation": 5,
+            "metaboliteName": "PSI-7409"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Darunavir",
+  "smiles": "CC(C)CN(C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)O[C@H]2CO[C@H]3OCC[C@@H]23)S(=O)(=O)c4ccc(N)cc4",
+  "doi": "10.1124/dmd.108.024109",
+   "metabolites": [
+   {
+    "smiles": "CC(C)(O)CN(C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)O[C@H]1CO[C@H]2OCC[C@@H]12)S(=O)(=O)c1ccc(N)cc1",
+    "generation": 1,
+    "metaboliteName": "M23",
+    "metabolites": [
+     {
+      "smiles": "CC(C)(O)CN(C[C@@H](O)[C@@H](N)Cc1ccccc1)S(=O)(=O)c1ccc(N)cc1",
+      "generation": 2,
+      "metaboliteName": "M6"
+     }
+    ]
+   },
+   {
+    "smiles": "CC(C)CN(C[C@@H](O)[C@@H](N)Cc1ccccc1)S(=O)(=O)c1ccc(N)cc1",
+    "generation": 1,
+    "metaboliteName": "M19",
+    "metabolites": [
+     {
+      "smiles": "CC(C)(O)CN(C[C@@H](O)[C@@H](N)Cc1ccccc1)S(=O)(=O)c1ccc(N)cc1",
+      "generation": 2,
+      "metaboliteName": "M6"
+     }
+    ]
+   },
+   {
+    "smiles": "CC(C)CN(C[C@@H](O)[C@H](Cc1ccc(O)cc1)NC(=O)O[C@H]1CO[C@H]2OCC[C@@H]12)S(=O)(=O)c1ccc(N)cc1",
+    "generation": 1,
+    "metaboliteName": "M33"
+   },
+   {
+    "smiles": "CC(C)CN(C[C@@H](OC1OC(C(O)C(O)C1O)C(O)=O)[C@H](Cc1ccccc1)NC(=O)O[C@H]1CO[C@H]2OCC[C@@H]12)S(=O)(=O)c1ccc(N)cc1",
+    "generation": 1,
+    "metaboliteName": "M20"
+   },
+   {
+    "smiles": "CC(C)CN(C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)O[C@H]1CO[C@H]2OCC[C@@H]12)S(=O)(=O)c1ccc(NC2OC(C(O)C(O)C2O)C(O)=O)cc1",
+    "generation": 1,
+    "metaboliteName": "M18"
+   },
+   {
+    "smiles": "CC(C)CN(C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)O[C@H]1CO[C@H]2OCC[C@@H]12)S(=O)(=O)c1ccc(N)c(O)c1",
+    "generation": 1,
+    "metaboliteName": "M29"
+   }
+  ]
+ },
+ {
+  "drugName": "Nilotinib ",
+  "smiles": "Cc1cn(cn1)c2cc(NC(=O)c3ccc(C)c(Nc4nccc(n4)c5cccnc5)c3)cc(c2)C(F)(F)F",
+  "doi": "10.1182/blood.V122.21.4011.4011",
+   "metabolites": [
+   {
+    "smiles": "Cc1cn(cn1)-c1cc(NC(=O)c2ccc(CO)c(Nc3nccc(n3)-c3cccnc3)c2)cc(c1)C(F)(F)F",
+    "generation": 1,
+    "metaboliteName": "P42.1"
+   },
+   {
+    "smiles": "Cc1ccc(cc1Nc1nccc(n1)-c1cccnc1)C(=O)Nc1cc(cc(c1)C(F)(F)F)-n1cnc(CO)c1",
+    "generation": 1,
+    "metaboliteName": "P41.6"
+   },
+   {
+    "smiles": "Cc1ccc(cc1Nc1nccc(n1)-c1cccnc1)C(=O)Nc1cc(cc(c1)C(F)(F)F)-n1cnc(c1)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "P36.5"
+   },
+   {
+    "smiles": "Cc1cn(cn1)-c1cc(NC(=O)c2ccc(C)c(Nc3nccc(n3)-c3ccc[n+]([O-])c3)c2)cc(c1)C(F)(F)F",
+    "generation": 1,
+    "metaboliteName": "P36"
+   },
+   {
+    "smiles": "Cc1ccc(cc1Nc1nccc(n1)-c1cccnc1)C(=O)Nc1cc(N)cc(c1)C(F)(F)F",
+    "generation": 1,
+    "metaboliteName": "P50"
+   }
+  ]
+ },
+ {
+  "drugName": "Osimertinib",
+  "smiles": "COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc2nccc(n2)c3cn(C)c4ccccc34",
+  "doi": "10.1124/dmd.115.069203",
+   "metabolites": [
+   {
+    "smiles": "COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(n1)-c1c[nH]c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "AZ5104"
+   },
+   {
+    "smiles": "CNCCN(C)c1cc(OC)c(Nc2nccc(n2)-c2cn(C)c3ccccc23)cc1NC(=O)C=C",
+    "generation": 1,
+    "metaboliteName": "AZ7550"
+   },
+   {
+    "smiles": "COc1cc(N(C)CC[N+](C)(C)[O-])c(NC(=O)C=C)cc1Nc1nccc(n1)-c1cn(C)c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "M1"
+   },
+   {
+    "smiles": "COc1cc(N(C)CCN(C)C)c(NC(=O)CCSCC(N)C(=O)NCC(O)=O)cc1Nc1nccc(n1)-c1cn(C)c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "M8"
+   },
+   {
+    "smiles": "CNc1cc(OC)c(Nc2nccc(n2)-c2cn(C)c3ccccc23)cc1NC(=O)C=C",
+    "generation": 1,
+    "metaboliteName": "M2"
+   },
+   {
+    "smiles": "COc1cc(N(C)CCN(C)C)c(NC(=O)CCSCC(N)C(O)=O)cc1Nc1nccc(n1)-c1cn(C)c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "M21"
+   },
+   {
+    "smiles": "COc1cc(N(C)CCN(C)C)c(NC(=O)CCSCC(NC(=O)CCC(N)C(O)=O)C(=O)NCC(O)=O)cc1Nc1nccc(n1)-c1cn(C)c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "M10"
+   }
+  ]
+ },
+ {
+  "drugName": "Tacrolimus",
+  "smiles": "CO[C@@H]1C[C@@H](CC[C@H]1O)\C=C(/C)\[C@H]2OC(=O)[C@@H]3CCCCN3C(=O)C(=O)[C@]4(O)O[C@H]([C@H](C[C@@H](C)C\C(=C\[C@@H](CC=C)C(=O)C[C@H](O)[C@H]2C)\C)OC)[C@H](C[C@H]4C)OC",
+  "doi": "10.2133/dmpk.22.328",
+  "metabolites": [
+   {
+    "smiles": "CO[C@@H]1C[C@@H](CC[C@H]1O)\C=C(/C)[C@H]1OC(=O)[C@@H]2CCCCN2C(=O)C(=O)[C@]2(O)OC(C[C@H]2C)C(O)[C@H](C[C@@H](C)C\C(C)=C\[C@@H](CC=C)C(=O)C[C@H](O)[C@H]1C)OC",
+    "generation": 1,
+    "metaboliteName": "M-I",
+    "metabolites": [
+     {
+      "smiles": "CO[C@@H]1C[C@@H](CC[C@H]1O)\C=C(/C)[C@H]1OC(=O)[C@@H]2CCCCN2C(=O)C(=O)[C@]2(O)OC(C[C@H]2C)C(O)[C@@H](O)C[C@@H](C)C\C(C)=C\[C@@H](CC=C)C(=O)C[C@H](O)[C@H]1C",
+      "generation": 2,
+      "metaboliteName": "M-VII"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Cinacalcet",
+  "smiles": "C[C@@H](NCCCc1cccc(c1)C(F)(F)F)c2cccc3ccccc23",
+  "doi": "10.1124/dmd.104.000604",
+   "metabolites": [
+   {
+    "smiles": "C[C@@H](NCCCc1cccc(c1)C(F)(F)F)C1=C[C@@H](O)[C@H](OC2OC(C(O)C(O)C2O)C(O)=O)c2ccccc12",
+    "generation": 1,
+    "metaboliteName": "M2a-Glu"
+   },
+   {
+    "smiles": "OC(=O)CCc1cccc(c1)C(F)(F)F",
+    "generation": 1,
+    "metaboliteName": "M5",
+    "metabolites": [
+     {
+      "smiles": "OC(CC(O)=O)c1cccc(c1)C(F)(F)F",
+      "generation": 2,
+      "metaboliteName": "M6",
+      "metabolites": [
+       {
+        "smiles": "OC(=O)\C=C\c1cccc(c1)C(F)(F)F",
+        "generation": 3,
+        "metaboliteName": "M7",
+        "metabolites": [
+         {
+          "smiles": "OC(=O)CNC(=O)\C=C\c1cccc(c1)C(F)(F)F",
+          "generation": 4,
+          "metaboliteName": "M7-Gly"
+         }
+        ]
+       },
+       {
+        "smiles": "OC(=O)c1cccc(c1)C(F)(F)F",
+        "generation": 3,
+        "metaboliteName": "M8",
+        "metabolites": [
+         {
+          "smiles": "OC(=O)CNC(=O)c1cccc(c1)C(F)(F)F",
+          "generation": 4,
+          "metaboliteName": "M8-Gly"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Tofacitinib",
+  "smiles": "C[C@@H]1CCN(C[C@@H]1N(C)c2ncnc3[nH]ccc23)C(=O)CC#N",
+  "doi": "10.1124/dmd.113.054940",
+   "metabolites": [
+   {
+    "smiles": "C[C@@H]1CCN(C[C@@H]1Nc1ncnc2[nH]ccc12)C(=O)CC#N",
+    "generation": 1,
+    "metaboliteName": "M1"
+   },
+   {
+    "smiles": "C[C@@H]1CCN(C[C@@H]1N(C)c1ncnc2[nH]ccc12)C(=O)CO",
+    "generation": 1,
+    "metaboliteName": "M2"
+   },
+   {
+    "smiles": "C[C@@H]1CCN(C[C@@H]1N(C)c1ncnc2[nH]ccc12)C(=O)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M4"
+   },
+   {
+    "smiles": "C[C@@H]1CCN(C[C@@H]1NC1=C2CC(=O)NC2=NC=N1)C(=O)CC#N",
+    "generation": 1,
+    "metaboliteName": "M9"
+   }
+  ]
+ },
+ {
+  "drugName": "Dabigatran",
+  "smiles": "Cn1c(CNc2ccc(cc2)C(=N)N)nc3cc(ccc13)C(=O)N(CCC(=O)O)c4ccccn4",
+  "doi": "10.1124/dmd.107.019083",
+   "metabolites": [
+   {
+    "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(=O)Nc1ccccn1",
+    "generation": 1,
+    "metaboliteName": "M400"
+   },
+   {
+    "smiles": "Cn1c(nc2cc(ccc12)C(=O)N(CCC(O)=O)c1ccccn1)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M369"
+   },
+   {
+    "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M324",
+    "metabolites": [
+     {
+      "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(=O)OC1OC(C(O)C(O)C1O)C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M500"
+     }
+    ]
+   },
+   {
+    "smiles": "Cn1c(CO)nc2cc(ccc12)C(=O)N(CCC(O)=O)c1ccccn1",
+    "generation": 1,
+    "metaboliteName": "M355",
+    "metabolites": [
+     {
+      "smiles": "Cn1c(nc2cc(ccc12)C(=O)N(CCC(O)=O)c1ccccn1)C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M369",
+      "metabolites": [
+       {
+        "smiles": "Cn1cnc2cc(ccc12)C(=O)N(CCC(O)=O)c1ccccn1",
+        "generation": 3,
+        "metaboliteName": "M325"
+       }
+      ]
+     },
+     {
+      "smiles": "Cn1c(CN)nc2cc(ccc12)C(=O)N(CCC(O)=O)c1ccccn1",
+      "generation": 2,
+      "metaboliteName": "M354",
+      "metabolites": [
+       {
+        "smiles": "CC(=O)NCc1nc2cc(ccc2n1C)C(=O)N(CCC(O)=O)c1ccccn1",
+        "generation": 3,
+        "metaboliteName": "M396"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(=O)N(CCC(=O)OC1CC(C(O)C(O)C1O)C(O)=O)c1ccccn1",
+    "generation": 1,
+    "metaboliteName": "M648",
+    "metabolites": [
+     {
+      "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(=O)N(CCC(=O)OC1OC(C(O)C(O)C1O)C(=O)NC(N)=O)c1ccccn1",
+      "generation": 2,
+      "metaboliteName": "M690"
+     },
+     {
+      "smiles": "COC(=O)CCN(C(=O)c1ccc2n(C)c(CNc3ccc(cc3)C(N)=N)nc2c1)c1ccccn1",
+      "generation": 2,
+      "metaboliteName": "M486"
+     },
+     {
+      "smiles": "Cn1c(CNc2ccc(cc2)C(N)=N)nc2cc(ccc12)C(=O)N(CCC(=O)OCC(O)C(O)C(O)C(O)CO)c1ccccn1",
+      "generation": 2,
+      "metaboliteName": "M636"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Lurasidone",
+  "smiles": "O=C1[C@@H]2[C@H]3CC[C@H](C3)[C@@H]2C(=O)N1C[C@@H]4CCCC[C@H]4CN5CCN(CC5)c6nsc7ccccc67",
+  "doi": "10.2147/NDT.S18059",
+  "metabolites": [
+   {
+    "smiles": "C1CN(CCN1)c1nsc2ccccc12",
+    "generation": 1,
+    "metaboliteName": "BITP"
+   }
+  ]
+ },
+ {
+  "drugName": "Clopidogrel",
+  "smiles": "COC(=O)[C@@H](N1CCc2sccc2C1)c3ccccc3Cl",
+  "doi": "10.1124/jpet.112.201640",
+   "metabolites": [
+   {
+    "smiles": "OC(=O)[C@@H](N1CCc2sccc2C1)c1ccccc1Cl",
+    "generation": 1,
+    "metaboliteName": "clopidogrel-carboxylic acid"
+   },
+   {
+    "smiles": "COC(=O)[C@@H](N1CCC2SC(=O)C=C2C1)c1ccccc1Cl",
+    "generation": 1,
+    "metaboliteName": "2-oxo-clopidogrel",
+    "metabolites": [
+     {
+      "smiles": "OC(=O)[C@@H](N1CCC2SC(=O)C=C2C1)c1ccccc1Cl",
+      "generation": 2,
+      "metaboliteName": "2-oxo-clopidogrel-carboxylic acid"
+     },
+     {
+      "smiles": "COC(=O)[C@@H](N1CCC(S)\C(C1)=C/C(O)=O)C1=CC=CC=C1Cl",
+      "generation": 2,
+      "metaboliteName": "5-thiol metabolite",
+      "metabolites": [
+       {
+        "smiles": "OC(=O)\C=C1\CN(CCC1S)[C@H](C(O)=O)C1=CC=CC=C1Cl",
+        "generation": 3,
+        "metaboliteName": "5-thiol carboxylic acid metabolite"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Apremilast",
+  "smiles": "CCOc1cc(ccc1OC)[C@@H](CS(=O)(=O)C)N2C(=O)c3cccc(NC(=O)C)c3C2=O",
+  "doi": "10.3109/00498254.2011.604745",
+   "metabolites": [
+   {
+    "smiles": "CCOc1cc(ccc1OC)[C@@H](CS(C)(=O)=O)NC(=O)c1cccc(NC(C)=O)c1C(O)=O",
+    "generation": 1,
+    "metaboliteName": "M1/M2",
+    "metabolites": [
+     {
+      "smiles": "CCOc1cc(ccc1O)[C@@H](CS(C)(=O)=O)NC(=O)c1cccc(NC(C)=O)c1C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M9",
+      "metabolites": [
+       {
+        "smiles": "CCOc1cc(ccc1OC1OC(C(O)C(O)C1O)C(O)=O)[C@@H](CS(C)(=O)=O)NC(=O)c1cccc(NC(C)=O)c1C(O)=O",
+        "generation": 3,
+        "metaboliteName": "M15"
+       }
+      ]
+     },
+     {
+      "smiles": "CC(=O)Nc1cccc(C(O)=O)c1C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M18",
+      "metabolites": [
+       {
+        "smiles": "OCC(=O)Nc1cccc(C(O)=O)c1C(O)=O",
+        "generation": 3,
+        "metaboliteName": "M23"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "smiles": "CCOc1cc(ccc1O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(C)=O)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M3",
+    "metabolites": [
+     {
+      "smiles": "CCOc1cc(ccc1O)[C@@H](CS(C)(=O)=O)NC(=O)c1cccc(NC(C)=O)c1C(O)=O",
+      "generation": 2,
+      "metaboliteName": "M9",
+      "metabolites": [
+       {
+        "smiles": "CCOc1cc(ccc1OC1OC(C(O)C(O)C1O)C(O)=O)[C@@H](CS(C)(=O)=O)NC(=O)c1cccc(NC(C)=O)c1C(O)=O",
+        "generation": 3,
+        "metaboliteName": "M15"
+       }
+      ]
+     },
+     {
+      "smiles": "CCOc1cc(ccc1OC1OC(C(O)C(O)C1O)C(O)=O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(C)=O)c2C1=O",
+      "generation": 2,
+      "metaboliteName": "M12"
+     },
+     {
+      "smiles": "CC(=O)Nc1cccc2C(=O)N([C@H](CS(C)(=O)=O)c3ccc(O)c(O)c3)C(=O)c12",
+      "generation": 2,
+      "metaboliteName": "M19"
+     }
+    ]
+   },
+   {
+    "smiles": "CC(=O)Nc1cccc2C(=O)N([C@H](CS(C)(=O)=O)c3ccc(O)c(O)c3)C(=O)c12",
+    "generation": 1,
+    "metaboliteName": "M19"
+   },
+   {
+    "smiles": "COc1ccc(cc1O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(C)=O)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M22"
+   },
+   {
+    "smiles": "COc1ccc(cc1OC1OC(C(O)C(O)C1O)C(O)=O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(C)=O)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M13"
+   },
+   {
+    "smiles": "CCOc1cc(ccc1OC)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(N)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M7",
+    "metabolites": [
+     {
+      "smiles": "CCOc1cc(ccc1O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(N)c2C1=O",
+      "generation": 2,
+      "metaboliteName": "M4",
+      "metabolites": [
+       {
+        "smiles": "CS(=O)(=O)C[C@@H](N1C(=O)c2cccc(N)c2C1=O)c1ccc(O)c(O)c1",
+        "generation": 3,
+        "metaboliteName": "M20"
+       },
+       {
+        "smiles": "CCOc1cc(ccc1OC1OC(C(O)C(O)C1O)C(O)=O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(N)c2C1=O",
+        "generation": 3,
+        "metaboliteName": "M14"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "smiles": "CCOc1cc(ccc1OC)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(=O)CO)c2C1=O",
+    "generation": 1,
+    "metaboliteName": "M17",
+    "metabolites": [
+     {
+      "smiles": "CCOc1cc(ccc1O)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(=O)CO)c2C1=O",
+      "generation": 2,
+      "metaboliteName": "M10",
+      "metabolites": [
+       {
+        "smiles": "CS(=O)(=O)C[C@@H](N1C(=O)c2cccc(NC(=O)CO)c2C1=O)c1ccc(O)c(O)c1",
+        "generation": 3,
+        "metaboliteName": "M21"
+       }
+      ]
+     },
+     {
+      "smiles": "CCOc1cc(ccc1OC)[C@@H](CS(C)(=O)=O)N1C(=O)c2cccc(NC(=O)COC3OC(C(O)C(O)C3O)C(O)=O)c2C1=O",
+      "generation": 2,
+      "metaboliteName": "M16"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "drugName": "Rilpivirine",
+  "smiles": "Cc1cc(\C=C\C#N)cc(C)c1Nc2ccnc(Nc3ccc(cc3)C#N)n2",
+  "doi": "10.1128/AAC.01401-13",
+   "metabolites": [
+   {
+    "smiles": "Cc1cc(\C=C\C#N)cc(CO)c1Nc1ccnc(Nc2ccc(cc2)C#N)n1",
+    "generation": 1,
+    "metaboliteName": "M2",
+    "metabolites": [
+     {
+      "smiles": "Cc1cc(\C=C\C#N)cc(COC2OC(C(O)C(O)C2O)C(O)=O)c1Nc1ccnc(Nc2ccc(cc2)C#N)n1",
+      "generation": 2,
+      "metaboliteName": "M6"
+     }
+    ]
+   },
+   {
+    "smiles": "OCc1cc(\C=C\C#N)cc(CO)c1Nc1ccnc(Nc2ccc(cc2)C#N)n1",
+    "generation": 1,
+    "metaboliteName": "M4",
+    "metabolites": [
+     {
+      "smiles": "OCc1cc(\C=C\C#N)cc(COC2OC(C(O)C(O)C2O)C(O)=O)c1Nc1ccnc(Nc2ccc(cc2)C#N)n1",
+      "generation": 2,
+      "metaboliteName": "M7"
+     }
+    ]
+   },
+   {
+    "smiles": "Cc1cc(\C=C\C#N)cc(C)c1NC1C=CN(C2OC(C(O)C(O)C2O)C(O)=O)C(Nc2ccc(cc2)C#N)=N1",
+    "generation": 1,
+    "metaboliteName": "M5"
+   }
+  ]
+ },
+ {
+  "drugName": "Linagliptin",
+  "smiles": "CC#CCn1c(nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12)N5CCC[C@@H](N)C5",
+  "doi": "10.1124/dmd.109.031476",
+  "metabolites": [
+   {
+    "smiles": "CC#CCn1c(nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12)N1CCC[C@H](C1)NC(C)=O",
+    "generation": 1,
+    "metaboliteName": "M515",
+    "metabolites": [
+     {
+      "smiles": "CN1c2nc(N3CCC[C@H](C3)NC(C)=O)n(CC#CCO)c2C(=O)N(Cc2nc(C)c3ccccc3n2)C1=O",
+      "generation": 2,
+      "metaboliteName": "M531"
+     }
+    ]
+   },
+   {
+    "smiles": "CN1c2nc(N3CCC[C@@H](N)C3)n(CC#CCO)c2C(=O)N(Cc2nc(C)c3ccccc3n2)C1=O",
+    "generation": 1,
+    "metaboliteName": "M489",
+    "metabolites": [
+     {
+      "smiles": "CN1c2nc(N3CCC[C@H](C3)NC(C)=O)n(CC#CCO)c2C(=O)N(Cc2nc(C)c3ccccc3n2)C1=O",
+      "generation": 2,
+      "metaboliteName": "M531"
+     }
+    ]
+   },
+   {
+    "smiles": "CC#CCn1c(nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12)N1CCCC(=O)C1",
+    "generation": 1,
+    "metaboliteName": "CD10604",
+    "metabolites": [
+     {
+      "smiles": "CC#CCn1c(nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12)N1CCCC(O)C1",
+      "generation": 2,
+      "metaboliteName": "CD1790",
+      "metabolites": [
+       {
+        "smiles": "CC#CCn1c(NCCCC(O)C(O)=O)nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12",
+        "generation": 3,
+        "metaboliteName": "M506",
+        "metabolites": [
+         {
+          "smiles": "CC#CCn1c(NCCCC(=O)C(O)=O)nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12",
+          "generation": 4,
+          "metaboliteName": "M504",
+          "metabolites": [
+           {
+            "smiles": "CC#CCn1c(NCCCC(O)=O)nc2N(C)C(=O)N(Cc3nc(C)c4ccccc4n3)C(=O)c12",
+            "generation": 5,
+            "metaboliteName": "M476"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "smiles": "CC#CCn1c(nc2N(C)C(=O)N(Cc3nc(C(O)=O)c4ccccc4n3)C(=O)c12)N1CCC[C@@H](N)C1",
+    "generation": 1,
+    "metaboliteName": "M503"
+   }
+  ]
+ },
+ {
+  "drugName": "Imatinib",
+  "smiles": "CN1CCN(Cc2ccc(cc2)C(=O)Nc3ccc(C)c(Nc4nccc(n4)c5cccnc5)c3)CC1",
+  "doi": "10.1124/dmd.105.004283",
+   "metabolites": [
+   {
+    "smiles": "Cc1ccc(NC(=O)c2ccc(CN3CCNCC3)cc2)cc1Nc1nccc(n1)-c1cccnc1",
+    "generation": 1,
+    "metaboliteName": "CGP74588"
+   },
+   {
+    "smiles": "CN1CCN(Cc2ccc(cc2)C(=O)Nc2ccc(C)c(Nc3nccc(n3)-c3ccc[n+]([O-])c3)c2)CC1",
+    "generation": 1,
+    "metaboliteName": "CGP72383"
+   },
+   {
+    "smiles": "CN1CCN(Cc2ccc(cc2)C(=O)Nc2ccc(CO)c(Nc3nccc(n3)-c3cccnc3)c2)CC1",
+    "generation": 1,
+    "metaboliteName": "AFN911"
+   },
+   {
+    "smiles": "Cc1ccc(NC(=O)c2ccc(CN3CC[N+](C)([O-])CC3)cc2)cc1Nc1nccc(n1)-c1cccnc1",
+    "generation": 1,
+    "metaboliteName": "CGP71422"
+   },
+   {
+    "smiles": "CN1CCN(Cc2ccc(cc2)C(=O)Nc2ccc(C)c(Nc3nccc(n3)-c3cccnc3)c2)CC1=O",
+    "generation": 1,
+    "metaboliteName": "AGP050",
+    "metabolites": [
+     {
+      "smiles": "Cc1ccc(NC(=O)c2ccc(CN3CCNC(=O)C3)cc2)cc1Nc1nccc(n1)-c1cccnc1",
+      "generation": 2,
+      "metaboliteName": "AGP049"
+     }
+    ]
+   },
+   {
+    "smiles": "CN1CCN(Cc2ccc(cc2)C(=O)Nc2ccc(C)c(Nc3nccc(n3)-c3cccnc3)c2)C(=O)C1",
+    "generation": 1,
+    "metaboliteName": "M29.6",
+    "metabolites": [
+     {
+      "smiles": "Cc1ccc(NC(=O)c2ccc(CN3CCNCC3=O)cc2)cc1Nc1nccc(n1)-c1cccnc1",
+      "generation": 2,
+      "metaboliteName": "M28.8"
+     }
+    ]
+   },
+   {
+    "smiles": "Cc1ccc(NC(=O)c2ccc(cc2)C(O)=O)cc1Nc1nccc(n1)-c1cccnc1",
+    "generation": 1,
+    "metaboliteName": "M42.2"
+   }
+  ]
+ },
+ {
+  "drugName": "Everolimus",
+  "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(/C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(/C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N4CCCC[C@H]4C(=O)O2)OC)CC[C@H]1OCCO",
+  "doi": "10.1016/S0041-1345(00)02116-3 10.1124/dmd.108.020651",
+   "metabolites": [
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@@H](O)C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "16-O-des"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](O)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "27-O-des"
+   },
+   {
+    "smiles": "CO[C@H]1C[C@@H]2CC[C@@H](C)[C@@](O)(O2)C(=O)C(=O)N2CCCC[C@H]2C(=O)O[C@@H](CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C1/C)[C@H](C)C[C@@H]1CC[C@@H](OCCO)[C@H](O)C1",
+    "generation": 1,
+    "metaboliteName": "39-O-des"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@](C)(O)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "11-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC(O)[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "12-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@]3(O)CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "14-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C(O)[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "24-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@](C)(O)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "25-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](CO)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "46-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](CO)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCO",
+    "generation": 1,
+    "metaboliteName": "49-OH"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1O",
+    "generation": 1,
+    "metaboliteName": "rapamycin"
+   },
+   {
+    "smiles": "CO[C@@H]1C[C@H](C[C@@H](C)[C@@H]2CC(=O)[C@H](C)\C=C(C)\[C@@H](O)[C@@H](OC)C(=O)[C@H](C)C[C@H](C)\C=C\C=C\C=C(C)\[C@H](C[C@@H]3CC[C@@H](C)[C@@](O)(O3)C(=O)C(=O)N3CCCC[C@H]3C(=O)O2)OC)CC[C@H]1OCCOP(O)(=O)OCC[N+](C)(C)C",
+    "generation": 1,
+    "metaboliteName": "ATG181"
+   }
+  ]
+ },
+ {
+  "drugName": "Rosuvastatin",
+  "smiles": "CC(C)c1nc(nc(c2ccc(F)cc2)c1\C=C\[C@@H](O)C[C@@H](O)CC(=O)O)N(C)S(=O)(=O)C",
+  "doi": "10.1016/s0149-2918(03)80336-3",
+  "metabolites": [
+   {
+    "smiles": "CC(C)c1nc(NS(C)(=O)=O)nc(-c2ccc(F)cc2)c1\C=C\[C@@H](O)C[C@@H](O)CC(O)=O",
+    "generation": 1,
+    "metaboliteName": "N-desmethyl rosuvastatin"
+   },
+   {
+    "smiles": "CC(C)c1nc(nc(-c2ccc(F)cc2)c1\C=C\[C@@]1(O)C[C@@H](O)CC(=O)O1)N(C)S(C)(=O)=O",
+    "generation": 1,
+    "metaboliteName": "rosuvastatin-5S-lactone"
+   }
+  ]
+ },
+ {
+  "drugName": "Dapagliflozin",
+  "smiles": "CCOc1ccc(Cc2cc(ccc2Cl)[C@@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@H]3O)cc1",
+  "doi": "10.1124/dmd.109.029165",
+   "metabolites": [
+   {
+    "smiles": "OC[C@H]1O[C@H]([C@H](O)[C@@H](O)[C@@H]1O)c1ccc(Cl)c(Cc2ccc(O)cc2)c1",
+    "generation": 1,
+    "metaboliteName": "M8"
+   },
+   {
+    "smiles": "CCOc1ccc(cc1)C(O)c1cc(ccc1Cl)[C@@H]1O[C@H](CO)[C@@H](O)[C@H](O)[C@H]1O",
+    "generation": 1,
+    "metaboliteName": "M12"
+   }
+  ]
+ },
+ {
+  "drugName": "Ticagrelor",
+  "smiles": "CCCSc1nc(N[C@@H]2C[C@H]2c3ccc(F)c(F)c3)c4nnn([C@@H]5C[C@H](OCCO)[C@@H](O)[C@H]5O)c4n1",
+  "doi": "10.1124/dmd.110.032250",
+  "metabolites": [
+   {
+    "smiles": "CCCSc1nc(N)c2nnn([C@@H]3C[C@H](OCCO)[C@@H](O)[C@H]3O)c2n1",
+    "generation": 1,
+    "metaboliteName": "M5"
+   },
+   {
+    "smiles": "CCCSc1nc(N[C@@H]2C[C@H]2c2ccc(F)c(F)c2)c2nnn([C@@H]3C[C@H](O)[C@@H](O)[C@H]3O)c2n1",
+    "generation": 1,
+    "metaboliteName": "M8"
+   }
+  ]
+ }
+]
