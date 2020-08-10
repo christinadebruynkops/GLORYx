@@ -1,2 +1,2 @@
 # GLORYx
-Prediction of metabolites for phase I and phase II xenobiotic metabolism.
+Prediction of metabolites formed by phase I and phase II xenobiotic metabolism.
