@@ -1,1 +1,0 @@
-pandoc --from markdown --to html --standalone -o README.html README.md
