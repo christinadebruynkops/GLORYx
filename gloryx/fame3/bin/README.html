@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h1 id="fame-3">FAME 3</h1>
+<p>This is the FAME 3 program. It attempts to predict sites of metabolism (SOMs) for the supplied chemical compounds. It is based on extra trees classifier trained for prediction of both phase I and phase II SOMs from the MetaQSAR database [1]. It contains a combined phase 1 and phase 2 (&quot;P1 + P2 model&quot;) model and separate phase 1 (&quot;P1 model&quot;) and phase 2 (&quot;P2 model&quot;) models. For more details on the FAME 3 method, see the FAME 3 publication [2].</p>
+<p><em>IMPORTANT</em>: If this file is packaged with a source code distribution of this software, note that the FAME 3 models are not bundled with it. They need to be obtained from the authors of the original work [2]. The models are available free of charge for non-profit use or a license to use the models in for-profit organisations can be issued by the authors.</p>
+<ol style="list-style-type: decimal">
+<li><p>MetaQSAR: An Integrated Database Engine to Manage and Analyze Metabolic Data Alessandro Pedretti, Angelica Mazzolari, Giulio Vistoli, and Bernard Testa Journal of Medicinal Chemistry 2018 61 (3), 1019-1030 DOI: 10.1021/acs.jmedchem.7b01473</p></li>
+<li><p>FAME 3: Predicting the Sites of Metabolism in Synthetic Compounds and Natural Products for Phase 1 and Phase 2 Metabolic Enzymes Martin Šícho, Conrad Stork, Angelica Mazzolari, Christina de Bruyn Kops, Alessandro Pedretti, Bernard Testa, Giulio Vistoli, Daniel Svozil, and Johannes Kirchmair Journal of Chemical Information and Modeling Just Accepted Manuscript DOI: 10.1021/acs.jcim.9b00376</p></li>
+</ol>
+<h2 id="build-instructions">Build instructions</h2>
+<p>If you want to build this software from source, you can do so with Maven. Run the following command in the source root directory and the binary distribution of the software will be created in the <code>target</code> directory:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mvn</span> package</code></pre></div>
+<h2 id="installation-instructions">Installation instructions</h2>
+<p>There is no installation needed for the software. Just unpack the archive into your desired installation directory. For example, on a Linux system this can be done with the <code>tar</code> command:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">tar</span> -xzf fame3-<span class="ot">${version}</span>-bin.tar.gz <span class="ot">${YOUR_INSTALL_DIR}</span></code></pre></div>
+<p>The FAME 3 binary and the required dependencies will then become available in the installation directory.</p>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="linux-and-mac">Linux and Mac</h3>
+<p>On Linux and Mac, running the program is easy since you can use the shell script provided in the installation directory:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">${YOUR_INSTALL_DIR}</span>/fame2
+<span class="kw">./fame3</span></code></pre></div>
+<p>You can also add <code>${YOUR_INSTALL_DIR}</code> to the <code>$PATH</code> environment variable to have universal access:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">export</span> <span class="ot">PATH=</span><span class="st">&quot;</span><span class="ot">$PATH</span><span class="st">:</span><span class="ot">$YOUR_INSTALL_DIR</span><span class="st">&quot;</span></code></pre></div>
+<p>There is a folder with example SDF files in the installation folder that you can use to test the program:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span></code></pre></div>
+<p>The program also accepts SMILES strings:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span></code></pre></div>
+<p>Multiple SMILES can also be specified:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
+<p>And SDF input can be combined with SMILES input as well:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -o <span class="st">&quot;test_predictions&quot;</span> <span class="st">&quot;</span><span class="ot">${YOUR_INSTALL_DIR}</span><span class="st">/examples/tamoxifen.sdf&quot;</span> -s <span class="st">&quot;O=C3OC4OC1(OOC42C(CC1)C(C)CCC2C3C)C&quot;</span> <span class="st">&quot;CN(C)CCOc1ccc(cc1)/C(c2ccccc2)=C(/CC)c3ccccc3&quot;</span></code></pre></div>
+<p>All the inputs above will generate the <code>test_predictions</code> folder in the current directory. This folder will contain subfolders named after the input molecules (molecules specified as SMILES will have a name generated for them). The FAME 3 output files for each compound will then be located in the respective subdirectory.</p>
+<p>More information on running the program is available in the help menu:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">fame3</span> -h</code></pre></div>
+<h3 id="windows">Windows</h3>
+<p>On Windows, there is no batch script at the moment. You will have to replace the <code>fame3</code> call and run the java package explicitly:</p>
+<pre><code>java -Xmx16g -jar ${YOUR_INSTALL_DIR}/fame3.jar -o &#39;test_predictions&#39; &quot;${YOUR_INSTALL_DIR}/examples/tamoxifen.sdf&quot;</code></pre>
+<p>Since the unpacked FAME 3 model and the FAMEscore models can take quite a bit of memory the <code>-Xmx16g</code> flag is necessary.</p>
+<p>Otherwise, <em>fame3</em> functions as outlined above for Linux and Mac.</p>
+<h2 id="author-contact-information">Author Contact Information</h2>
+<ul>
+<li>Martin Šícho - <script type="text/javascript">
+<!--
+h='&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;';a='&#64;';n='&#58;&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#64;&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#64;&#118;&#x73;&#x63;&#104;&#116;&#46;&#x63;&#122;&#32;&#40;&#58;&#x6d;&#x61;&#114;&#116;&#x69;&#110;&#46;&#x73;&#x69;&#x63;&#104;&#x6f;&#32;&#x61;&#116;&#32;&#118;&#x73;&#x63;&#104;&#116;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#122;&#x29;</noscript>
+<ul>
+<li>CZ-OPENSCREEN: National Infrastructure for Chemical Biology, Laboratory of Informatics and Chemistry, Faculty of Chemical Technology, University of Chemistry and Technology Prague, 166 28 Prague 6, Czech Republic</li>
+</ul></li>
+<li>Johannes Kirchmair - <script type="text/javascript">
+<!--
+h='&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;';a='&#64;';n='&#58;&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#64;&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#64;&#122;&#98;&#104;&#46;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#46;&#100;&#x65;&#32;&#40;&#58;&#x6b;&#x69;&#114;&#x63;&#104;&#x6d;&#x61;&#x69;&#114;&#32;&#x61;&#116;&#32;&#122;&#98;&#104;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#110;&#x69;&#x2d;&#104;&#x61;&#x6d;&#98;&#x75;&#114;&#x67;&#32;&#100;&#x6f;&#116;&#32;&#100;&#x65;&#x29;</noscript>
+<ul>
+<li>Universität Hamburg, Faculty of Mathematics, Informatics and Natural Sciences, Department of Computer Science, Center for Bioinformatics, Hamburg, 20146, Germany</li>
+</ul></li>
+</ul>
+<h2 id="acknowledgement-funding">Acknowledgement &amp; Funding</h2>
+<p>We highly appreciate the help of Patrik Rydberg and his collaborators who made the visualization code from the <a href="https://smartcyp.sund.ku.dk/mol_to_som">Java version of the SMARTCyp program</a> freely available as open source software.</p>
+<p>Additional thank you also belongs to Christina de Bruyn Kops, Conrad Stork and Ya Chen for their input during model and software development.</p>
+<p>This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - project number KI 2085/1-1, Bergen Research Foundation (BFS) - grant no. BFS2017TMT01, and by the Ministry of Education of the Czech Republic - project numbers MSMT No 21-SVV/2018, LM2015063 and by RVO 68378050-KAV-NPUI.</p>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>This software is based on a number of third-party dependencies that are listed in the attached <code>NOTICE</code>, which also includes their licensing information and links to websites where original copies of the software can be obtained. The source code of the third-party libraries was not modified with the important exception of the SMARTCyp software, which was integrated into the FAME 3 codebase and obtained through the SMARTCyp website mentioned in the <a href="https://academic.oup.com/bioinformatics/article/26/23/2988/221339">original publication</a>. The SMARTCyp code was slightly adapted in order to work well with the FAME 3 software and the changes are tracked in the <a href="https://bitbucket.org/cheminformatics_allstars/FAME">publicly available source code repository</a>.</p>
+</body>
+</html>
